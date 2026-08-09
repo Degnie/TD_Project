@@ -98,4 +98,27 @@ public class CicloVitalTests
         Assert.Single(resultado.Fills);
         Assert.Equal(50m, resultado.Fills[0].PrecioFill);
     }
+
+    // spec: RN-07, RN-09, glosario "Trade" — Open Long 10 @100, Sell 4 @105 (parcial, sin cierre),
+    // Sell 6 @110 (cierra a cero). Un unico Trade se cierra al llegar la posicion a cero,
+    // consolidando el RealizedPnL de ambas reducciones: 4*(105-100) + 6*(110-100) = 20+60 = 80.
+    [Fact]
+    public void UnaPosicionConDosReduccionesCierraUnSoloTradeAlLlegarACero()
+    {
+        var config = new ConfiguracionExperimento(CapitalInicial: 1000m, Velas: new[]
+        {
+            new Candle(1, 100m, 100m, 100m, 100m, 500m),
+            new Candle(2, 100m, 100m, 100m, 100m, 500m),
+            new Candle(3, 105m, 105m, 105m, 105m, 500m),
+            new Candle(4, 110m, 110m, 110m, 110m, 500m)
+        });
+
+        var resultado = BacktestRunner.Ejecutar(config, new EstrategiaAperturaYDosReduccionesParciales());
+
+        var trade = Assert.Single(resultado.Trades);
+        Assert.Equal(10m, trade.CantidadInicial);
+        Assert.Equal(100m, trade.PrecioApertura);
+        Assert.Equal(110m, trade.PrecioCierre);
+        Assert.Equal(80m, trade.RealizedPnL);
+    }
 }

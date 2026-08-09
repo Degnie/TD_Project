@@ -26,6 +26,7 @@ public static class BacktestRunner
         var ordenesPending = new List<Order>();
         var fills = new List<Fill>();
         var trades = new List<Trade>();
+        var acumuladorTradeActivo = new AcumuladorTrade();
 
         try
         {
@@ -52,7 +53,11 @@ public static class BacktestRunner
                 foreach (var fill in resolucion.Fills)
                 {
                     fills.Add(fill);
-                    AplicadorFill.Aplicar(portfolio, fill);
+                    acumuladorTradeActivo.AntesDeAplicar(PosicionActual.De(portfolio), fill.PrecioFill);
+                    var resultadoFill = AplicadorFill.Aplicar(portfolio, fill);
+                    acumuladorTradeActivo.Registrar(resultadoFill);
+                    if (resultadoFill.TradeCerrado is not null)
+                        trades.Add(acumuladorTradeActivo.CerrarYExtraer(resultadoFill.TradeCerrado));
                     var ordenDelFill = ordenesPending.First(o => o.SecuenciaCausal == fill.SecuenciaCausal);
                     OrdenTransiciones.Ejecutar(ordenDelFill);
                 }

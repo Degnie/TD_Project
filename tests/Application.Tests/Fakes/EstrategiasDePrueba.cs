@@ -32,3 +32,15 @@ internal sealed class EstrategiaConOrdenPendingAlFinal : IStrategy
     public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) =>
         new[] { new OrderRequest(Side.Buy, OrderType.Limit, 1m, PrecioLimite: 1m) };
 }
+
+// spec: RN-09, glosario "Trade" — abre Long 10 en N=0, reduce 4 en N=1, reduce 6 en N=2 (cierra a cero)
+internal sealed class EstrategiaAperturaYDosReduccionesParciales : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) => dataSlice.N switch
+    {
+        0 => new[] { new OrderRequest(Side.Buy, OrderType.Market, 10m) },
+        1 => new[] { new OrderRequest(Side.Sell, OrderType.Market, 4m) },
+        2 => new[] { new OrderRequest(Side.Sell, OrderType.Market, 6m) },
+        _ => Array.Empty<OrderRequest>()
+    };
+}

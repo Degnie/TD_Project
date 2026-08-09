@@ -24,7 +24,7 @@ public class MarginLotesTests
             new(Cantidad: 8m, PrecioEntrada: 60m, Margin: 48m)
         };
 
-        var consumo = ConsumidorFifo.Consumir(lotes, cantidadAReducir: 4m);
+        var consumo = ConsumidorFifo.Consumir(lotes, cantidadAReducir: 4m, precioFill: 70m, posicionEraLarga: true);
 
         Assert.Equal(2m, consumo.Consumidos[0].CantidadConsumida);
         Assert.Equal(50m, consumo.Consumidos[0].Lote.PrecioEntrada);
@@ -38,8 +38,23 @@ public class MarginLotesTests
     {
         var lotes = new List<Lote> { new(Cantidad: 2m, PrecioEntrada: 50m, Margin: 10m) };
 
-        var consumo = ConsumidorFifo.Consumir(lotes, cantidadAReducir: 2m);
+        var consumo = ConsumidorFifo.Consumir(lotes, cantidadAReducir: 2m, precioFill: 55m, posicionEraLarga: true);
 
         Assert.Equal(10m, consumo.MarginLiberado);
+    }
+
+    // spec: RN-08, RN-09 — el RealizedPnL de una reduccion Long imputa (Fill - Entrada) por lote consumido
+    [Fact]
+    public void LaReduccionCalculaElRealizedPnLPorLoteConsumido()
+    {
+        var lotes = new List<Lote>
+        {
+            new(Cantidad: 2m, PrecioEntrada: 50m, Margin: 10m),
+            new(Cantidad: 8m, PrecioEntrada: 60m, Margin: 48m)
+        };
+
+        var consumo = ConsumidorFifo.Consumir(lotes, cantidadAReducir: 4m, precioFill: 70m, posicionEraLarga: true);
+
+        Assert.Equal(60m, consumo.RealizedPnL);
     }
 }

@@ -56,6 +56,28 @@ cada auditoría posterior; no se cierra ni se vacía.
   `ConfiguracionExperimento` mejoraría sustancialmente la reproducibilidad
   y auditabilidad del sistema. Clasificado como deuda técnica pendiente de
   decisión de diseño, no como regla obligatoria del SPEC.
+- ~~**`AplicadorFill` no conectaba `ConsumidorFifo`/`ResolutorCrossZero` al flujo real (RN-09,
+  RN-10)**~~ — resuelto durante el diseño de la capa de Presentation (Fase 6), al investigar si
+  `Trade` era reconstruible: `AplicadorFill.Aplicar` solo llamaba a `CalculadoraLotes.AbrirLote`,
+  sin importar el signo de la posición previa; una reducción o inversión de posición nunca
+  reducía, cerraba, ni generaba `RealizedPnL`. Corregido para decidir el camino
+  (abrir/aumentar, reducir FIFO, o Cross-Zero) según signo y magnitud de la Position actual,
+  delegando las matemáticas a `ConsumidorFifo`/`ResolutorCrossZero`/`CalculadoraRealizedPnL`
+  (nuevo). `AplicadorFill.Aplicar` pasa de `void` a `ResultadoAplicacionFill` (`Trade?
+  TradeCerrado, decimal RealizedPnLReconocido, decimal MarginLiberado`). `BacktestRunner`
+  acumula el ciclo de vida del Trade completo (multi-Fill) vía `AcumuladorTrade` — Domain solo
+  emite el evento puntual por Fill, Application ensambla el histórico. Cubierto por
+  `AplicadorFillIntegracionTests.cs` (RN-09, RN-10) y
+  `UnaPosicionConDosReduccionesCierraUnSoloTradeAlLlegarACero` (glosario "Trade").
+- **[BUG PREEXISTENTE, fuera de alcance] `CalculadoraLotes.AbrirLote` produce `Margin` negativo
+  en aperturas Short puras** — `Margin = cantidad × precioFill × tasaMargen` usa `cantidad` con
+  signo (RN-08 literal); si `cantidad` es negativa (posición Short abierta desde cero), el
+  Margin calculado sale negativo, lo cual contradice la noción de Margin como colateral. Nunca
+  se manifestó antes porque ningún test abría una posición Short pura desde cero. Detectado al
+  implementar el camino Cross-Zero de `AplicadorFill` (que sí lo evita localmente, ver commit
+  de esta fase), pero **no corregido en `CalculadoraLotes.cs`** por estar fuera del alcance
+  aprobado para este cambio. Pendiente de decisión: ¿`CalculadoraLotes.AbrirLote` debe tomar
+  magnitud y aplicar signo solo a `Lote.Cantidad`, dejando `Margin` siempre no negativo?
 
 ## Metodologías evaluadas y no activadas
 

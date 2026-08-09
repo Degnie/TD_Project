@@ -15,10 +15,22 @@ public class CrossZeroTests
         var precioFillInversion = 110m;
         var tasaMargen = 0.1m;
 
-        var resultado = ResolutorCrossZero.Resolver(posicionVieja, cantidadFillInversion, precioFillInversion, tasaMargen);
+        var resultado = ResolutorCrossZero.Resolver(posicionVieja, cantidadFillInversion, precioFillInversion, tasaMargen, posicionEraLarga: true);
 
         Assert.Equal(50m, resultado.MarginLiberadoPosicionVieja);
         Assert.Equal(3m, resultado.CantidadPosicionNueva);
         Assert.Equal(110m * 3m * 0.1m, resultado.MarginRetenidoPosicionNueva);
+    }
+
+    // spec: RN-08, RN-10 — el RealizedPnL de la posicion vieja liquidada en un Cross-Zero
+    // imputa (Fill - Entrada) sobre la cantidad total de esa posicion.
+    [Fact]
+    public void UnFillQueInvierteLaPosicionCalculaElRealizedPnLDeLaPosicionVieja()
+    {
+        var posicionVieja = new Lote(Cantidad: 5m, PrecioEntrada: 100m, Margin: 50m);
+
+        var resultado = ResolutorCrossZero.Resolver(posicionVieja, cantidadFillInversion: 8m, precioFillInversion: 110m, tasaMargen: 0.1m, posicionEraLarga: true);
+
+        Assert.Equal(50m, resultado.RealizedPnL);
     }
 }

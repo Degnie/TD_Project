@@ -26,6 +26,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
     (RNF-13).
 
 ### Cambiado
+- `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
+  signo y magnitud de la Position actual, entre abrir/aumentar, reducir vía `ConsumidorFifo`, o
+  invertir vía `ResolutorCrossZero`. Firma cambia de `void` a `ResultadoAplicacionFill` (nuevo
+  record: `Trade? TradeCerrado, decimal RealizedPnLReconocido, decimal MarginLiberado`).
+- `ConsumidorFifo.Consumir` y `ResolutorCrossZero.Resolver`: ahora calculan `RealizedPnL` (vía
+  `CalculadoraRealizedPnL`, nuevo) además de Margin liberado.
+- `BacktestRunner`: acumula el ciclo de vida completo de cada `Trade` (potencialmente
+  multi-Fill) mediante `AcumuladorTrade` (nuevo, `Application`); `ResultadoBacktest.Trades` deja
+  de estar siempre vacío.
 
 ### Rechazado / Descartado
 - Regla Nueva estricta para inyección de Tasa de Margen (vinculada a RNF-08): Descartada como regla obligatoria del SPEC. Reclasificada como mejora de diseño (deuda técnica) para favorecer la auditabilidad.

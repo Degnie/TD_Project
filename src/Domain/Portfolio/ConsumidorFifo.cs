@@ -4,7 +4,7 @@ namespace TD_Project.Domain.Portfolio;
 // spec: RN-08 — la reduccion libera exactamente el Margin original de los lotes consumidos (proporcional si es parcial).
 public static class ConsumidorFifo
 {
-    public static ResultadoConsumoFifo Consumir(IReadOnlyList<Lote> lotes, decimal cantidadAReducir)
+    public static ResultadoConsumoFifo Consumir(IReadOnlyList<Lote> lotes, decimal cantidadAReducir, decimal precioFill, bool posicionEraLarga)
     {
         var consumidos = new List<ConsumoLote>();
         var margenLiberado = 0m;
@@ -23,6 +23,7 @@ public static class ConsumidorFifo
             restante -= cantidadConsumida;
         }
 
-        return new ResultadoConsumoFifo(consumidos, margenLiberado);
+        var realizedPnL = CalculadoraRealizedPnL.DeConsumoFifo(consumidos, precioFill, posicionEraLarga);
+        return new ResultadoConsumoFifo(consumidos, margenLiberado, realizedPnL);
     }
 }
