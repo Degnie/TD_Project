@@ -28,11 +28,11 @@ cada auditoría posterior; no se cierra ni se vacía.
 
 ## Decisiones de diseño diferidas a la fase de contratos (Prompt 3)
 
-- **Mecanismo de aislamiento entre ramas A/B (RN-11)** — no se fijó
-  clonación, snapshots, comandos reversibles ni ningún otro mecanismo. Solo
-  quedó fijada la obligación observable: evaluar ambas ramas, evitar
-  contaminación cruzada, calcular resultados completos por rama, seleccionar
-  la oficial por Equity.
+- ~~**Mecanismo de aislamiento entre ramas A/B (RN-11)**~~ — resuelto en
+  Etapa 3 (Prompt 3): `Order.Clonar()` y `PortfolioState.Clonar()` producen
+  una copia independiente por rama antes de que `ResolutorVela` invoque
+  `MatchingEngine`/`AplicadorFill`, sin mutar el estado original hasta
+  seleccionar la rama oficial.
 - **Contratos concretos entre Broker, Matching Engine, Portfolio y
   VelaResolution** — interfaces, tipos de entrada/salida y forma de
   invocación aún no definidos. Solo están fijadas las responsabilidades y
@@ -41,6 +41,23 @@ cada auditoría posterior; no se cierra ni se vacía.
   a vigilar explícitamente al definir los contratos: VelaResolution depende
   de Matching Engine y Portfolio, pero ninguno de los dos debe depender de
   vuelta de VelaResolution.
+
+## Vacíos detectados durante la implementación (Etapa 3)
+
+- **UnrealizedPnL / M2M en `ResolutorVela.CalcularEquity`** — el cálculo de
+  Equity por rama (`src/Domain/VelaResolution/ResolutorVela.cs`) usa
+  `Cash + Margin`, sin componente de Unrealized PnL. Ningún test actual deja
+  una posición viva al cierre de la vela resuelta, así que el alcance mínimo
+  no lo ejercita. Pendiente de incorporación cuando exista un caso que lo
+  requiera; no se amplía el alcance ahora sin requisito o test que lo fuerce.
+- **Configuración real de `TasaMargen`** — `AplicadorFill.Aplicar`
+  (`src/Domain/Portfolio/AplicadorFill.cs`) usa un valor por defecto
+  (`0.1m`) porque el test aprobado en Etapa 2 (`InmutabilidadOrigenTests`)
+  invoca el método con dos argumentos únicamente. Ese default es válido para
+  satisfacer la API de tests existente, pero debe quedar separado de la
+  configuración definitiva del Experimento — `ConfiguracionExperimento` no
+  expone todavía `TasaMargen`. No se introduce esa expansión de
+  configuración en esta etapa.
 
 ## Metodologías evaluadas y no activadas
 
