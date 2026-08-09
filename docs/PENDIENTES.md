@@ -94,6 +94,24 @@ cada auditoría posterior; no se cierra ni se vacía.
   `ElDesgloseDeEquityCorrespondeALaRamaOficial` (`spec: RN-11`, `RN-08`) y
   `ElResultadoConservaEquityCurvePortfolioSnapshotsYBranchResolutionsPorVela` (`spec: RNF-08`).
 
+## Capa de Presentation (Fase 6) — en construcción
+
+- **Paso 1 completado**: `src/Presentation/TD_Project.Contracts` — DTOs de salida (`ResultDto`
+  y 8 records asociados), sin referencia a `Domain` ni `Application` (verificado por
+  `ContractsNoReferenciaDomainNiApplication`). `TradeDto` es espejo directo del `Trade` real
+  (no del diseño original desfasado, que asumía Timestamps/SecuenciaCausal inexistentes en la
+  fuente). `BranchResolutionDto` deliberadamente **no** tiene un campo `Motivo`: no es un dato
+  persistido, es interpretación derivable en la UI comparando `EquityA`/`EquityB`.
+  `ExperimentInfoDto` deliberadamente **no** tiene `ExperimentId`/`EstrategiaNombre`: no existen
+  en `ConfiguracionExperimento` ni en `ResultadoBacktest` hoy — agregarlos requeriría antes
+  decidir si el `Experiment`/`IStrategy` obtienen identidad, cambio de alcance fuera de
+  Contracts. Redondeo decimal: **no aplicado** en Contracts (RNF-05 solo exige redondeo "a
+  tiempo de reporte"; Contracts transporta precisión completa, verificado por
+  `LaSerializacionNoPierdePrecisionDecimal`); el redondeo a 2 decimales queda diferido al
+  mapper/reporte (Paso 2, aún no implementado).
+- **Pendiente**: Paso 2 (mapper `ResultadoBacktest → ResultDto`, vive en `TD_Project.Api` según
+  lo aprobado, no en `Application`), Paso 3 (API local), Paso 4 (dashboard). Ninguno iniciado.
+
 ## Metodologías evaluadas y no activadas
 
 - **Pruebas metamórficas** — no activas como metodología principal porque

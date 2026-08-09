@@ -24,6 +24,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
     estados de observabilidad (RNF-09), integridad de falla (RNF-10).
   - `Infrastructure.SerializadorResultado`: serialización simétrica en JSON
     (RNF-13).
+- `src/Presentation/TD_Project.Contracts` (Fase 6, Paso 1): DTOs de salida para la capa de
+  presentación — `ResultDto`, `ExperimentInfoDto`, `EquityPointDto`, `TradeDto`,
+  `FillLogEntryDto`, `PortfolioSnapshotDto`, `LoteDto`, `MetricsDto`, `BranchResolutionDto`.
+  Sin referencia a `Domain` ni `Application` (RNF-12), sin lógica ni cálculos, precisión decimal
+  completa (redondeo diferido al mapper/reporte). `tests/Presentation.Tests/
+  TD_Project.Contracts.Tests` (4 tests: construcción, round-trip JSON, precisión, frontera de
+  dependencias).
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
