@@ -44,12 +44,12 @@ cada auditoría posterior; no se cierra ni se vacía.
 
 ## Vacíos detectados durante la implementación (Etapa 3)
 
-- **UnrealizedPnL / M2M en `ResolutorVela.CalcularEquity`** — el cálculo de
-  Equity por rama (`src/Domain/VelaResolution/ResolutorVela.cs`) usa
-  `Cash + Margin`, sin componente de Unrealized PnL. Ningún test actual deja
-  una posición viva al cierre de la vela resuelta, así que el alcance mínimo
-  no lo ejercita. Pendiente de incorporación cuando exista un caso que lo
-  requiera; no se amplía el alcance ahora sin requisito o test que lo fuerce.
+- ~~**UnrealizedPnL / M2M en `ResolutorVela.CalcularEquity`**~~ — resuelto
+  en el commit `2f0f121` (hallazgo de auditoría, `docs/hallazgos-actual.md`):
+  `CalcularEquity` ahora suma `Σ(Cantidad_lote × (Close − PrecioEntrada_lote))`
+  sobre los lotes vivos de cada rama, evaluado contra el `Close` de la vela
+  resuelta. Cubierto por el test `ElEquityIncluyeLaValoracionM2MDeLaPosicionVivaAlCierre`
+  (`spec: RN-08`).
 - **[MEJORA DE DISEÑO] Configuración explícita de `TasaMargen`** — `AplicadorFill.Aplicar`
   (`src/Domain/Portfolio/AplicadorFill.cs`) usa un valor fijo por defecto
   (`0.1m`). Aunque no viola RNF-08 estrictamente, extraer este valor a la
