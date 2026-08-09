@@ -29,9 +29,14 @@ else { Write-Host "OK: tests" -ForegroundColor Green }
 # 3. Trazabilidad: todo test cita un ID existente; toda RN/CU/EC/RNF verificable activa tiene test
 Section "3. Trazabilidad spec <-> test"
 
-$specIds = Select-String -Path "SPEC.md" -Pattern '\*\*(RN|CU|EC|RNF)-[0-9]{2}' -AllMatches |
-    ForEach-Object { $_.Matches } |
-    ForEach-Object { ($_.Value -replace '\*\*', '') } |
+# Ancla a lineas de declaracion canonica ("**RN-04 ..." o "* **CU-01: ...")
+# para no capturar menciones sueltas en tablas/prosa (ej. IDs retirados, "Fuera de alcance").
+# Dentro de una linea de declaracion, extrae TODOS los IDs (una declaracion
+# puede agrupar varios, ej. "**RNF-01, RNF-02, RNF-03 * ...").
+$specIds = Select-String -Path "SPEC.md" -Pattern '^\*\s*\*{0,2}(RN|CU|EC|RNF)-[0-9]{2}' |
+    ForEach-Object {
+        [regex]::Matches($_.Line, '(RN|CU|EC|RNF)-[0-9]{2}') | ForEach-Object { $_.Value }
+    } |
     Sort-Object -Unique
 
 $testFiles = Get-ChildItem -Path "tests" -Filter "*.cs" -Recurse -ErrorAction SilentlyContinue

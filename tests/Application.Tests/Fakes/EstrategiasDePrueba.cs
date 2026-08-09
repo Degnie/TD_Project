@@ -1,0 +1,34 @@
+using TD_Project.Domain.Shared;
+using TD_Project.Domain.Strategy;
+
+namespace TD_Project.Application.Tests.Fakes;
+
+// spec: CU-04 — estrategia que nunca emite OrderRequests
+internal sealed class EstrategiaCiega : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) => Array.Empty<OrderRequest>();
+}
+
+// spec: CU-06 — estrategia que intenta leer mas alla de N (viola el bloqueo de DataSlice)
+internal sealed class EstrategiaConLookAhead : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice)
+    {
+        _ = dataSlice.VelasHastaN[dataSlice.N + 1];
+        return Array.Empty<OrderRequest>();
+    }
+}
+
+// spec: CU-01, RN-13 — emite un Market Buy en cada ciclo N
+internal sealed class EstrategiaMarketSiempre : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) =>
+        new[] { new OrderRequest(Side.Buy, OrderType.Market, 1m) };
+}
+
+// spec: CU-07 — deja una orden Limit sin ejecutar para verificar cancelacion al finalizar
+internal sealed class EstrategiaConOrdenPendingAlFinal : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) =>
+        new[] { new OrderRequest(Side.Buy, OrderType.Limit, 1m, PrecioLimite: 1m) };
+}
