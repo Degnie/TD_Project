@@ -119,11 +119,24 @@ cada auditoría posterior; no se cierra ni se vacía.
   — sin él, un resultado `InternalCrash`/`NotEvaluable`/etc. (listas vacías) era indistinguible
   de un experimento válido con cero actividad; hallazgo detectado al diseñar el mapper, resuelto
   ampliando Contracts antes de mapear, no documentado como limitación.
-- **Presentation API host pendiente**: `TD_Project.Api` actualmente contiene únicamente
-  `Mapping/ResultDtoMapper.cs`, como `classlib`. La conversión a ASP.NET Core Minimal API
-  (endpoints reales) se realizará en el Paso 3. No requiere cambio ahora.
-- **Pendiente**: Paso 3 (API local, endpoints reales, promover `TD_Project.Api` a proyecto web),
-  Paso 4 (dashboard). Ninguno iniciado.
+- **Paso 3 completado**: `TD_Project.Api` promovido a `Microsoft.NET.Sdk.Web` (Minimal API).
+  Endpoint único `POST /api/backtest/run`: sin body de entrada (cualquiera enviado se ignora,
+  verificado por `PostRunIgnoraCualquierBodyEnviado`), ejecuta `DatasetDemo.Configuracion()` +
+  `EstrategiaDemo` vía `BacktestRunner.Ejecutar`, devuelve el `ResultDto` directo. **Sin estado
+  entre requests**: no hay `runId`, no hay `GET /latest`, no hay almacenamiento — cada POST
+  recalcula desde cero (determinismo verificado por
+  `DosLlamadasSucesivasDevuelvenElMismoResultado`, RNF-06). `DatasetDemo.cs`/`EstrategiaDemo.cs`
+  viven exclusivamente en `Presentation.Api.Demo`, nunca en Domain/Application/Infrastructure.
+  `TD_Project.Api.csproj` referencia `Domain` explícitamente (no oculta la dependencia detrás
+  de `Application`): `EstrategiaDemo` implementa `Domain.Strategy.IStrategy` directamente, como
+  el punto de extensión de usuario que es.
+  **Deuda futura explícita, ninguna implementada**: `StrategyCatalog`/selección dinámica de
+  estrategia, `POST /api/datasets` (ingestión real de OHLCV), `GET /api/backtest/{runId}` +
+  persistencia/historial de ejecuciones, autenticación, ejecución asíncrona. El contrato HTTP
+  actual (`POST /run` sin parámetros) deberá evolucionar a aceptar `{dataset, strategy}` **solo
+  cuando esas entidades existan de verdad** — no antes, para no exponer opciones decorativas.
+- **Pendiente**: Paso 4 (dashboard web estático, consumiendo `POST /api/backtest/run`). No
+  iniciado.
 
 ## Metodologías evaluadas y no activadas
 

@@ -39,6 +39,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   referencia `Application` y `Contracts` (no `Domain` directamente). `tests/Presentation.Tests/
   TD_Project.Api.Tests` (7 tests: mapeo completo, precisión decimal, conversión enum/string,
   resultado vacío, ambas ramas RN-11, métricas agregadas, propagación de `Estado`).
+- `TD_Project.Api` promovido a Minimal API (Fase 6, Paso 3): endpoint único
+  `POST /api/backtest/run`, sin body de entrada, ejecución síncrona sin estado entre requests
+  (sin `runId`, sin `GET /latest`, sin persistencia). `Demo/DatasetDemo.cs` y
+  `Demo/EstrategiaDemo.cs` (configuración y estrategia fijas de demostración, exclusivas de
+  `Presentation.Api.Demo`). `tests/Presentation.Tests/TD_Project.Api.Tests/
+  BacktestRunEndpointTests.cs` (4 tests vía `WebApplicationFactory`: respuesta 200 con
+  `ResultDto`, `Estado=Success` con `EquityCurve` poblada, body ignorado, determinismo entre
+  llamadas sucesivas).
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
