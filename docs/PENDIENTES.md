@@ -135,8 +135,33 @@ cada auditoría posterior; no se cierra ni se vacía.
   persistencia/historial de ejecuciones, autenticación, ejecución asíncrona. El contrato HTTP
   actual (`POST /run` sin parámetros) deberá evolucionar a aceptar `{dataset, strategy}` **solo
   cuando esas entidades existan de verdad** — no antes, para no exponer opciones decorativas.
-- **Pendiente**: Paso 4 (dashboard web estático, consumiendo `POST /api/backtest/run`). No
-  iniciado.
+- **Paso 4 completado**: `src/Presentation/TD_Project.Api/wwwroot` — dashboard estático
+  (`index.html`/`app.js`/`styles.css`, HTML/JS/CSS puro, sin npm/CDN/framework, verificado por
+  `NoExistenDependenciasFrontendExternas`). Servido vía `app.UseDefaultFiles()` +
+  `app.UseStaticFiles()` en `Program.cs`. Flujo: click "Ejecutar" → `fetch POST
+  /api/backtest/run` → render directo del JSON recibido. Sin almacenamiento local, sin caché,
+  sin histórico, sin polling/websockets — cada ejecución es independiente, igual que el
+  endpoint. Cuatro vistas: Resumen (`MetricsDto`), Curva de Equity (SVG nativo, sin librería de
+  gráficos), Trades (tabla), Resolución RN-11 (ambas ramas A/B con Equity y conteo de Fills).
+  `app.js` referencia los nombres de campo reales del contrato en `camelCase` (forma de
+  serialización por defecto de Minimal API, confirmada contra la respuesta real del servidor
+  en vivo) — verificado por `AppJsReferenciaLosCamposRealesDelContrato`.
+  **Limitación de verificación**: no se probó el render visual en un navegador real (click
+  interactivo, inspección del SVG generado); se verificó la integridad HTTP/JSON de punta a
+  punta (servidor real respondiendo con la forma exacta que `app.js` consume) y la suite
+  automatizada vía `WebApplicationFactory`. Esta es una categoría de validación distinta de
+  "HTTP/JSON correcto" — no implica sospecha de fallo, pero el dashboard no debe considerarse
+  visualmente terminado hasta completar el siguiente checklist manual:
+  - [ ] Abrir el dashboard en un navegador real (`dotnet run` + visitar `http://localhost:<puerto>/`).
+  - [ ] Ejecutar el botón "Ejecutar" y confirmar que la sección de resultado deja de estar oculta.
+  - [ ] Comprobar el render de la curva de Equity (SVG con la polilínea visible, proporciones correctas).
+  - [ ] Comprobar que la tabla de Trades se puebla (o queda vacía sin error, si el dataset demo no cierra Trades).
+  - [ ] Comprobar la tabla de Resolución RN-11 (ambas columnas A/B, conteo de Fills coherente).
+- **Fase 6 (Presentation) — estado global**: Pasos 1-4 completados. Deuda explícita heredada de
+  todos los pasos: `StrategyCatalog`/selección dinámica de estrategia, `POST /api/datasets`
+  (ingestión real de OHLCV), `GET /api/backtest/{runId}` + persistencia/historial de
+  ejecuciones, autenticación, ejecución asíncrona. Ninguna implementada; el contrato HTTP actual
+  deberá evolucionar solo cuando esas entidades existan de verdad.
 
 ## Metodologías evaluadas y no activadas
 

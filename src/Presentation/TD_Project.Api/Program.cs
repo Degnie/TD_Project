@@ -5,6 +5,9 @@ using TD_Project.Application;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // spec: RNF-08, RNF-13 — ejecucion sincrona sin estado entre requests; cada POST corre el
 // backtest demo desde cero y devuelve el ResultDto directo, sin persistencia ni runId.
 app.MapPost("/api/backtest/run", () =>

@@ -1,0 +1,47 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 2rem;
+  color: #1f2937;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  border: 1px solid #d1d5db;
+  padding: 0.4rem 0.6rem;
+  text-align: right;
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+}
+
+#svg-equity {
+  border: 1px solid #d1d5db;
+}
+
+#mensaje-error {
+  color: #b91c1c;
+}

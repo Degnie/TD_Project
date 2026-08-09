@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TD_Project — Visor de Backtest</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>TD_Project — Visor de Backtest</h1>
+  <button id="btn-ejecutar">Ejecutar</button>
+  <span id="estado-badge"></span>
+</header>
+
+<main id="resultado" hidden>
+  <section id="resumen">
+    <h2>Resumen</h2>
+    <dl>
+      <dt>Estado</dt><dd id="resumen-estado"></dd>
+      <dt>Equity final</dt><dd id="resumen-equity-final"></dd>
+      <dt>PnL total</dt><dd id="resumen-pnl-total"></dd>
+      <dt>Trades</dt><dd id="resumen-total-trades"></dd>
+    </dl>
+  </section>
+
+  <section id="curva-equity">
+    <h2>Curva de Equity</h2>
+    <svg id="svg-equity" width="600" height="200" role="img" aria-label="Curva de Equity"></svg>
+  </section>
+
+  <section id="trades">
+    <h2>Trades</h2>
+    <table>
+      <thead>
+        <tr><th>Cantidad inicial</th><th>Precio apertura</th><th>Precio cierre</th><th>RealizedPnL</th></tr>
+      </thead>
+      <tbody id="trades-body"></tbody>
+    </table>
+  </section>
+
+  <section id="branch-resolutions">
+    <h2>Resolución RN-11 (trayectorias A/B)</h2>
+    <table>
+      <thead>
+        <tr><th>Timestamp</th><th>Trayectoria oficial</th><th>Equity A</th><th>Equity B</th><th>Fills A</th><th>Fills B</th></tr>
+      </thead>
+      <tbody id="branch-body"></tbody>
+    </table>
+  </section>
+</main>
+
+<p id="mensaje-error" hidden></p>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -47,6 +47,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   BacktestRunEndpointTests.cs` (4 tests vía `WebApplicationFactory`: respuesta 200 con
   `ResultDto`, `Estado=Success` con `EquityCurve` poblada, body ignorado, determinismo entre
   llamadas sucesivas).
+- Añadido visor web local para resultados de backtest (Fase 6, Paso 4):
+  `src/Presentation/TD_Project.Api/wwwroot` (`index.html`, `app.js`, `styles.css`), HTML/JS/CSS
+  puro sin dependencias frontend externas. Cuatro vistas: Resumen, Curva de Equity (SVG nativo),
+  Trades, Resolución RN-11 (ambas ramas A/B). Servido vía `UseDefaultFiles`/`UseStaticFiles`.
+  `tests/Presentation.Tests/TD_Project.Api.Tests/DashboardTests.cs` (4 tests: index.html servido,
+  assets estáticos accesibles, nombres de campo del contrato correctos, ausencia de
+  dependencias frontend externas).
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
