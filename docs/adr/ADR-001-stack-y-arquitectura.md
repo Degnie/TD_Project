@@ -92,20 +92,26 @@ TD_Project/
 │   ├── Application/             (Backtest/Experiment: orquestación N→N+1, sin reglas propias)
 │   └── Infrastructure/          (lectura de Dataset, serialización de Result — adaptadores)
 ├── tests/
-│   ├── Domain/
-│   │   ├── Strategy/
+│   ├── Domain.Tests/
 │   │   ├── Broker/
-│   │   ├── Matching/
+│   │   ├── Matching/             (incluye transiciones de Order — RN-01)
 │   │   ├── Portfolio/
-│   │   └── VelaResolution/
-│   ├── Application/
-│   └── Infrastructure/
+│   │   ├── VelaResolution/
+│   │   ├── Precision/
+│   │   └── Determinismo/
+│   ├── Application.Tests/
+│   │   └── Fakes/
+│   └── Infrastructure.Tests/
+│       └── Fakes/
 └── TD_Project.sln
 ```
 
 **Rutas fijas:**
 - `SPEC.md` vive en la raíz del proyecto.
-- Los tests viven en `tests/`, en subcarpetas espejo de `src/`.
+- Los tests viven en `tests/`, en subcarpetas espejo de `src/`, con sufijo
+  `.Tests` en el nombre del proyecto (`Domain.Tests`, `Application.Tests`,
+  `Infrastructure.Tests`) — convención estándar de proyectos de test .NET,
+  aplicada durante la implementación (Prompt 3, Etapa 1).
 
 ## Alternativas descartadas
 

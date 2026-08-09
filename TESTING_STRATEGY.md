@@ -34,7 +34,16 @@ invocaciones a los contratos de Domain y sobre el resultado final agregado.
 Los dobles de prueba no sustituyen la verificación de reglas de dominio, pero
 sí pueden aislar una frontera de Domain cuando el objetivo del test es probar
 exclusivamente la orquestación (por ejemplo, manejo de errores de
-Infrastructure sin ejercitar Matching real).
+Infrastructure sin ejercitar Matching real). Los dobles de `IStrategy`
+usados en la suite (`tests/Application.Tests/Fakes/`,
+`tests/Infrastructure.Tests/Fakes/`) implementan el contrato de usuario para
+ejercitar casos concretos del ciclo vital (CU-01, CU-04, CU-06, CU-07,
+RN-13, EC-04) sin depender de una estrategia real.
+
+Incluye además un test dedicado a la comprobación 4 de `verify`
+(`tests/Application.Tests/ArchitectureTests.cs`), que verifica con
+NetArchTest que `Domain` no depende de `Infrastructure` ni de `Application`
+(RNF-12).
 
 **Infrastructure**: dobles de prueba en la frontera hacia el sistema externo
 (archivo/formato); tests de round-trip para RNF-13.

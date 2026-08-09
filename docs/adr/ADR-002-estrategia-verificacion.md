@@ -47,21 +47,17 @@ decisión de implementación y pueden evolucionar sin reabrir esta fase.
 6. **Alcance: archivos modificados coinciden con los declarados** — el diff
    real se compara contra los archivos que el implementador declaró tocar.
 
-**Mecanismos de referencia (no vinculantes, ejemplo para C#):**
-- (1) `dotnet build -warnaserror`
-- (2) `dotnet test`
-- (3) convención `[Trait("spec","ID")]` sobre cada test, comparación de IDs:
-  ```bash
-  grep -oE '\*\*(RN|CU|EC|RNF)-[0-9]{2}' SPEC.md | grep -oE '(RN|CU|EC|RNF)-[0-9]{2}' | sort -u > /tmp/spec_ids
-  grep -rhoE 'Trait\("spec", *"(RN|CU|EC|RNF)-[0-9]{2}"\)' tests/ | grep -oE '(RN|CU|EC|RNF)-[0-9]{2}' | sort -u > /tmp/test_ids
-  comm -13 /tmp/spec_ids /tmp/test_ids   # test que cita un ID inexistente
-  comm -23 /tmp/spec_ids /tmp/test_ids   # regla sin ningún test
-  ```
-  Tests sin etiqueta `spec:` adyacente:
-  ```bash
-  grep -B2 -rE '\[(Fact|Theory)\]' tests/ | grep -v 'Trait("spec"' | grep -E '\[(Fact|Theory)\]'
-  ```
-- (4) NetArchTest sobre los ensamblados de `Domain`
+**Mecanismos de referencia (no vinculantes, implementados en `tools/verify.ps1`):**
+- (1) `dotnet build --configuration Release`
+- (2) `dotnet test --configuration Release`
+- (3) convención `// spec: ID[, ID...]` en comentario dentro del bloque
+  contiguo inmediatamente anterior al `[Fact]`/`[Theory]`, comparación de
+  IDs extraídos de `SPEC.md` (líneas de declaración canónica, ancladas a
+  `^\* \*{0,2}(RN|CU|EC|RNF)-\d{2}` para no confundir menciones sueltas en
+  tablas o prosa con declaraciones reales) contra los IDs citados en
+  `tests/`. Reporta tests sin cita y reglas del SPEC sin ningún test.
+- (4) NetArchTest sobre los ensamblados de `Domain` (test dedicado:
+  `tests/Application.Tests/ArchitectureTests.cs`)
 - (5) Stryker.NET sobre los proyectos modificados
 - (6) `git diff --name-only <base>...HEAD` contra la declaración de alcance
 
