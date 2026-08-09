@@ -49,10 +49,14 @@ foreach ($file in $testFiles) {
     for ($i = 0; $i -lt $lines.Count; $i++) {
         if ($lines[$i] -match '\[(Fact|Theory)\]') {
             $citation = $null
-            for ($j = [Math]::Max(0, $i - 3); $j -lt $i; $j++) {
+            # Busca hacia atras mientras el bloque de comentario "//" sea contiguo
+            # (sin longitud fija), para no depender de cuantas lineas ocupe la cita.
+            $j = $i - 1
+            while ($j -ge 0 -and $lines[$j].TrimStart().StartsWith('//')) {
                 if ($lines[$j] -match 'spec:\s*((?:(?:RN|CU|EC|RNF)-[0-9]{2}(?:,\s*)?)+)') {
                     $citation = $Matches[1]
                 }
+                $j--
             }
             if ($null -eq $citation) {
                 $untaggedTests += "$($file.FullName):$($i+1)"
