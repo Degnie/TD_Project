@@ -18,13 +18,22 @@ public static class ResolutorVela
 
         // spec: RN-11 — Trayectoria_Oficial = argmin(Equity_A, Equity_B); desempate: A
         var oficialEsA = equityA <= equityB;
+        var portfolioOficial = oficialEsA ? portfolioA : portfolioB;
 
         return new ResultadoResolucionVela(
             TrayectoriaOficial: oficialEsA ? Trayectoria.A : Trayectoria.B,
             EquityFinal: oficialEsA ? equityA : equityB,
             EquityDescartada: oficialEsA ? equityB : equityA,
             Fills: oficialEsA ? fillsA : fillsB,
-            OrdenesCanceladas: Array.Empty<Order>());
+            OrdenesCanceladas: Array.Empty<Order>(),
+            FillsA: fillsA,
+            FillsB: fillsB,
+            EquityA: equityA,
+            EquityB: equityB,
+            CashFinal: portfolioOficial.Cash,
+            MarginFinal: portfolioOficial.Margin,
+            UnrealizedPnLFinal: CalcularUnrealizedPnL(portfolioOficial, vela.Close),
+            LotesVivosFinal: portfolioOficial.LotesVivos.ToList());
     }
 
     public static ResultadoResolucionVela ResolverOco(OcoGroup grupo, Candle vela, PortfolioState portfolio)
@@ -35,13 +44,22 @@ public static class ResolutorVela
         var equityA = CalcularEquity(portfolioA, vela);
         var equityB = CalcularEquity(portfolioB, vela);
         var oficialEsA = equityA <= equityB;
+        var portfolioOficial = oficialEsA ? portfolioA : portfolioB;
 
         return new ResultadoResolucionVela(
             TrayectoriaOficial: oficialEsA ? Trayectoria.A : Trayectoria.B,
             EquityFinal: oficialEsA ? equityA : equityB,
             EquityDescartada: oficialEsA ? equityB : equityA,
             Fills: oficialEsA ? fillsA : fillsB,
-            OrdenesCanceladas: oficialEsA ? canceladasA : canceladasB);
+            OrdenesCanceladas: oficialEsA ? canceladasA : canceladasB,
+            FillsA: fillsA,
+            FillsB: fillsB,
+            EquityA: equityA,
+            EquityB: equityB,
+            CashFinal: portfolioOficial.Cash,
+            MarginFinal: portfolioOficial.Margin,
+            UnrealizedPnLFinal: CalcularUnrealizedPnL(portfolioOficial, vela.Close),
+            LotesVivosFinal: portfolioOficial.LotesVivos.ToList());
     }
 
     private static (List<Fill> Fills, PortfolioState Portfolio) ResolverRama(

@@ -71,4 +71,47 @@ public class TrayectoriasCanonicasTests
 
         Assert.Equal(1100m, resultado.EquityFinal);
     }
+
+    // spec: RN-11 — el resultado conserva evidencia de AMBAS trayectorias evaluadas (Fills,
+    // Equity), no solo la seleccionada. Sell Stop @98 en vela Open 100/High 105/Low 95/Close 101:
+    // rama A (O-H-L-C) y rama B (O-L-H-C) ambas disparan el Stop (Low 95 <= 98), mismo resultado
+    // en este caso, pero ambas listas deben estar presentes independientemente de la seleccion.
+    [Fact]
+    public void ElResultadoConservaFillsYEquityDeAmbasTrayectorias()
+    {
+        var ordenesPending = new[]
+        {
+            new Order { SecuenciaCausal = 1, Side = Side.Sell, Type = OrderType.Stop, Cantidad = 1m, PrecioStop = 98m }
+        };
+        var vela = new Candle(Timestamp: 2, Open: 100m, High: 105m, Low: 95m, Close: 101m, Volume: 500m);
+        var portfolio = new TD_Project.Domain.Portfolio.PortfolioState { Cash = 1000m };
+
+        var resultado = ResolutorVela.Resolver(ordenesPending, vela, portfolio);
+
+        Assert.Single(resultado.FillsA);
+        Assert.Single(resultado.FillsB);
+        Assert.Equal(resultado.EquityA <= resultado.EquityB ? resultado.EquityA : resultado.EquityB, resultado.EquityFinal);
+        Assert.Equal(Trayectoria.A, resultado.TrayectoriaOficial);
+    }
+
+    // spec: RN-08, RN-11 — el desglose Cash/Margin/UnrealizedPnL/LotesVivos expuesto corresponde
+    // a la rama OFICIAL unicamente (no a una mezcla ni a la rama descartada).
+    [Fact]
+    public void ElDesgloseDeEquityCorrespondeALaRamaOficial()
+    {
+        var ordenesPending = new[]
+        {
+            new Order { SecuenciaCausal = 1, Side = Side.Buy, Type = OrderType.Market, Cantidad = 10m }
+        };
+        var vela = new Candle(Timestamp: 2, Open: 100m, High: 112m, Low: 98m, Close: 110m, Volume: 500m);
+        var portfolio = new TD_Project.Domain.Portfolio.PortfolioState { Cash = 1000m };
+
+        var resultado = ResolutorVela.Resolver(ordenesPending, vela, portfolio);
+
+        Assert.Equal(900m, resultado.CashFinal);
+        Assert.Equal(100m, resultado.MarginFinal);
+        Assert.Equal(100m, resultado.UnrealizedPnLFinal);
+        Assert.Equal(900m + 100m + 100m, resultado.EquityFinal);
+        Assert.Single(resultado.LotesVivosFinal);
+    }
 }

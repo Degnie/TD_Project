@@ -9,4 +9,7 @@ public sealed record ResultadoBacktest(
     IReadOnlyList<Fill> Fills,
     decimal CashFinal,
     IReadOnlyList<Trade> Trades,
-    IReadOnlyList<Order> OrdenesFinales);
+    IReadOnlyList<Order> OrdenesFinales,
+    IReadOnlyList<EquityPoint> EquityCurve,
+    IReadOnlyList<PortfolioSnapshot> PortfolioSnapshots,
+    IReadOnlyList<BranchResolutionInfo> BranchResolutions);

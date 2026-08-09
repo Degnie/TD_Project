@@ -78,6 +78,21 @@ cada auditoría posterior; no se cierra ni se vacía.
   de esta fase), pero **no corregido en `CalculadoraLotes.cs`** por estar fuera del alcance
   aprobado para este cambio. Pendiente de decisión: ¿`CalculadoraLotes.AbrirLote` debe tomar
   magnitud y aplicar signo solo a `Lote.Cantidad`, dejando `Margin` siempre no negativo?
+- ~~**`ResultadoResolucionVela` no conservaba evidencia de ambas ramas A/B ni el desglose de
+  Equity (RN-11, RNF-08)**~~ — resuelto durante el diseño de la capa de Presentation (Fase 6,
+  Paso 0): `ResolutorVela` calculaba `FillsA/FillsB/EquityA/EquityB` y `UnrealizedPnL` como
+  variables locales y los descartaba al construir el resultado, dejando solo la rama
+  seleccionada. `ResultadoResolucionVela` amplía con `FillsA/FillsB/EquityA/EquityB` (evidencia
+  de ambas trayectorias, sin alterar la selección RN-11) y `CashFinal/MarginFinal/
+  UnrealizedPnLFinal/LotesVivosFinal` (desglose de `EquityFinal`, rama oficial únicamente;
+  `LotesVivosFinal` es una copia, no la referencia viva del `PortfolioState`).
+  `BacktestRunner` acumula por vela `EquityCurve`, `PortfolioSnapshots` y `BranchResolutions`
+  (nuevos records en `Application`, incluyendo `TrayectoriaResolucion` como espejo propio de
+  `Domain.Shared.Trayectoria` para no filtrar un enum de Domain hasta Presentation) —
+  `BacktestRunner` solo lee y apila campos ya resueltos por `ResolutorVela`, no calcula nada.
+  Cubierto por `ElResultadoConservaFillsYEquityDeAmbasTrayectorias`,
+  `ElDesgloseDeEquityCorrespondeALaRamaOficial` (`spec: RN-11`, `RN-08`) y
+  `ElResultadoConservaEquityCurvePortfolioSnapshotsYBranchResolutionsPorVela` (`spec: RNF-08`).
 
 ## Metodologías evaluadas y no activadas
 

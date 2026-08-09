@@ -17,7 +17,10 @@ public class SerializacionSimetricaTests
             Fills: new[] { new Fill(SecuenciaCausal: 1, Side: Side.Buy, Cantidad: 1m, PrecioFill: 100m, CostoFriccionReal: 0.1m, Timestamp: 2, TipoOrdenOriginal: OrderType.Market) },
             CashFinal: 900m,
             Trades: Array.Empty<Trade>(),
-            OrdenesFinales: Array.Empty<Order>());
+            OrdenesFinales: Array.Empty<Order>(),
+            EquityCurve: Array.Empty<EquityPoint>(),
+            PortfolioSnapshots: Array.Empty<PortfolioSnapshot>(),
+            BranchResolutions: Array.Empty<BranchResolutionInfo>());
 
         var serializado = SerializadorResultado.Serializar(resultado);
         var deserializado = SerializadorResultado.Deserializar(serializado);

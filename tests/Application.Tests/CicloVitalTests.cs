@@ -121,4 +121,24 @@ public class CicloVitalTests
         Assert.Equal(110m, trade.PrecioCierre);
         Assert.Equal(80m, trade.RealizedPnL);
     }
+
+    // spec: RNF-08 — EquityCurve, PortfolioSnapshots y BranchResolutions (evidencia RN-11) deben
+    // sobrevivir hasta ResultadoBacktest: un punto/snapshot/resolucion por cada vela procesada.
+    [Fact]
+    public void ElResultadoConservaEquityCurvePortfolioSnapshotsYBranchResolutionsPorVela()
+    {
+        var config = new ConfiguracionExperimento(CapitalInicial: 1000m, Velas: new[]
+        {
+            new Candle(1, 100m, 105m, 95m, 102m, 500m),
+            new Candle(2, 102m, 106m, 100m, 104m, 500m),
+            new Candle(3, 104m, 108m, 102m, 106m, 500m)
+        });
+
+        var resultado = BacktestRunner.Ejecutar(config, new EstrategiaCiega());
+
+        Assert.Equal(2, resultado.EquityCurve.Count);
+        Assert.Equal(2, resultado.PortfolioSnapshots.Count);
+        Assert.Equal(2, resultado.BranchResolutions.Count);
+        Assert.All(resultado.EquityCurve, p => Assert.Equal(1000m, p.Equity));
+    }
 }

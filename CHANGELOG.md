@@ -35,6 +35,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `BacktestRunner`: acumula el ciclo de vida completo de cada `Trade` (potencialmente
   multi-Fill) mediante `AcumuladorTrade` (nuevo, `Application`); `ResultadoBacktest.Trades` deja
   de estar siempre vacío.
+- `ResultadoResolucionVela` (RN-11, RNF-08): amplía con `FillsA/FillsB/EquityA/EquityB`
+  (evidencia de ambas trayectorias evaluadas, sin alterar la selección oficial) y
+  `CashFinal/MarginFinal/UnrealizedPnLFinal/LotesVivosFinal` (desglose de `EquityFinal`, rama
+  oficial únicamente). `ResultadoBacktest` amplía con `EquityCurve`, `PortfolioSnapshots` y
+  `BranchResolutions` (nuevos records `EquityPoint`, `PortfolioSnapshot`, `BranchResolutionInfo`,
+  `TrayectoriaResolucion` en `Application`), acumulados por vela en `BacktestRunner` a partir de
+  campos ya resueltos por `ResolutorVela` — sin recalcular ni interpretar Fills.
 
 ### Rechazado / Descartado
 - Regla Nueva estricta para inyección de Tasa de Margen (vinculada a RNF-08): Descartada como regla obligatoria del SPEC. Reclasificada como mejora de diseño (deuda técnica) para favorecer la auditabilidad.

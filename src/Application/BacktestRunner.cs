@@ -27,6 +27,9 @@ public static class BacktestRunner
         var fills = new List<Fill>();
         var trades = new List<Trade>();
         var acumuladorTradeActivo = new AcumuladorTrade();
+        var equityCurve = new List<EquityPoint>();
+        var portfolioSnapshots = new List<PortfolioSnapshot>();
+        var branchResolutions = new List<BranchResolutionInfo>();
 
         try
         {
@@ -50,6 +53,16 @@ public static class BacktestRunner
                 var velaSiguiente = config.Velas[n + 1];
                 var resolucion = ResolutorVela.Resolver(ordenesPending.Where(o => o.Status == OrderStatus.Pending).ToList(), velaSiguiente, portfolio);
 
+                equityCurve.Add(new EquityPoint(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.UnrealizedPnLFinal, resolucion.EquityFinal));
+                portfolioSnapshots.Add(new PortfolioSnapshot(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.LotesVivosFinal));
+                branchResolutions.Add(new BranchResolutionInfo(
+                    velaSiguiente.Timestamp,
+                    resolucion.TrayectoriaOficial == Trayectoria.A ? TrayectoriaResolucion.A : TrayectoriaResolucion.B,
+                    resolucion.EquityA,
+                    resolucion.EquityB,
+                    resolucion.FillsA,
+                    resolucion.FillsB));
+
                 foreach (var fill in resolucion.Fills)
                 {
                     fills.Add(fill);
@@ -67,7 +80,7 @@ public static class BacktestRunner
             foreach (var orden in ordenesPending.Where(o => o.Status == OrderStatus.Pending))
                 OrdenTransiciones.Cancelar(orden);
 
-            return new ResultadoBacktest(EstadoBacktest.Success, fills, portfolio.Cash, trades, ordenesPending);
+            return new ResultadoBacktest(EstadoBacktest.Success, fills, portfolio.Cash, trades, ordenesPending, equityCurve, portfolioSnapshots, branchResolutions);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -82,5 +95,6 @@ public static class BacktestRunner
     }
 
     private static ResultadoBacktest Vacio(EstadoBacktest estado) =>
-        new(estado, Array.Empty<Fill>(), 0m, Array.Empty<Trade>(), Array.Empty<Order>());
+        new(estado, Array.Empty<Fill>(), 0m, Array.Empty<Trade>(), Array.Empty<Order>(),
+            Array.Empty<EquityPoint>(), Array.Empty<PortfolioSnapshot>(), Array.Empty<BranchResolutionInfo>());
 }
