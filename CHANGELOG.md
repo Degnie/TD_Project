@@ -28,6 +28,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Cambiado
 
 ### Rechazado / Descartado
+- Regla Nueva estricta para inyección de Tasa de Margen (vinculada a RNF-08): Descartada como regla obligatoria del SPEC. Reclasificada como mejora de diseño (deuda técnica) para favorecer la auditabilidad.
 
 ### Corregido
 - `MatchingEngine`: la dirección de cruce Limit/Stop estaba invertida para
@@ -41,3 +42,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `tools/verify.ps1`: la búsqueda de la cita `spec:` de un test usaba una
   ventana fija de 3 líneas hacia atrás, produciendo falsos negativos en
   comentarios de test más largos.
+- `ResolutorVela.CalcularEquity` (RN-08): calculaba Equity como
+  `Cash + Margin`, omitiendo el `UnrealizedPnL` (valoración M2M de la
+  posición viva al último Close conocido) que exige la fórmula completa del
+  glosario. Corregido para sumar `Σ(Cantidad_lote × (Close − PrecioEntrada_lote))`
+  sobre los lotes vivos de cada rama.

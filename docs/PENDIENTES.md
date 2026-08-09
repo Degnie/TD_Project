@@ -50,14 +50,12 @@ cada auditoría posterior; no se cierra ni se vacía.
   una posición viva al cierre de la vela resuelta, así que el alcance mínimo
   no lo ejercita. Pendiente de incorporación cuando exista un caso que lo
   requiera; no se amplía el alcance ahora sin requisito o test que lo fuerce.
-- **Configuración real de `TasaMargen`** — `AplicadorFill.Aplicar`
-  (`src/Domain/Portfolio/AplicadorFill.cs`) usa un valor por defecto
-  (`0.1m`) porque el test aprobado en Etapa 2 (`InmutabilidadOrigenTests`)
-  invoca el método con dos argumentos únicamente. Ese default es válido para
-  satisfacer la API de tests existente, pero debe quedar separado de la
-  configuración definitiva del Experimento — `ConfiguracionExperimento` no
-  expone todavía `TasaMargen`. No se introduce esa expansión de
-  configuración en esta etapa.
+- **[MEJORA DE DISEÑO] Configuración explícita de `TasaMargen`** — `AplicadorFill.Aplicar`
+  (`src/Domain/Portfolio/AplicadorFill.cs`) usa un valor fijo por defecto
+  (`0.1m`). Aunque no viola RNF-08 estrictamente, extraer este valor a la
+  `ConfiguracionExperimento` mejoraría sustancialmente la reproducibilidad
+  y auditabilidad del sistema. Clasificado como deuda técnica pendiente de
+  decisión de diseño, no como regla obligatoria del SPEC.
 
 ## Metodologías evaluadas y no activadas
 

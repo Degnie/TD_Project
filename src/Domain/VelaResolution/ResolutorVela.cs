@@ -13,8 +13,8 @@ public static class ResolutorVela
         var (fillsA, portfolioA) = ResolverRama(ordenesPending, vela, Trayectoria.A, portfolio);
         var (fillsB, portfolioB) = ResolverRama(ordenesPending, vela, Trayectoria.B, portfolio);
 
-        var equityA = CalcularEquity(portfolioA);
-        var equityB = CalcularEquity(portfolioB);
+        var equityA = CalcularEquity(portfolioA, vela);
+        var equityB = CalcularEquity(portfolioB, vela);
 
         // spec: RN-11 — Trayectoria_Oficial = argmin(Equity_A, Equity_B); desempate: A
         var oficialEsA = equityA <= equityB;
@@ -32,8 +32,8 @@ public static class ResolutorVela
         var (canceladasA, fillsA, portfolioA) = ResolverRamaOco(grupo, vela, Trayectoria.A, portfolio);
         var (canceladasB, fillsB, portfolioB) = ResolverRamaOco(grupo, vela, Trayectoria.B, portfolio);
 
-        var equityA = CalcularEquity(portfolioA);
-        var equityB = CalcularEquity(portfolioB);
+        var equityA = CalcularEquity(portfolioA, vela);
+        var equityB = CalcularEquity(portfolioB, vela);
         var oficialEsA = equityA <= equityB;
 
         return new ResultadoResolucionVela(
@@ -91,6 +91,12 @@ public static class ResolutorVela
         return (canceladas, fills, portfolioRama);
     }
 
-    // spec: glosario "Equity" — Equity = Cash + Margin + UnrealizedPnL. Sin M2M (Unrealized) en este alcance minimo: 0.
-    private static decimal CalcularEquity(PortfolioState portfolio) => portfolio.Cash + portfolio.Margin;
+    // spec: RN-08, glosario "Equity", "Unrealized PnL" — Equity = Cash + Margin + UnrealizedPnL.
+    // UnrealizedPnL es la valoracion M2M de la posicion viva al ultimo Close conocido.
+    private static decimal CalcularEquity(PortfolioState portfolio, Candle vela) =>
+        portfolio.Cash + portfolio.Margin + CalcularUnrealizedPnL(portfolio, vela.Close);
+
+    // spec: RN-08 — UnrealizedPnL = Sum(Cantidad_lote * (Close_actual - PrecioEntrada_lote))
+    private static decimal CalcularUnrealizedPnL(PortfolioState portfolio, decimal closeActual) =>
+        portfolio.LotesVivos.Sum(lote => lote.Cantidad * (closeActual - lote.PrecioEntrada));
 }
