@@ -26,6 +26,13 @@ cada auditoría posterior; no se cierra ni se vacía.
   nombrar infraestructura), no una contradicción ni una omisión a corregir
   en el documento.
 
+## Candidatos de benchmarking diferidos (Líneas de investigación aprobadas)
+
+- **[ACLARACIÓN CONCEPTUAL] Ítem #13 — Modelo de Fricción / Slippage:** Aclarar formalmente si `Friction Model` en RN-12 y RNF-08 abarca únicamente comisiones o si debe incluir un componente explícito de *slippage* / *market impact*. No requiere cambios en `SPEC.md` v6.0 hoy; es una precisión conceptual pendiente.
+- **[REPORTE FUTURO] Ítem #12 — Métricas de riesgo y rendimiento:** Evaluación de métricas estadísticas (Max Drawdown, Win Rate, Profit Factor, Sharpe, Sortino, Calmar) como parte de la capa de presentación/reporte (`Presentation.Api`), sin alterar el estado o cálculo del resultado financiero canónico en `Domain`.
+- **[INVESTIGACIÓN FUTURA] Ítem #3 — Auditoría activa anti look-ahead:** Herramienta post-hoc estilo Freqtrade (`lookahead-analysis`) para auditar la estrategia del usuario buscando lecturas futuras sutiles. Se mantiene como investigación futura si se admite la ejecución de estrategias de terceros no confiables.
+- **[INVESTIGACIÓN ARQUITECTÓNICA] Ítem #9 — Motor vectorizado secundario:** Exploración de un motor secundario independiente (`FastSimulationEngine`) optimizado para búsqueda masiva de parámetros en paralelo, preservando intacto el motor canónico determinista event-driven de `TD_Project`.
+
 ## Decisiones de diseño diferidas a la fase de contratos (Prompt 3)
 
 - ~~**Mecanismo de aislamiento entre ramas A/B (RN-11)**~~ — resuelto en
