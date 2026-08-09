@@ -6,6 +6,7 @@ namespace TD_Project.Contracts.Tests;
 public class ResultDtoTests
 {
     private static ResultDto CrearResultDtoDeEjemplo() => new(
+        Estado: "Success",
         ExperimentInfo: new ExperimentInfoDto(FechaInicioTimestamp: 1, FechaFinTimestamp: 10, TotalVelas: 10),
         EquityCurve: new[] { new EquityPointDto(Timestamp: 2, Cash: 900m, Margin: 100m, UnrealizedPnL: 50m, Equity: 1050m) },
         Trades: new[] { new TradeDto(CantidadInicial: 10m, PrecioApertura: 100m, PrecioCierre: 110m, RealizedPnL: 100m) },
@@ -21,6 +22,7 @@ public class ResultDtoTests
     {
         var resultado = CrearResultDtoDeEjemplo();
 
+        Assert.Equal("Success", resultado.Estado);
         Assert.Equal(10, resultado.ExperimentInfo.TotalVelas);
         Assert.Single(resultado.EquityCurve);
         Assert.Single(resultado.Trades);

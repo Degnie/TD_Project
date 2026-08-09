@@ -109,8 +109,21 @@ cada auditoría posterior; no se cierra ni se vacía.
   tiempo de reporte"; Contracts transporta precisión completa, verificado por
   `LaSerializacionNoPierdePrecisionDecimal`); el redondeo a 2 decimales queda diferido al
   mapper/reporte (Paso 2, aún no implementado).
-- **Pendiente**: Paso 2 (mapper `ResultadoBacktest → ResultDto`, vive en `TD_Project.Api` según
-  lo aprobado, no en `Application`), Paso 3 (API local), Paso 4 (dashboard). Ninguno iniciado.
+- **Paso 2 completado**: `src/Presentation/TD_Project.Api/Mapping/ResultDtoMapper.cs` — mapea
+  `ResultadoBacktest` + `ConfiguracionExperimento` (necesita ambos: `ExperimentInfoDto` deriva
+  de `config.Velas`, no de `ResultadoBacktest`) a `ResultDto`. `TD_Project.Api` creado como
+  `classlib` (no `webapi` todavía — sin endpoints, YAGNI hasta Paso 3). Solo conversión de
+  tipos y agregados de reporte (`MetricsDto.EquityFinal` = último `EquityPoint`, `PnLTotal` =
+  suma de `RealizedPnL`, `TotalTrades` = conteo); no recalcula Equity, no reconstruye Trades,
+  no decide `TrayectoriaOficial`. `ResultDto` ganó un campo `Estado` (string) durante este paso
+  — sin él, un resultado `InternalCrash`/`NotEvaluable`/etc. (listas vacías) era indistinguible
+  de un experimento válido con cero actividad; hallazgo detectado al diseñar el mapper, resuelto
+  ampliando Contracts antes de mapear, no documentado como limitación.
+- **Presentation API host pendiente**: `TD_Project.Api` actualmente contiene únicamente
+  `Mapping/ResultDtoMapper.cs`, como `classlib`. La conversión a ASP.NET Core Minimal API
+  (endpoints reales) se realizará en el Paso 3. No requiere cambio ahora.
+- **Pendiente**: Paso 3 (API local, endpoints reales, promover `TD_Project.Api` a proyecto web),
+  Paso 4 (dashboard). Ninguno iniciado.
 
 ## Metodologías evaluadas y no activadas
 

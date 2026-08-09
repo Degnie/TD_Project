@@ -31,6 +31,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   completa (redondeo diferido al mapper/reporte). `tests/Presentation.Tests/
   TD_Project.Contracts.Tests` (4 tests: construcción, round-trip JSON, precisión, frontera de
   dependencias).
+- `src/Presentation/TD_Project.Api/Mapping/ResultDtoMapper.cs` (Fase 6, Paso 2): mapea
+  `ResultadoBacktest` + `ConfiguracionExperimento` a `ResultDto`. Solo conversión de tipos
+  (`Side`/`OrderType`/`TrayectoriaResolucion`/`EstadoBacktest` → string) y agregados de reporte
+  simples (`MetricsDto`: último `EquityPoint`, suma de `RealizedPnL`, conteo de `Trades`); no
+  recalcula Equity, no reconstruye Trades, no decide `TrayectoriaOficial`. `TD_Project.Api`
+  referencia `Application` y `Contracts` (no `Domain` directamente). `tests/Presentation.Tests/
+  TD_Project.Api.Tests` (7 tests: mapeo completo, precisión decimal, conversión enum/string,
+  resultado vacío, ambas ramas RN-11, métricas agregadas, propagación de `Estado`).
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
@@ -49,6 +57,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `BranchResolutions` (nuevos records `EquityPoint`, `PortfolioSnapshot`, `BranchResolutionInfo`,
   `TrayectoriaResolucion` en `Application`), acumulados por vela en `BacktestRunner` a partir de
   campos ya resueltos por `ResolutorVela` — sin recalcular ni interpretar Fills.
+- `ResultDto` (Fase 6, Paso 2): gana un campo `Estado` (string, mapeado de `EstadoBacktest`).
+  Sin él, un resultado no-`Success` (listas vacías) era indistinguible de un experimento válido
+  con cero actividad — hallazgo detectado al diseñar el mapper `ResultadoBacktest → ResultDto`.
 
 ### Rechazado / Descartado
 - Regla Nueva estricta para inyección de Tasa de Margen (vinculada a RNF-08): Descartada como regla obligatoria del SPEC. Reclasificada como mejora de diseño (deuda técnica) para favorecer la auditabilidad.

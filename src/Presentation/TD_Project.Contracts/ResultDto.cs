@@ -1,6 +1,7 @@
 namespace TD_Project.Contracts;
 
 public sealed record ResultDto(
+    string Estado,
     ExperimentInfoDto ExperimentInfo,
     IReadOnlyList<EquityPointDto> EquityCurve,
     IReadOnlyList<TradeDto> Trades,
