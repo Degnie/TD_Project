@@ -15,8 +15,12 @@ public static class ConsumidorFifo
             if (restante <= 0m)
                 break;
 
-            var cantidadConsumida = Math.Min(lote.Cantidad, restante);
-            var proporcion = cantidadConsumida / lote.Cantidad;
+            // Lote.Cantidad conserva el signo de la posicion (negativo si es Short, RN-08); el
+            // algoritmo FIFO opera sobre magnitudes — "cuanto se consumio" nunca es negativo,
+            // el signo de la posicion ya lo captura por separado posicionEraLarga.
+            var magnitudLote = Math.Abs(lote.Cantidad);
+            var cantidadConsumida = Math.Min(magnitudLote, restante);
+            var proporcion = cantidadConsumida / magnitudLote;
 
             consumidos.Add(new ConsumoLote(lote, cantidadConsumida));
             margenLiberado += lote.Margin * proporcion;

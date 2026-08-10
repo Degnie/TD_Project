@@ -25,6 +25,24 @@ public class AplicadorFillIntegracionTests
         Assert.Equal(6m, PosicionActual.De(portfolio));
     }
 
+    // spec: RN-08, RN-09 — simetrico al test anterior mirando una posicion CORTA: una reduccion
+    // FIFO sobre un Short vivo debe imputar el mismo signo de RealizedPnL que produciria la
+    // formula del glosario (Short: PnL positivo si Entrada > Fill), no el opuesto. Short 4@$70
+    // (via Fill Sell), Buy 4@$60 reduce/cierra: RealizedPnL = 4*(70-60) = 40 (ganancia, el precio
+    // bajo favorece al vendedor). MarginLiberado = 4*70*0.1 = 28.
+    [Fact]
+    public void UnFillDeReduccionSobreUnaPosicionCortaCalculaElRealizedPnLConElSignoCorrecto()
+    {
+        var portfolio = new PortfolioState { Cash = 1000m };
+        AplicadorFill.Aplicar(portfolio, new Fill(1, Side.Sell, 4m, 70m, 0m, 1, OrderType.Market));
+
+        var resultado = AplicadorFill.Aplicar(portfolio, new Fill(2, Side.Buy, 4m, 60m, 0m, 2, OrderType.Market));
+
+        Assert.Equal(40m, resultado.RealizedPnLReconocido);
+        Assert.Equal(28m, resultado.MarginLiberado);
+        Assert.Equal(0m, PosicionActual.De(portfolio));
+    }
+
     // spec: RN-10, CU-18 — Fill que invierte la posicion cierra el Trade activo (RealizedPnL,
     // libera todo el Margin viejo) y abre uno nuevo por el excedente. Long 5@$100, Sell 8@$110:
     // cierra Long 5 (RealizedPnL = 5*(110-100) = 50, Margin liberado = 5*100*0.1 = 50),

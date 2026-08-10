@@ -35,14 +35,18 @@ public static class AplicadorFill
 
             foreach (var item in consumo.Consumidos)
             {
-                if (item.CantidadConsumida == item.Lote.Cantidad)
+                // item.CantidadConsumida es siempre magnitud positiva (ver ConsumidorFifo);
+                // item.Lote.Cantidad conserva el signo de la posicion (negativo si es Short).
+                var magnitudLote = Math.Abs(item.Lote.Cantidad);
+                if (item.CantidadConsumida == magnitudLote)
                 {
                     portfolio.LotesVivos.Remove(item.Lote);
                 }
                 else
                 {
-                    var restante = item.Lote.Cantidad - item.CantidadConsumida;
-                    var margenRestante = item.Lote.Margin * (restante / item.Lote.Cantidad);
+                    var magnitudRestante = magnitudLote - item.CantidadConsumida;
+                    var restante = Math.Sign(item.Lote.Cantidad) * magnitudRestante;
+                    var margenRestante = item.Lote.Margin * (magnitudRestante / magnitudLote);
                     var index = portfolio.LotesVivos.IndexOf(item.Lote);
                     portfolio.LotesVivos[index] = item.Lote with { Cantidad = restante, Margin = margenRestante };
                 }

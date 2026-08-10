@@ -54,6 +54,23 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `tests/Presentation.Tests/TD_Project.Api.Tests/DashboardTests.cs` (4 tests: index.html servido,
   assets estáticos accesibles, nombres de campo del contrato correctos, ausencia de
   dependencias frontend externas).
+- Primer borrador visual del dashboard (Prompt 05 · Repinta · Claude), sobre
+  `src/Presentation/TD_Project.Api/wwwroot`. **Pendiente de auditoría visual** (Prompt 06 ·
+  Pinta · Gemini) antes de considerarse definitivo. Identidad "mesa de control de laboratorio"
+  (instrumento de auditoría, no dashboard de trading): sin verde=ganancia/rojo=pérdida, ámbar
+  técnico como único acento reservado a la trayectoria oficial RN-11 y al estado `Success`.
+  Sistema de tokens (color verificado ≥4.5:1 WCAG, tipografía `IBM Plex Mono`/`IBM Plex Sans`
+  con fallback de sistema sin fuentes binarias en el repo, escala de espaciado densa) aplicado a
+  `index.html`/`styles.css`/`app.js` sin alterar IDs, contrato JSON, ni lógica de fetch/mapeo.
+  Resolución RN-11 reordenada como elemento de firma visual, antes que Trades. Trayectoria
+  descartada: atenuada por opacidad, deliberadamente sin tachado (una simulación no
+  seleccionada no es un dato inválido). Micro-interacciones: hover de tabla limitado a
+  `@media (hover: hover)` (evita hover fantasma táctil), entrada suave de `#resultado` vía
+  `@starting-style`. Auto-auditoría (`web-design-guidelines`): `color-scheme: dark` añadido,
+  corrección ortográfica en mensaje de error visible. Formato de presentación numérica
+  (`Intl.NumberFormat`), `meta theme-color` y contraste adicional en botón evaluados y
+  diferidos — ver `docs/PENDIENTES.md`. Cero dependencias externas nuevas, `verify` en verde
+  (79/79 tests) sin ningún test roto por el cambio visual.
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
@@ -78,6 +95,28 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Rechazado / Descartado
 - Regla Nueva estricta para inyección de Tasa de Margen (vinculada a RNF-08): Descartada como regla obligatoria del SPEC. Reclasificada como mejora de diseño (deuda técnica) para favorecer la auditabilidad.
+- `<meta name="theme-color">` en el dashboard (Fase 4, auto-auditoría del borrador visual):
+  descartado por severidad LOW — beneficio mínimo (integración con la barra de navegador
+  móvil), no justifica el cambio para un MVP local.
+- Aumentar contraste en `:hover`/`:active` del botón "Ejecutar" más allá del `outline`/`scale`
+  ya existente (Fase 4): descartado porque el ámbar debe permanecer como acento único y
+  controlado (decisión de identidad de Fase 1 — "mesa de control de laboratorio"); añadir más
+  señal luminosa por interacción contradice esa restricción deliberada. El foco visible ya
+  cumple la exigencia real de accesibilidad.
+- Formateo de valores financieros con `Intl.NumberFormat` en el dashboard (Fase 4): **no
+  descartado, diferido** — no es una preferencia estética sin respaldo, requiere antes una
+  política explícita de formato de reporte (locale, decimales por tipo de dato, si se refleja
+  la precisión interna del motor o una lectura humana simplificada). Ver
+  `docs/PENDIENTES.md` § Borrador visual.
+- Regla nueva "Aislamiento de `IStrategy` entre ejecuciones" (Ronda 1, auditoría de uso
+  cotidiano): **no incorporada a `SPEC.md` todavía** — antecede una decisión arquitectónica sin
+  tomar (¿`IStrategy` es un componente controlado por el motor o un plugin externo con contrato
+  de uso propio?). Ver `docs/PENDIENTES.md` § Bugs detectados durante auditoría de uso
+  cotidiano.
+- Regla nueva de reporte "Cash vs. Equity con posición viva al cierre" (Ronda 1): reclasificada
+  como mejora candidata de Presentation/Reporting, no como RN/RNF — la aritmética del motor ya
+  es correcta, es una carencia de observabilidad en la capa de presentación. Ver
+  `docs/PENDIENTES.md`.
 
 ### Corregido
 - `MatchingEngine`: la dirección de cruce Limit/Stop estaba invertida para
@@ -96,3 +135,20 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   posición viva al último Close conocido) que exige la fórmula completa del
   glosario. Corregido para sumar `Σ(Cantidad_lote × (Close − PrecioEntrada_lote))`
   sobre los lotes vivos de cada rama.
+- `ConsumidorFifo`/`AplicadorFill`/`CalculadoraLotes` (RN-08, RN-09): una reducción FIFO sobre
+  una posición **corta** calculaba `RealizedPnL` y `MarginLiberado` con el signo invertido.
+  Causa raíz: `Lote.Cantidad` conserva el signo de la posición (negativo en Short, por diseño
+  de RN-08), pero `ConsumidorFifo.Consumir` usaba ese `Lote.Cantidad` con signo directamente
+  como magnitud a consumir (`Math.Min(lote.Cantidad, restante)` entre un negativo y un
+  positivo), corrompiendo el propio bucle FIFO — no solo el signo final, también dejaba lotes
+  sin remover del portfolio cuando se consumían por completo. `CalculadoraLotes.AbrirLote`
+  tenía el mismo defecto de raíz (`Margin = cantidad * precioFill * tasaMargen` con `cantidad`
+  con signo, produciendo `Margin` negativo en aperturas Short puras — bug preexistente ya
+  documentado en `docs/PENDIENTES.md` desde la Fase 6, sin manifestarse en ningún test hasta
+  ahora). Las tres correcciones comparten la misma regla: el signo captura dirección, la
+  magnitud absoluta captura cantidad financiera — nunca deben mezclarse. Detectado en la Ronda
+  1 de auditoría de uso cotidiano (adaptación de un solo rol del Prompt 12), al construir un
+  fixture con estrategias reales que, a diferencia de los tests existentes (todos sobre
+  posiciones Long), abrían posiciones cortas desde cero. Cubierto por el nuevo test
+  `AplicadorFillIntegracionTests.UnFillDeReduccionSobreUnaPosicionCortaCalculaElRealizedPnLConElSignoCorrecto`
+  (`spec: RN-08`, `RN-09`), simétrico al test ya existente para el camino Long.
