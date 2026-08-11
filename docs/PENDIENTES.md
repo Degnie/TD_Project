@@ -62,6 +62,172 @@ cada auditoría posterior; no se cierra ni se vacía.
   necesariamente de objetos externos entregados por el usuario — por eso no se redacta como
   RNF nueva todavía. Decisión previa requerida: ¿`IStrategy` es un componente controlado por
   el motor o un plugin externo con contrato de uso propio? Esa decisión antecede al fix.
+- ~~**[BUG, RN-11] Trayectorias A/B nunca divergían en un resultado real (Stop-Limit)**~~ —
+  resuelto en la mini-investigación abierta entre Ronda 2 y Ronda 3 (2026-08-10).
+  `MatchingEngine.ResolverStopLimit` recibía el parámetro `Trayectoria` pero nunca lo
+  consultaba; el disparo del Stop y el cruce del Limit se evaluaban contra `vela.Open/High/Low/
+  Close` sin ningún orden temporal, por lo que `EquityA == EquityB` siempre se cumplía y el
+  desempate (selección de A) era, en la práctica, la única regla que jamás corría. Confirmado
+  con evidencia empírica directa (no solo lectura de código) de que ni el ejemplo canónico
+  CU-13 del propio SPEC divergía. Corregido con `RecorridoVela` (nuevo tipo) + recorrido
+  tramo-a-tramo en `ResolverStopLimit`. Ver `CHANGELOG.md` para el detalle completo del fix y
+  el caso de prueba congelado.
+- **[BUG, mayor alcance que el cableado — CU-19/OCO] `BacktestRunner` no tiene mecanismo de
+  agrupación OCO; `ResolverOco`/`ResolutorVela.ResolverOco` son inalcanzables desde una
+  ejecución real** — confirmado durante la mini-investigación de RN-11 (2026-08-10):
+  `ResolverOco` (`src/Domain/Matching/MatchingEngine.cs`) y `ResolutorVela.ResolverOco`
+  (`src/Domain/VelaResolution/ResolutorVela.cs`) están completos y cubiertos por tests
+  unitarios propios (`tests/Domain.Tests/Matching/OcoTests.cs`,
+  `TrayectoriasCanonicasTests.OcoAmbiguoResuelveLaRamaCruzadaYCancelaLaHermanaSegunTrayectoriaOficial`),
+  pero `BacktestRunner.Ejecutar` (`src/Application/BacktestRunner.cs`) mantiene
+  `ordenesPending` como una lista plana de `Order` y solo llama a `ResolutorVela.Resolver` (el
+  camino no-OCO) — no existe en ningún punto del flujo real la construcción de un `OcoGroup`.
+  A diferencia de RN-12 (donde solo faltaba la llamada), aquí falta la capacidad completa:
+  `Order`/`OrderRequest` no tienen forma de expresar "estas dos órdenes son un grupo OCO", y
+  `IStrategy.Observar` no tiene manera de declarar esa relación al devolver `OrderRequest[]`.
+  CU-19 ("OCO Múltiple Ambiguo") no puede ocurrir nunca en una ejecución real hoy. Corrección
+  probablemente toca: modelo de `Order`/`OrderRequest` (concepto de grupo/vínculo), creación de
+  grupos desde `RegistradorOrdenes` o la estrategia, `BacktestRunner.Ejecutar` (agrupar antes de
+  resolver), y tests de integración nuevos vía `BacktestRunner.Ejecutar` (no solo unitarios del
+  resolvedor, que ya existen y no prueban el flujo real). Deliberadamente **no incluido** en el
+  fix de RN-11 — alcance mayor, requiere su propio ciclo de diseño.
+- ~~**[BUG, RN-08/RN-14] `OrderRequest.Cantidad <= 0` no se rechazaba en la frontera de
+  entrada**~~ — resuelto en el Ciclo A de la Ronda 3 (2026-08-10). `ValidadorBolsaRequests`
+  extendido para rechazar atómicamente cualquier bolsa que contenga una `Cantidad <= 0`, mismo
+  mecanismo ya usado por RN-14. Ver `CHANGELOG.md` para el detalle completo.
+- ~~**[BUG/vacío de contrato, RNF-09] Resultado no-`Success` indistinguible por forma de un
+  `Success` con cero actividad**~~ — resuelto en el Ciclo A de la Ronda 3 (2026-08-10) como test
+  de contrato, no como cambio de implementación: `Estado` ya existía, ya se propagaba
+  correctamente y ya se mostraba en el dashboard — el vacío era la ausencia de una garantía
+  explícitamente verificada de que sigue siendo el discriminante válido aun cuando el resto del
+  payload es idéntico. Ver `CHANGELOG.md`.
+
+- ~~**[BUG, RN-10] `AcumuladorTrade.PrecioApertura`/`CantidadInicial` contaminados tras
+  Cross-Zero**~~ — resuelto en el Ciclo 4A de la Ronda 4 (2026-08-10). El ciclo que queda
+  abierto tras un Cross-Zero heredaba el precio/magnitud del ciclo previo ya cerrado, porque
+  `AntesDeAplicar` solo detectaba apertura cuando la posición previa era exactamente cero (nunca
+  ocurre en Cross-Zero, donde cierre y apertura son el mismo Fill). Ver `CHANGELOG.md`.
+- ~~**[BUG, RNF-05, mismo patrón OCO/RN-12] `RedondeoReporte` implementado y probado en
+  aislamiento, nunca invocado**~~ — resuelto en el Ciclo 4A de la Ronda 4 (2026-08-10).
+  Conectado en `ResultDtoMapper` para `MetricsDto.EquityFinal`. Ver `CHANGELOG.md`. Corrige
+  además la descripción de este gap: no era "pendiente de implementar" (como decía la nota del
+  Paso 1 de Fase 6, línea ~263 de este documento), la pieza ya existía completa — el gap real
+  era la ausencia de cableado, patrón ya visto en RN-12 y CU-19/OCO.
+- **[PENDIENTE DE DEFINICIÓN DE PRODUCTO, no bug — semántica ambigua, no redefinida sin
+  evidencia] `AcumuladorTrade.CantidadInicial` no acumula múltiples Fills de apertura en el
+  mismo sentido** — detectado junto al bug de Cross-Zero de arriba (Ronda 4), pero es un defecto
+  distinto y NO corregido: si una posición se abre con más de un Fill del mismo lado antes de
+  cerrarse (ej. Buy 3 @100, luego Buy 4 @110, luego se cierra todo junto), `CantidadInicial`
+  reporta solo la magnitud del primer Fill (3), no el tamaño real de la posición cerrada (7). El
+  glosario de `SPEC.md` define `Trade` como "ciclo vital de exposición desde apertura hasta
+  cierre total" pero no precisa si `CantidadInicial`/`PrecioApertura` deben representar el
+  primer Fill de apertura o un agregado del ciclo completo (cantidad total, precio promedio
+  ponderado) — el test preexistente `UnaPosicionConDosReduccionesCierraUnSoloTradeAlLlegarACero`
+  fija la convención actual (`CantidadInicial=10` para una única apertura de 10, sin ejercitar
+  el caso multi-fill), y el comentario de diseño en `AcumuladorTrade.cs` confirma la intención
+  original ("el primer Fill que rompe cero"), pero eso no responde si esa intención es correcta
+  para el caso de aperturas fraccionadas. Antes de tocar código: decidir si `CantidadInicial`
+  debe ser "magnitud del primer Fill de apertura" (semántica actual, ya consistente) o "magnitud
+  total del ciclo" (requeriría rediseño de `AcumuladorTrade`, análogo al fix ya hecho para
+  Cross-Zero). No cambiar el contrato sin esa decisión.
+- ~~**[MEJORA DE COBERTURA, severidad alta] El demo HTTP en producción no ejercita ninguno de
+  los 5 bugs ya corregidos en rondas anteriores**~~ — resuelto en el Ciclo 4B (2026-08-10):
+  `DatasetDemo`/`EstrategiaDemo` ahora ejecutan el caso canónico de divergencia RN-11
+  (Stop-Limit 102/101), verificado con `dotnet run` real mostrando `BranchResolutions` con
+  trayectorias A/B genuinamente distintas. Ver `CHANGELOG.md`. Nota: este escenario cubre RN-11;
+  no cubre RN-08/RN-09 (posición corta), RN-10 (Cross-Zero), ni `Cantidad<=0` rechazada — sigue
+  pendiente si se quiere una demo que ejercite los 5 bugs a la vez (no se intentó forzar los 5
+  en un único dataset/estrategia lineal, por simplicidad de la demo).
+  `experimentInfo` sigue sin consumirse en `app.js` — no incluido en este ciclo, alcance menor,
+  puede añadirse junto a una futura iteración del dashboard.
+- ~~**[MEJORA DE COBERTURA] `app.js` no consume `fillLog` (incluido `CostoFriccionReal`,
+  agregado en Ronda 3), ni `portfolioSnapshots`**~~ — resuelto en el Ciclo 4B (2026-08-10):
+  agregadas las secciones "Fill Log" y "Posición por vela" en `index.html`/`app.js`. Ver
+  `CHANGELOG.md`.
+- **[REGLA NUEVA CANDIDATA, no decidida] Contrato de ciclo de vida de `IStrategy` — extender a
+  ejecución paralela** — la nota ya existente más abajo ("Aislamiento de `IStrategy` entre
+  llamadas a `BacktestRunner.Ejecutar`") documentaba el caso de reutilización SECUENCIAL. La
+  Ronda 4 confirmó con evidencia reproducible que el mismo vector se agrava en ejecución
+  PARALELA con la misma instancia (race condition real y confirmada en el estado mutable de la
+  Strategy, aunque el motor mismo permanece perfectamente aislado — verificado explícitamente:
+  sin campos `static` mutables en todo `src/Domain`+`src/Application`, `PortfolioState`/
+  `RegistradorOrdenes` se recrean limpios en cada llamada incluso tras un `InternalCrash`
+  previo). Ambos casos (secuencial y paralelo) comparten la misma causa raíz y la misma
+  resolución arquitectónica pendiente — deben decidirse juntos, no por separado. No modificar
+  RNF-07 todavía.
+- ~~**[BUG, rendimiento] `BacktestRunner` O(n²) en el loop principal — invisible con datasets
+  sintéticos, bloqueante a escala real**~~ — resuelto (2026-08-10). `DataSlice` se construía con
+  `config.Velas.Take(n + 1).ToList()` en cada vela (copia de toda la porción vista hasta el
+  momento), y las órdenes "Pending" se recalculaban con `ordenesPending.Where(...).ToList()`/
+  `.First(...)` sobre el historial completo de órdenes en cada vela y cada Fill. Con datasets
+  sintéticos (~200 velas, todo el trabajo de Fase 1/1.5) el costo es imperceptible; con el
+  primer dataset real de escala completa (Fase 2A, BTCUSDT 1m, 527.040 velas) el proceso quedó
+  colgado sin completar el primer timeframe de Fase 2C — nunca se había alcanzado ese volumen
+  de velas hasta la introducción de datos reales. Directamente relevante al escenario de
+  referencia de RNF-01/02/03 (arriba, "10M velas") — este bug habría bloqueado ese benchmark
+  también. Corrección: nueva `Domain.Shared.VentanaDeVelas` (vista O(1) sobre la lista
+  original, preserva el bloqueo físico de RN-13) + lista `ordenesActivas` mantenida en paralelo
+  a `ordenesPending`. Ver `CHANGELOG.md` para el detalle completo. Test de regresión
+  `RendimientoEscalaTests` corre 527.040 velas dos veces con `Timeout=30_000`ms.
+  **Deuda residual, no resuelta por este fix**: una estrategia que nunca cierra posiciones
+  (acumula lotes vivos sin límite, ej. un fake de test como `EstrategiaMarketSiempre`) sigue
+  siendo O(n) por vela en el cálculo de `UnrealizedPnL`/`Margin` sobre `PortfolioState.
+  LotesVivos` — no es un patrón que produzca ninguna estrategia real del laboratorio (Tres
+  Mosqueteros, MHI, ni las de `exploration/laboratorio/Fixtures`), por lo que queda fuera de
+  alcance de este fix. Si en el futuro se necesita soportar ese patrón a escala, requiere una
+  estructura de lotes con inserción/consulta O(log n) o O(1), no una lista lineal.
+
+## Deuda documentada — Ronda 3 (auditoría de uso cotidiano), no comprometida a implementación
+
+Hallazgos clasificados originalmente como `[REGLA NUEVA]` por los agentes de Ronda 3, revisados
+y reclasificados explícitamente como candidatos/deuda documental — **no abrir SPEC.md, no
+comprometer implementación** hasta que se decida abordarlos en un ciclo propio (Ciclos B/C).
+
+- **[CANDIDATO FUTURO, Presentation/Reporting] `CapitalInicial` no expuesto en ningún DTO; sin
+  retorno normalizado** — `ExperimentInfoDto`/`MetricsDto` no exponen `CapitalInicial` ni un
+  campo de retorno porcentual. Comparar `PnLTotal`/`EquityFinal` absolutos entre corridas de
+  distinto capital o distinta longitud de dataset lleva a conclusiones erróneas (ejemplo
+  numérico: 10% de retorno sobre capital 1000 vs. 0.5% sobre capital 100000 tienen el mismo
+  `PnLTotal` nominal si ambos dan 100 y 500 respectivamente, pero uno es claramente más
+  eficiente). Destino probable: `ExperimentInfoDto.CapitalInicial` + `MetricsDto.
+  RetornoPorcentual`. No abrir hasta tener más evidencia de uso real que lo justifique.
+- **[PENDIENTE DE ANÁLISIS] `TradeDto` sin campo de dirección (Long/Short)** — `TradeDto.
+  CantidadInicial` es siempre magnitud sin signo (`Math.Abs`, confirmado en `AplicadorFill.cs`),
+  sin campo `Side` que indique dirección, a diferencia de `FillLogEntryDto` (magnitud + `Side`
+  explícito) y de `LoteDto` (cantidad signada, sin `Side`) — tres convenciones distintas entre
+  DTOs hermanos del mismo `ResultDto`. Pregunta a resolver antes de tocar el contrato: ¿el
+  consumidor puede reconstruir Long/Short con los datos actuales de otra forma (ej. cruzando con
+  `FillLog`), o la información realmente se pierde en `TradeDto`? No modificar el DTO hasta
+  responder esa pregunta.
+- **[LIMPIEZA FUTURA, no urgente] `TradeDto.PrecioCierre` es `decimal?` pero nunca llega `null`
+  en la práctica** — `BacktestRunner.cs` solo agrega a `Trades` cuando `TradeCerrado is not
+  null`, por lo que `Trades`/`TradeDto[]` representa exclusivamente ciclos cerrados; un trade
+  abierto se reporta solo vía `PortfolioSnapshotDto.LotesVivos`, nunca en `Trades` con
+  `PrecioCierre: null`. La nulabilidad es "de sobra" sin explicar. Si se confirma que no puede
+  existir un `Trade` abierto en esa lista, quitar el `?` sería limpieza de contrato válida, pero
+  no es urgente.
+- **[DEUDA DOCUMENTAL, aprobada como importante] Los campos `*Timestamp` del `ResultDto` no
+  documentan unidad ni zona horaria** — afecta a los seis campos que remontan a `Candle.
+  Timestamp` (`EquityPointDto.Timestamp`, `FillLogEntryDto.VelaTimestamp`, `PortfolioSnapshotDto.
+  Timestamp`, `BranchResolutionDto.Timestamp`, `ExperimentInfoDto.FechaInicioTimestamp/
+  FechaFinTimestamp`). Un consumidor del JSON no puede convertir esos valores a fecha/hora sin
+  adivinar o inspeccionar el dataset de origen — riesgo real de interoperabilidad. El vacío nace
+  en `Domain.Shared.Candle`, no en Contracts. Acción propuesta: confirmar la unidad real que usa
+  el dataset de origen y documentarla (comentario XML en `Candle.cs`, y/o glosario de `SPEC.md`
+  si se considera parte del contrato de datos, y/o README de la API) — no requiere
+  necesariamente una entrada de SPEC.md, puede resolverse como documentación de Contracts.
+- **[MEJORA DE COBERTURA, no cambio de contrato] Tests end-to-end faltantes de coherencia
+  inter-capa** — tres huecos confirmados por lectura de los tests existentes (Ronda 3, ángulo
+  "consistencia interna"): (1) ningún test ejercita `MetricsDto.PnLTotal` cuando hay una
+  Position viva al cierre (hoy `PnLTotal` solo suma Trades cerrados; con posición viva no
+  representa el PnL económico total — mismo terreno conceptual que la nota ya existente "Cash
+  vs. Equity" más abajo en este documento); (2) ningún test compara `BranchResolutionDto.
+  FillsA/FillsB` contra `PortfolioSnapshotDto` de la misma vela a través de `BacktestRunner`
+  (hoy solo se verifica a nivel `ResolutorVela` aislado); (3) `ResultDtoMapperTests` usa
+  fixtures manuales con datos "convenientes" sin relación económica real entre sí (ej. Trades y
+  EquityCurve construidos independientemente), nunca un `ResultadoBacktest` producido por una
+  ejecución real de `BacktestRunner.Ejecutar`. Ninguno de los tres es un bug — la aritmética
+  actual es correcta por construcción — es una mejora de cobertura de regresión futura.
 - **[MEJORA CANDIDATA, Presentation/Reporting — no requiere cambio de `Domain`] Claridad
   Cash vs. Equity cuando queda una Position viva al cierre del backtest** — confirmado (Ronda
   1) que la aritmética interna es correcta (verificado contra RN-08: la diferencia
@@ -82,7 +248,7 @@ cada auditoría posterior; no se cierra ni se vacía.
 
 ## Candidatos de benchmarking diferidos (Líneas de investigación aprobadas)
 
-- **[ACLARACIÓN CONCEPTUAL] Ítem #13 — Modelo de Fricción / Slippage:** Aclarar formalmente si `Friction Model` en RN-12 y RNF-08 abarca únicamente comisiones o si debe incluir un componente explícito de *slippage* / *market impact*. No requiere cambios en `SPEC.md` v6.0 hoy; es una precisión conceptual pendiente.
+- **[ACLARACIÓN CONCEPTUAL] Ítem #13 — Modelo de Fricción / Slippage:** Aclarar formalmente si `Friction Model` en RN-12 y RNF-08 abarca únicamente comisiones o si debe incluir un componente explícito de *slippage* / *market impact*. No requiere cambios en `SPEC.md` v6.0 hoy; es una precisión conceptual pendiente. **Escenario de laboratorio preparado, no ejecutable todavía**: `exploration/laboratorio/` registra un escenario `FriccionExtrema` (documentado, no incluido en el conteo de hipótesis PASA/FALLA) para cuando exista esta capacidad — hoy `MatchingEngine` fija `CostoFriccionReal` en `0` en todo Fill, así que cualquier dataset de "comisión extrema" solo confirmaría que la fricción no existe, no probaría nada real.
 - **[REPORTE FUTURO] Ítem #12 — Métricas de riesgo y rendimiento:** Evaluación de métricas estadísticas (Max Drawdown, Win Rate, Profit Factor, Sharpe, Sortino, Calmar) como parte de la capa de presentación/reporte (`Presentation.Api`), sin alterar el estado o cálculo del resultado financiero canónico en `Domain`.
 - **[INVESTIGACIÓN FUTURA] Ítem #3 — Auditoría activa anti look-ahead:** Herramienta post-hoc estilo Freqtrade (`lookahead-analysis`) para auditar la estrategia del usuario buscando lecturas futuras sutiles. Se mantiene como investigación futura si se admite la ejecución de estrategias de terceros no confiables.
 - **[INVESTIGACIÓN ARQUITECTÓNICA] Ítem #9 — Motor vectorizado secundario:** Exploración de un motor secundario independiente (`FastSimulationEngine`) optimizado para búsqueda masiva de parámetros en paralelo, preservando intacto el motor canónico determinista event-driven de `TD_Project`.
@@ -324,3 +490,46 @@ cada auditoría posterior; no se cierra ni se vacía.
   esquema evolutivo de persistencia.
 - **Modelado de amenazas ligero** — no activo; el dominio no incluye datos
   personales.
+
+## Laboratorio Sintético (`exploration/laboratorio/`) — Fases 1-2D cerradas, Caso 2 diferido
+
+Fases 1/1.5 (datasets sintéticos), 2A/2B (datos reales BTCUSDT congelados + agregación
+multi-timeframe determinista) y 2C (evaluación de comportamiento de Tres Mosqueteros/MHI
+Mayoría sobre datos reales, 6 timeframes, validada funcionalmente el 2026-08-10) cerradas — ver
+`exploration/laboratorio/DISENO_FASE2.md`, `DISENO_FASE2B.md`, `PLAN_FASE2A.md`,
+`DISENO_FASE2C.md`. `[BUG]` acumulado en todo el laboratorio: 0. `[REGLA NUEVA]`: 0.
+
+**Fase 2D (normalización de modelo financiero) cerrada como hoja de ruta el 2026-08-11** — ver
+`DISENO_FASE2D.md` para el detalle completo. Decisión final: el sistema persigue **Caso 1 —
+Laboratorio de estrategias** bajo **Modelo A — la estrategia controla la cantidad**, sin cambios
+en `src/`, `SPEC.md`, `IStrategy`, ni contratos. Consecuencias:
+
+- **Métricas oficiales de esta etapa**: operativas (cantidad de operaciones, ganadas/perdidas,
+  winrate, rachas negativas, uso de martingala inicial/M1/M2, exposición máxima, operaciones
+  abiertas al cierre, consistencia de ejecución) — ya implementadas y válidas desde Fase 1.5/2C,
+  sin cambios necesarios.
+- **No oficiales para esta etapa** (no incorrectas, solo prematuras): retorno porcentual,
+  rendimiento anualizado, Sharpe/Sortino, cualquier métrica de riesgo financiero comparable
+  entre estrategias o mercados. Los retornos de Fase 2C permanecen etiquetados como "resultado
+  bajo modelo de posición actual, no retorno financiero comparable" — no se recalculan mientras
+  el sistema opere bajo Caso 1.
+- **Supuestos financieros documentados, deliberadamente sin resolver bajo Caso 1** (detectados
+  durante Fase 2D, clasificados `[SUPUESTO FINANCIERO NO EXPLICITADO]`, no `[BUG]`):
+  `TasaMargen = 0.1` hardcodeado en `AplicadorFill.Aplicar` (`src/Domain/Portfolio/
+  AplicadorFill.cs:13`, no expuesto en ningún contrato ni en `SPEC.md`) y
+  `CostoFriccionReal = 0` fijo en cada `Fill` (`src/Domain/Matching/MatchingEngine.cs`, mismo
+  gap del Friction Model ya señalado en este documento — ver más abajo, "Modelo de Fricción /
+  Slippage"). Ninguno requiere corrección ahora — son decisiones pendientes exclusivamente de
+  cuando se abra Caso 2.
+- **Regla para la evolución a Caso 2 (Simulador financiero realista) o Caso 3 (Plataforma
+  multi-mercado), cuando se decida abrirla**: antes de tocar código, definir explícitamente
+  modelo de sizing, modelo de riesgo, modelo de margen, modelo de costos, unidad financiera
+  comparable, e impacto sobre contratos (`IStrategy.Observar` cambiaría de firma bajo Modelo
+  B/C — rompe todas las implementaciones existentes, incluidas las fakes de test). No debe
+  hacerse una migración parcial que mezcle Caso 1 y Caso 2. Mismo patrón de "documento antes de
+  código" ya seguido en Fase 2A/2B/2C/2D.
+
+**Próximo uso previsto del laboratorio** (no una fase numerada nueva, sino explotación del
+objetivo ya definido): evaluar nuevas estrategias bajo el mismo protocolo — dataset definido,
+timeframe definido, estrategia congelada, métricas operativas, análisis de comportamiento — sin
+interpretar retorno monetario hasta que se abra formalmente Caso 2.

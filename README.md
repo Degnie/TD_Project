@@ -88,5 +88,8 @@ dotnet run --project src/Presentation/TD_Project.Api
 Abrir la URL que imprime la consola (por ejemplo `http://localhost:5299/`)
 en un navegador y presionar **Ejecutar**. Cada clic dispara `POST
 /api/backtest/run`, que corre el motor completo desde cero (sin caché ni
-historial) y renderiza el resultado: resumen, curva de Equity, Trades, y la
-resolución de trayectorias A/B (RN-11).
+historial) y renderiza el resultado: resumen, curva de Equity, Trades, Fill
+Log, posición por vela (Cash/Margin/Lotes vivos), y la resolución de
+trayectorias A/B (RN-11) — el escenario demo es el caso canónico de
+divergencia Stop-Limit, para que la resolución A/B sea observable en la
+práctica, no solo en tests.

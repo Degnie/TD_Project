@@ -152,3 +152,139 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   posiciones Long), abrían posiciones cortas desde cero. Cubierto por el nuevo test
   `AplicadorFillIntegracionTests.UnFillDeReduccionSobreUnaPosicionCortaCalculaElRealizedPnLConElSignoCorrecto`
   (`spec: RN-08`, `RN-09`), simétrico al test ya existente para el camino Long.
+- `MatchingEngine.ResolverStopLimit` (RN-11): las dos trayectorias canónicas (A: O→H→L→C, B:
+  O→L→H→C) nunca podían divergir en un resultado real. Causa raíz: `ResolverStopLimit` recibía
+  el parámetro `Trayectoria` pero nunca lo consultaba — evaluaba el disparo del Stop y el cruce
+  del Limit contra `vela.Open/High/Low/Close` directamente (agnóstico al orden temporal), lo
+  mismo que `Market`/`Limit`/`Stop` puros (correcto para esos tres, porque no tienen ambigüedad
+  de orden entre dos condiciones). Verificado empíricamente que ni siquiera el ejemplo canónico
+  del propio SPEC (CU-13) diverge bajo el código anterior. Corregido introduciendo
+  `RecorridoVela` (`src/Domain/Matching/RecorridoVela.cs`, nuevo): construye el recorrido
+  Open→Primero→Segundo→Close según la trayectoria, y `ResolverStopLimit` ahora recorre ese
+  camino tramo a tramo para encontrar el punto exacto de disparo del Stop y, desde ahí, evalúa
+  el cruce del Limit únicamente en el tramo restante hasta Close (no en la vela completa) — el
+  disparo tardío en una trayectoria puede agotar el tramo disponible para el Limit,
+  produciendo Fill en una rama y no en la otra. Cambio acotado a `ResolverStopLimit` y sus
+  funciones auxiliares; `Market`/`Limit`/`Stop` puros, `ResolutorVela`, `BacktestRunner` y
+  `SPEC.md` sin cambios. Caso mínimo de divergencia hallado por búsqueda exhaustiva (no a mano):
+  Buy Stop-Limit 102/101 sobre vela Open=100/High=102/Low=90/Close=102 — trayectoria A hace
+  Fill @101 (el Stop dispara subiendo directo al High, cruzando el Limit de camino),
+  trayectoria B no hace Fill (el Stop recién dispara al llegar al High tras bajar primero, sin
+  tramo restante hasta Close donde el Limit sea alcanzable). Cubierto por
+  `StopLimitTests.StopLimitPuedeDivergirEntreTrayectorias`,
+  `TrayectoriasCanonicasTests.TrayectoriaSeleccionadaSigueSiendoLaDeMenorEquityCuandoDivergenPorStopLimit`
+  y `CicloVitalTests.BacktestCompletoMantieneDeterminismoConNuevaResolucionTemporal` (`spec:
+  RN-11`, RNF-06). Detectado en la mini-investigación abierta entre las Rondas 2 y 3 de
+  auditoría de uso cotidiano, a partir de un hallazgo de Ronda 2 sobre precisión de Margin que
+  llevó a cuestionar si RN-11 producía divergencia real alguna vez.
+- `FillLogEntryDto` (RNF-08): no exponía `CostoFriccionReal`, dato obligatorio del "Fill Log
+  Mínimo" para reconstrucción determinística. `Domain.Shared.Fill` ya lo calculaba;
+  `ResultDtoMapper.MapearFill` lo descartaba en silencio. Agregado el campo al DTO y propagado
+  en el mapper. `CostoFriccionReal` llega en `0m` hoy porque `MatchingEngine` aún no calcula
+  fricción real — gap de Domain preexistente, fuera de este alcance; el campo se propagará sin
+  cambios adicionales en Contracts/Mapper cuando exista. Cubierto por
+  `ResultDtoMapperTests.PropagaElCostoDeFriccionRealDeCadaFillAlLog`. Detectado en la Ronda 3 de
+  auditoría de uso cotidiano, ángulo "lectura del ResultDto por un consumidor JSON puro".
+- `ValidadorBolsaRequests` (RN-08, RN-14): no rechazaba `OrderRequest` con `Cantidad <= 0`. Una
+  `Cantidad` negativa permitía que `Side` y el signo de `Cantidad` fueran dos fuentes de verdad
+  de dirección potencialmente contradictorias (ej. `Side=Buy, Cantidad=-10`), dejando que
+  `AplicadorFill` interpretara la ambigüedad silenciosamente en vez de rechazarla en la
+  frontera de entrada — mismo patrón de riesgo "dirección vs. magnitud" ya corregido en RN-08/
+  RN-09 (Ronda 1). `Cantidad = 0` viola la misma invariante (ninguna operación real) y se
+  rechaza por el mismo mecanismo. Extendida la condición de rechazo atómico ya existente de
+  RN-14 (`tieneCantidadInvalida = bolsa.Any(r => r.Cantidad <= 0m)`), sin nuevo tipo ni cambio
+  de firma. Cubierto por `BolsaRequestsTests.OrderRequestConCantidadNegativaEsRechazado` y
+  `OrderRequestConCantidadCeroEsRechazado`. Detectado en la Ronda 3, ángulo "ejecución en los
+  bordes de lo razonable".
+- `ResultDtoMapperTests` (RNF-09): agregado
+  `UnResultadoNoSuccessMantieneEstadoDistintoAunqueLaFormaDeDatosSeaIgual` — no era un bug de
+  implementación (`Estado` ya existía, ya se propagaba, ya se mostraba en el dashboard), sino un
+  vacío de contrato sin verificar: nada garantizaba explícitamente que un `Success` con cero
+  actividad y un resultado no-`Success` (ambos con `Trades`/`EquityCurve` vacíos y `Metrics` en
+  cero) permanecieran distinguibles. El test fija esa garantía como propiedad verificada del
+  contrato. Sin cambios en `ResultDto`/`ResultDtoMapper`/`MetricsDto`/`app.js`. Detectado en la
+  Ronda 3, ángulo "comparación entre corridas".
+- `AcumuladorTrade` (RN-10, glosario "Trade"): en un Cross-Zero, `PrecioApertura`/`CantidadInicial`
+  del ciclo que queda abierto tras la inversión heredaban el valor "stale" del ciclo anterior ya
+  cerrado, en vez del precio/magnitud reales de ese mismo Fill. Causa raíz: `AntesDeAplicar`
+  solo fijaba la apertura cuando la posición previa al Fill era exactamente cero; en un
+  Cross-Zero la posición nunca pasa por cero (el mismo Fill cierra el ciclo viejo y abre el
+  nuevo atómicamente), así que el nuevo ciclo nunca fijaba su propia apertura y arrastraba el
+  valor del ciclo anterior indefinidamente. El defecto era de reporte en `Application`
+  (`RealizedPnL` se calculaba correctamente en Domain, vía `ResolutorCrossZero`), pero llegaba
+  intacto hasta `TradeDto.PrecioApertura` en el JSON expuesto por HTTP. Corregido agregando
+  `AcumuladorTrade.DespuesDeAplicar` (nuevo método): tras aplicar el Fill, si cerró un Trade
+  (`TradeCerrado is not null`) y la posición resultante ya no es cero, ese mismo Fill es la
+  apertura real del ciclo siguiente — se fija ahí, después de extraer el Trade que se estaba
+  cerrando (orden importa: `CerrarYExtraer` debe leer los valores del ciclo viejo antes de que
+  `DespuesDeAplicar` los sobrescriba con los del ciclo nuevo). Semántica de `PrecioApertura`
+  (precio del primer Fill que abre el ciclo, no promedio ponderado) confirmada contra el
+  comentario de diseño ya existente en el archivo y contra el test preexistente
+  `UnaPosicionConDosReduccionesCierraUnSoloTradeAlLlegarACero` — no redefinida, solo extendida
+  al caso Cross-Zero que no estaba cubierto. Cubierto por
+  `CicloVitalTests.TresCrossZeroConsecutivosReportanElPrecioDeAperturaRealDeCadaCiclo` (3
+  Cross-Zero consecutivos, cada Trade con su propio `PrecioApertura`/`CantidadInicial`
+  verificados). Detectado en la Ronda 4 (adversarial) de auditoría de uso cotidiano, ángulo
+  "Cross-Zero + posición viva al cierre".
+- `ResultDtoMapper` (RNF-05): `MetricsDto.EquityFinal` no aplicaba el redondeo de reporte
+  exigido ("Equity_rep = Cash_rep + Margin_rep + UnrealizedPnL_rep, Half-to-Even a 2 decimales,
+  exclusivo al final") — tomaba el valor crudo de `EquityCurve[^1].Equity` sin redondear.
+  `RedondeoReporte.EquityReportado` (`src/Domain/Shared/RedondeoReporte.cs`) ya existía,
+  implementado correctamente y probado en aislamiento
+  (`tests/Domain.Tests/Precision/RedondeoDecimalTests.cs`), pero sin ningún caller real —mismo
+  patrón "construido y probado pero no cableado" ya visto en RN-12 y CU-19/OCO. Conectado en
+  `ResultDtoMapper.Mapear` vía el nuevo helper privado `EquityFinalReportado`, que aplica
+  `RedondeoReporte.EquityReportado` sobre los tres componentes (`Cash`/`Margin`/`UnrealizedPnL`)
+  del último `EquityPoint`. `EquityCurve` (la serie completa) conserva precisión decimal
+  completa sin redondear — RNF-05 exige 8 decimales intermedios ahí; solo el agregado de
+  `Metrics` (dato de reporte) se redondea. Cubierto por
+  `ResultDtoMapperTests.MetricsEquityFinalAplicaElRedondeoDeReporteExigidoPorRnf05`. Detectado
+  en la Ronda 4, verificación sistemática del patrón "no cableado" en todo `src/Domain`.
+- Demo del endpoint `POST /api/backtest/run` (Ciclo 4B): `DatasetDemo`/`EstrategiaDemo`
+  pasaron de un único `Market Buy` sin ambigüedad posible (`EquityA == EquityB` trivial en las
+  tres velas, no demostraba nada) al caso canónico de divergencia real de RN-11 (`Buy
+  Stop-Limit 102/101` sobre vela `Open=100/High=102/Low=90/Close=102`, el mismo escenario de
+  `StopLimitTests.StopLimitPuedeDivergirEntreTrayectorias`). El demo en vivo ahora produce
+  `BranchResolutions` con trayectorias A/B genuinamente distintas (`FillsA` con un Fill, `FillsB`
+  vacío), verificado con `dotnet run` + POST real. Motivo: la Ronda 4 encontró que el flujo HTTP
+  productivo no ejercitaba ninguno de los bugs ya corregidos — la demo ahora sí muestra la
+  garantía más distintiva del proyecto.
+- Dashboard (`wwwroot/index.html`, `app.js`, Ciclo 4B): agregadas las secciones "Fill Log" y
+  "Posición por vela" (Cash/Margin/Lotes vivos), consumiendo `dto.fillLog` y
+  `dto.portfolioSnapshots` — datos que el contrato ya exponía correctamente (confirmado en
+  Ronda 4) pero que ningún elemento visual leía, incluido `CostoFriccionReal` (agregado en
+  Ronda 3). Mismo patrón de tabla ya usado por Trades/BranchResolutions (`<caption
+  class="sr-only">`, `scope="col"`). Sin cambios de diseño visual nuevo (paleta/tipografía/
+  tokens intactos, Fase visual ya cerrada). `AppJsReferenciaLosCamposRealesDelContrato`
+  extendido con `dto.fillLog`/`dto.portfolioSnapshots`.
+- `BacktestRunner` (rendimiento, O(n²) → O(n)): el loop principal reconstruía dos estructuras
+  completas en cada vela. (1) `DataSlice` se creaba con `config.Velas.Take(n + 1).ToList()`,
+  copiando toda la porción vista hasta el momento en cada iteración. (2) las órdenes "Pending"
+  se recalculaban con `ordenesPending.Where(o => o.Status == OrderStatus.Pending).ToList()`
+  sobre el historial completo de órdenes emitidas, y la búsqueda de la orden de cada Fill usaba
+  `ordenesPending.First(...)` sobre la misma lista creciente. Con los datasets sintéticos usados
+  hasta ahora (~200 velas) el costo es imperceptible; con el primer dataset real de escala
+  completa (Fase 2A, BTCUSDT 1m, 527.040 velas) el proceso quedó colgado sin completar el
+  primer timeframe evaluado en Fase 2C. Causa raíz: ningún escenario previo (sintético ni real)
+  había alcanzado ese volumen de velas hasta la introducción de datos reales — el bug estuvo
+  presente en todo el motor desde antes de esta sesión sin manifestarse nunca. Corrección: (1)
+  nueva `Domain.Shared.VentanaDeVelas` (`IReadOnlyList<Candle>` de solo lectura sobre la lista
+  original, O(1) por construcción, indexador que preserva el bloqueo físico de RN-13 lanzando
+  fuera de `[0, longitud)`) reemplaza el `Take().ToList()`; (2) nueva lista `ordenesActivas`
+  mantenida en paralelo a `ordenesPending` (el registro completo, sin cambios en el resultado
+  final), añadida/removida en los mismos puntos donde `OrdenTransiciones.Ejecutar`/`Cancelar`
+  ya mutaban el `Status` — elimina el filtro sobre el historial completo. Semántica financiera
+  sin cambios (mismo `CashFinal`/`Trades`/`Fills`/`BranchResolutions` que antes, verificado por
+  la suite completa sin modificaciones). Test de regresión
+  `RendimientoEscalaTests.UnDatasetDeEscalaRealCompletaEnTiempoLinealYEsDeterminista` corre
+  527.040 velas (tamaño exacto del dataset real congelado) dos veces, verificando determinismo,
+  con `Timeout=30_000`ms para que una regresión futura falle rápido en vez de colgar la suite.
+  Un caso distinto queda fuera de este fix y documentado como debt en `docs/PENDIENTES.md`: una
+  estrategia que nunca cierra posiciones (acumula lotes vivos sin límite) sigue siendo O(n) por
+  vela en el cálculo de `UnrealizedPnL`/`Margin` sobre lotes vivos — ninguna estrategia real del
+  laboratorio (Tres Mosqueteros, MHI, ni las del laboratorio sintético) produce ese patrón. Tras
+  el fix, la matriz de `exploration/laboratorio` (2 estrategias × 6 timeframes, BTCUSDT real,
+  527.040 velas base) completó en 14.6s con `Estado=Success` y reconciliación financiera OK en
+  las 12 corridas — confirma que el bug era exclusivamente de rendimiento, sin efecto en ningún
+  resultado financiero ya validado en Fases 1-2B (datasets sintéticos, muy por debajo del
+  volumen donde el costo O(n²) se vuelve perceptible).
