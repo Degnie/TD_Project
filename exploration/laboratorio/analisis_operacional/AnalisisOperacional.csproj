@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
+    <Compile Include="..\..\EstrategiaMhiMayoria.cs" Link="Fixtures\EstrategiaMhiMayoria.cs" />
+    <Compile Include="..\Validadores\ValidadorReconciliacionFinanciera.cs" Link="Fixtures\ValidadorReconciliacionFinanciera.cs" />
+    <Compile Include="..\evaluacion_multi_tf\IdentidadExperimento.cs" Link="Fixtures\IdentidadExperimento.cs" />
+    <Compile Include="..\evaluacion_multi_tf\PerfilMultiTf.cs" Link="Fixtures\PerfilMultiTf.cs" />
+    <Compile Include="..\evaluacion_multi_tf\LectorDerivado.cs" Link="Fixtures\LectorDerivado.cs" />
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Application\Application.csproj" />
+  </ItemGroup>
+</Project>
