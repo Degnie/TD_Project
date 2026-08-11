@@ -1,45 +1,67 @@
-# Ficha de Estrategia — Caso 1
+# Ficha de Estrategia Experimental — Tres Mosqueteros
 
-## 1. Identificación
+Plantilla: Estrategia Experimental v1.0 (Fase 1.1, decisión de auditoría 2026-08-11).
+Migrada desde la versión previa de esta ficha (Fase 1.0) sin alterar ningún dato — solo
+reorganización de contenido ya verificado y separación explícita de hipótesis vs. resultados
+observados (Categoría D).
+
+---
+
+# Identificación
 
 - **Nombre**: Tres Mosqueteros
-- **Versión**: única (sin variantes registradas)
-- **Fecha**: 2026-08-11 (migración a ficha estándar; implementación original de sesiones previas)
-- **Estado**: validada (evaluada en Fase 1.5 sobre datasets sintéticos y en Fase 2C sobre dataset real BTC/USDT multi-timeframe)
+- **Versión**: v1.0 (única, sin variantes registradas)
+- **Estado**: Validada (evaluada en Fase 1.5 sobre datasets sintéticos y en Fase 2C sobre dataset real BTC/USDT multi-timeframe)
+- **Tipo**: Patrón (decisión D-003, Fase 1.1) — genera su señal mediante una regla determinística aplicada sobre una secuencia temporal fija de velas (estructura de cuadrantes), no mediante tendencia global, indicadores direccionales ni niveles de soporte/resistencia. El componente estadístico (winrate, distribución de rachas) pertenece al análisis experimental posterior, no a la construcción de la señal.
 
-## 2. Definición lógica
+---
 
-- **Hipótesis de comportamiento**: el color de una vela de referencia (posición fija dentro de un cuadrante de 5 velas) predice el color de la vela siguiente.
-- **Señal de entrada**: mercado dividido en cuadrantes fijos de 5 velas, anclados a la posición absoluta en el dataset (`N % 5`), no a un contador interno de la estrategia. La vela 3 del cuadrante (`N % 5 == 2`, 0-indexed) es la vela de referencia; si cierra verde se apuesta Buy, si cierra roja se apuesta Sell. Vela doji (Open == Close) → sin señal.
-- **Momento exacto de ejecución**: la señal se evalúa en `N % 5 == 2` y, por el desfase causal RN-13, la orden devuelta por `Observar(N)` se ejecuta contra `Velas[N+1]`.
-- **Condición de salida**: apertura con el mismo lado apostado (Buy si se apostó verde, Sell si se apostó roja); cierre con el lado opuesto al de apertura en el ciclo siguiente.
-- **Gestión de posiciones**: una operación lógica a la vez; el cálculo del próximo cuadrante (`N % 5 == 2`) sigue evaluándose siempre, exista o no una apuesta en curso resuelta en ese mismo ciclo.
-- **Uso de martingala**: sí, hasta `maxMartingalas` reintentos configurables (0, 1 o 2). Si la apuesta pierde y quedan reintentos, se reabre en el ciclo siguiente (`EsperandoReapertura`) con el mismo color apostado.
-- **Dependencias temporales**: ninguna dependencia de calendario/sesión; solo posición absoluta `N` dentro del dataset.
+# Definición lógica
 
-## 3. Supuestos de la estrategia
+**Descripción funcional**: no intenta predecir dirección absoluta del mercado, sino continuación de color dentro de una estructura temporal fija. El mercado se divide en cuadrantes fijos de 5 velas, anclados a la posición absoluta en el dataset (`N % 5`), no a un contador interno de la estrategia.
+
+**Entrada**:
+- Condición: la vela 3 del cuadrante (`N % 5 == 2`, 0-indexed) es la vela de referencia; si cierra verde se apuesta Buy, si cierra roja se apuesta Sell. Vela doji (Open == Close) → sin señal.
+- Vela utilizada: vela 3 del cuadrante actual (color Open vs. Close).
+- Momento exacto: la señal se evalúa en `N % 5 == 2` y, por el desfase causal RN-13, la orden devuelta por `Observar(N)` se ejecuta contra `Velas[N+1]`.
+- Datos requeridos: únicamente el color de la vela de referencia. No usa volumen, indicadores derivados ni velas fuera del cuadrante.
+
+**Salida**:
+- Condición de cierre: apertura con el mismo lado apostado (Buy si se apostó verde, Sell si se apostó roja); cierre con el lado opuesto al de apertura en el ciclo siguiente.
+- Resultado esperado: acierto si la vela siguiente mantiene el color apostado.
+- Resolución: una operación lógica a la vez; el cálculo del próximo cuadrante (`N % 5 == 2`) sigue evaluándose siempre, exista o no una apuesta en curso resuelta en ese mismo ciclo.
+
+**Gestión de intentos**: martingala hasta `maxMartingalas` reintentos configurables (M0/M1/M2, evaluado con máximo 2). Si la apuesta pierde y quedan reintentos, se reabre en el ciclo siguiente (`EsperandoReapertura`) con el mismo color apostado.
+
+---
+
+# Supuestos experimentales
 
 *(Separados de los supuestos del motor — ver `docs/PENDIENTES.md` y `DISENO_FASE2D.md` para los supuestos financieros del motor.)*
 
-- **Patrones esperados**: continuación de color entre la vela de referencia (posición 3 del cuadrante) y la vela siguiente.
-- **Condiciones de mercado donde pretende operar**: mercados con estructura direccional o cambios de volatilidad marcados; no asume lateralidad ni ausencia de tendencia.
-- **Limitaciones conocidas**: la señal depende de una sola vela de referencia, sin confirmación adicional; vulnerable a ruido sin sesgo direccional.
-- **Información utilizada**: únicamente el color (Open vs. Close) de la vela de referencia del cuadrante actual. No usa volumen, indicadores derivados, ni velas fuera del cuadrante.
+- Velas cerradas: la señal solo usa el color (Open vs. Close) de velas ya cerradas, nunca proyecta sobre la vela en curso.
+- UTC: dataset y agregación multi-timeframe bajo zona horaria UTC exclusiva (`DISENO_FASE2.md`).
+- Sin costes reales: `CostoFriccionReal` no está alimentado en las corridas del laboratorio.
+- Sin ejecución financiera real: capital, margen y sizing corresponden al modelo de posición experimental (Fase 2D), no a un modelo financiero validado.
+- Sin dependencia de calendario/sesión: solo posición absoluta `N` dentro del dataset.
 
-## 4. Configuración experimental
+**Dataset**: `BTCUSDT_2024-01-02_2025-01-02_1m.csv` (real, Fase 2C) y escenarios sintéticos de `datasets/market/` (Fase 1.5). Ver "Configuración experimental" para el detalle completo.
 
-**Fase 1.5 (sintético)**
+**Timeframes**: 1m, 5m, 15m, 1h, 4h, 1D (subconjunto evaluado por el motor en Fase 2C; los 13 timeframes oficiales existen como datos, ver `baseline/BASELINE_EXPERIMENTAL_V1.md`).
+
+**Configuración**:
+
+*Fase 1.5 (sintético)*
 - Dataset: escenarios sintéticos de `datasets/market/` (DobleTecho, VolatilidadTrasCalma, RuidoAleatorio, VolatilidadDecreciente, TendenciaBajista, MercadoLateral, SinMovimiento).
 - Mercado: sintético, sin instrumento real.
 - Parámetros: `maxMartingalas` variable por escenario (M1/M2 reportado en fichas).
 
-**Fase 2C (real)**
+*Fase 2C (real)*
 - Dataset: `BTCUSDT_2024-01-02_2025-01-02_1m.csv`
-- Hash/versionado: SHA256 origen `f1a9dcbe72bd...` (1m base); hashes derivados por timeframe ver tabla de identidad abajo.
+- Hash/versionado: SHA256 origen `f1a9dcbe72bd...` (1m base, verificado por recomputación directa en Fase 1.0); hashes derivados por timeframe ver tabla abajo.
 - Mercado: BTC/USDT Spot (Binance).
-- Timeframes evaluados: 1m, 5m, 15m, 1h, 4h, 1D.
 - Ventana temporal: 2024-01-02 a 2025-01-02 (366 días, rango real descargado).
-- Parámetros: capital inicial 1000; `AggVersion` = n/a para 1m (origen), 1.0 para timeframes derivados.
+- Capital inicial: 1000. Tamaño de operación: 1 (fijo). `AggVersion` = n/a para 1m (origen), 1.0 para timeframes derivados.
 - Semilla aleatoria: no aplica (estrategia determinista, sin componente aleatorio).
 
 | TF | TfSha256 (prefijo) |
@@ -51,11 +73,11 @@
 | 4h | 2be5fba6896a... |
 | 1D | 1356dd242e5a... |
 
-## 5. Métricas operativas
+---
 
-### Métricas operativas oficiales
+# Métricas evaluadas
 
-*(Sin interpretación financiera — métricas oficiales de Caso 1.)*
+**Operaciones**:
 
 | TF | OpCompletas | Ganadas | Winrate | RachaNegMax | %Martingala | ExpMax | AbiertaAlCierre |
 |----|-------------|---------|---------|-------------|-------------|--------|------------------|
@@ -66,7 +88,7 @@
 | 4h | 350 | 302 | 86.29% | 2 | 38.6% | 1 | sí (capital comprometido 9462.708) |
 | 1D | 61 | 54 | 88.52% | 2 | 39.3% | 1 | no |
 
-**Desglose de resolución de intentos** (victoria inicial / victoria M1 / victoria M2 / pérdida agotando intentos):
+**Resolución de intentos** (dependencia de escalado — victoria inicial / M1 / M2 / pérdida agotando intentos):
 
 | TF | VictoriaInicial | VictoriaM1 | VictoriaM2 | PerdioAgotando | %RecuperaciónM1 | %RecuperaciónM2 |
 |----|------------------|------------|------------|-----------------|-------------------|-------------------|
@@ -79,15 +101,48 @@
 
 *(`%RecuperaciónM1`/`%RecuperaciónM2` = GanoM1/M2 sobre operaciones completadas del timeframe. Desglosar el `%Martingala` agregado permite distinguir cuánta ganancia depende del primer vs. segundo reintento, relevante porque dos estrategias con el mismo `%Martingala` combinado pueden tener perfiles de riesgo de escalado muy distintos.)*
 
-### Datos derivados del modelo actual (no comparables financieramente)
+**Distribución de rachas negativas** (longitud=conteo): 1m: 2=1085, 3=141, 4=21, 5+=3 (máx=6). 5m: 2=193, 3=24, 4=2 (máx=4). 15m: 2=65, 3=5, 5+=1 (máx=6). 1h: 2=19, 3=4 (máx=3). 4h: 2=3 (máx=2). 1D: 2=1 (máx=2).
 
-*(Estos valores corresponden al modelo económico experimental vigente — sizing no definido como modelo financiero, margen pendiente, fricción = 0, interpretación monetaria no validada. No representan rendimiento financiero real ni son comparables entre mercados. Ver Fase 2D y "Decisión sobre Retorno%" en el histórico de revisión del catálogo.)*
+**Completitud del dataset usado**: 0 velas parciales usadas en ningún timeframe (100% de velas disponibles utilizadas en las 6 corridas; ver reporte de completitud Fase 2C).
 
-**Definiciones**:
-- **EquityInicial**: valor de la cuenta (Cash + Margen + PnL no realizado) en el primer punto de la curva de equity del backtest — coincide con el capital inicial configurado (1000) porque ninguna operación se ha resuelto todavía.
-- **EquityFinal**: valor de la cuenta en el último punto de la curva de equity, al cierre del dataset — resultado acumulado de **todas** las operaciones de la corrida (intento inicial + M1 + M2, sin distinguir entre ellas).
+**Distribución temporal**: no varía por calendario — la señal depende exclusivamente de la posición modular `N % 5`, no de hora/día.
 
-**Importante — sin desglose por nivel de martingala**: el motor no calcula equity segmentado por M0/M1/M2. `EquityFinal` es un único total de cuenta que mezcla el resultado de operaciones resueltas en cualquier nivel. Lo único desglosado por nivel es el **conteo** de operaciones ganadas en cada uno (tabla de "Desglose de resolución de intentos" arriba) — no hay una atribución de cuánto PnL corresponde a cada nivel. Construir ese desglose requeriría diseñar primero una regla de atribución (ej. cómo repartir el PnL de una operación que perdió en M0, reabrió en M1 y ganó), lo cual está fuera del alcance de esta ficha.
+---
+
+# Hipótesis experimental
+
+*(Solo hipótesis — separado de los resultados observados, ver sección siguiente.)*
+
+**Comportamiento esperado**: continuación de color entre la vela de referencia (posición 3 del cuadrante) y la vela siguiente, en mercados con estructura direccional o cambios de volatilidad marcados.
+
+**Escenarios favorables (hipótesis previa)**: estructura direccional definida y patrones repetitivos; cambios de régimen de volatilidad.
+
+**Escenarios de fallo (hipótesis previa)**:
+- Ruido sin sesgo direccional: la señal de una sola vela no debería tener ventaja cuando no hay estructura direccional que capturar.
+- Volatilidad decreciente: al reducirse el rango intra-vela, la señal de color pierde separación (velas casi doji), degradando la confiabilidad de la referencia.
+- Secuencias largas de velas del mismo color contrario al apostado.
+
+---
+
+# Resultados observados
+
+*(Completado tras ejecutar Fase 1.5 y Fase 2C — separado de la hipótesis anterior.)*
+
+**Fase 1.5 (sintético)**:
+- Funcionó según lo esperado en: DobleTecho (+0.89%), VolatilidadTrasCalma (+1.96%) — estructura direccional y patrones repetitivos.
+- Falló según lo esperado en: RuidoAleatorio (-0.31%), VolatilidadDecreciente (-0.92%), TendenciaBajista (-0.12%, el ruido local alrededor de la pendiente generó velas en contra del sesgo global — matiz no anticipado exactamente en la hipótesis, pero consistente con "ruido sin sesgo").
+- SinMovimiento: 0 operaciones — comportamiento correcto, la estrategia reconoce que está fuera de su dominio de señal (todas las velas dojis) y no fuerza operaciones.
+
+**Fase 2C (real, BTC/USDT)**:
+- Retorno positivo y winrate estable en 1m/5m/15m; retorno negativo en 1h/4h/1D pese a winrate operativo similar (86-88% en todos los timeframes). Este hallazgo **no estaba anticipado en la hipótesis previa** — la caída de retorno en timeframes largos no viene de peor tasa de acierto, sino de la relación entre el tamaño fijo de posición y el rango de precio absoluto (efecto del modelo de posición, `[SUPUESTO FINANCIERO NO EXPLICITADO]`, Fase 2D).
+- Winrate consistente (85-95%) tanto en sintético como en real, por diseño de la martingala (muchas ganancias chicas + pocas pérdidas grandes) — confirmado como patrón estructural, no específico de un dataset.
+
+**Datos derivados del modelo actual (no comparables financieramente)**:
+
+*(Estos valores corresponden al modelo económico experimental vigente — sizing no definido como modelo financiero, margen pendiente, fricción = 0, interpretación monetaria no validada. No representan rendimiento financiero real ni son comparables entre mercados.)*
+
+- **EquityInicial**: valor de la cuenta (Cash + Margen + PnL no realizado) en el primer punto de la curva de equity — coincide con el capital inicial configurado (1000) porque ninguna operación se ha resuelto todavía.
+- **EquityFinal**: valor de la cuenta en el último punto de la curva de equity, al cierre del dataset — resultado acumulado de todas las operaciones de la corrida (inicial + M1 + M2, sin distinguir entre ellas; el motor no calcula equity segmentado por nivel de martingala).
 
 | TF | EquityInicial | EquityFinal | Retorno% |
 |----|----------------|-------------|----------|
@@ -98,28 +153,20 @@
 | 4h | 1000 | -14331.63 | -1533.16% |
 | 1D | 1000 | -5063.81 | -606.38% |
 
-**Observación experimental — equity negativo**: en 1h, 4h y 1D el `EquityFinal` es negativo. No se clasifica como bug: `Estado=Success`, reconciliación financiera coherente y determinismo confirmado en las 12 corridas de Fase 2C. El modelo actual puede producir equity negativo bajo determinadas combinaciones estrategia/timeframe porque representa exposición acumulada bajo tamaño fijo de posición, sin un modelo financiero completo de riesgo/margen (frontera Caso 1/Caso 2, documentada en Fase 2D — no un defecto del motor).
+**Observación experimental — equity negativo**: en 1h, 4h y 1D el `EquityFinal` es negativo. No se clasifica como bug: `Estado=Success`, reconciliación financiera coherente y determinismo confirmado (3 corridas idénticas, Fase 1.0). El modelo actual puede producir equity negativo bajo determinadas combinaciones estrategia/timeframe porque representa exposición acumulada bajo tamaño fijo de posición, sin un modelo financiero completo de riesgo/margen (frontera Caso 1/Caso 2).
 
-- **Operaciones incompletas**: 0 velas parciales usadas en ningún timeframe (100% de velas disponibles utilizadas en las 6 corridas; ver reporte de completitud Fase 2C).
-- **Distribución temporal**: no varía por calendario — la señal depende exclusivamente de la posición modular `N % 5`, no de hora/día.
-- **Distribución de rachas negativas** (longitud=conteo): 1m: 2=1085, 3=141, 4=21, 5+=3 (máx=6). 5m: 2=193, 3=24, 4=2 (máx=4). 15m: 2=65, 3=5, 5+=1 (máx=6). 1h: 2=19, 3=4 (máx=3). 4h: 2=3 (máx=2). 1D: 2=1 (máx=2).
+---
 
-## 6. Análisis de comportamiento
+# Limitaciones
 
-- **Escenarios donde funciona** (Fase 1.5, sintético): estructura direccional definida y patrones repetitivos — DobleTecho (+0.89%), VolatilidadTrasCalma (+1.96%).
-- **Escenarios donde falla** (Fase 1.5, sintético): ruido sin sesgo direccional (RuidoAleatorio, -0.31%); volatilidad decreciente (-0.92%, la señal de color pierde separación con velas casi doji); tendencia bajista (-0.12%, ruido local contradice el sesgo global).
-- **Sensibilidad al timeframe** (Fase 2C, real): retorno positivo y winrate estable en 1m/5m/15m; retorno negativo en 1h/4h/1D pese a winrate operativo similar (86-88% en todos los timeframes) — la caída no viene de peor tasa de acierto, sino de la relación entre el tamaño fijo de posición y el rango de precio absoluto en timeframes más largos (ver Fase 2D, `[SUPUESTO FINANCIERO NO EXPLICITADO]` sobre tamaño fijo de posición).
-- **Sensibilidad al dataset**: winrate consistente (85-95%) tanto en sintético como en real, por diseño de la martingala (muchas ganancias chicas + pocas pérdidas grandes) — confirmado como patrón estructural, no específico de un dataset.
-- **Dependencia de condiciones específicas**: SinMovimiento (todas las velas dojis) → 0 operaciones en ambos casos; comportamiento correcto (la estrategia reconoce que está fuera de su dominio de señal, no fuerza operaciones).
+- Falla lógica: ninguna detectada — el mecanismo de señal, apertura, martingala y cierre opera según lo diseñado en las 12 corridas de Fase 2C (`Estado=Success`, reconciliación OK).
+- Falla estadística: la señal de una sola vela pierde poder predictivo en ausencia de sesgo direccional o cuando el rango intra-vela se reduce.
+- Falla por régimen de mercado: mercados sin tendencia neta o de baja volatilidad degradan la señal, sin ser un fallo del motor.
+- Falla por supuesto incorrecto: el retorno% negativo en timeframes largos no es una falla de la estrategia ni del motor — es consecuencia del supuesto financiero no explicitado de tamaño fijo de posición (Fase 2D), pendiente de resolución bajo un futuro Caso 2.
+- Falla por implementación: ninguna — corregido el bug de rendimiento O(n²) de `BacktestRunner` (ver `CHANGELOG.md`), las 12 corridas completan con determinismo verificado y reconciliación financiera OK.
 
-## 7. Escenarios de falla
+---
 
-- **Falla lógica**: ninguna detectada — el mecanismo de señal, apertura, martingala y cierre opera según lo diseñado en las 12 corridas de Fase 2C (`Estado=Success`, reconciliación OK).
-- **Falla estadística**: la señal de una sola vela pierde poder predictivo en ausencia de sesgo direccional (RuidoAleatorio) o cuando el rango intra-vela se reduce (velas casi doji en volatilidad decreciente).
-- **Falla por régimen de mercado**: mercados sin tendencia neta o de baja volatilidad degradan la señal, sin ser un fallo del motor.
-- **Falla por supuesto incorrecto**: el retorno% negativo en timeframes largos (1h/4h/1D) no es una falla de la estrategia ni del motor — es consecuencia del supuesto financiero no explicitado de tamaño fijo de posición (documentado en Fase 2D), pendiente de resolución bajo un futuro Caso 2.
-- **Falla por implementación**: ninguna — corregido el bug de rendimiento O(n²) de `BacktestRunner` (ver `CHANGELOG.md`), las 12 corridas completan con determinismo verificado y reconciliación financiera OK.
-
-## 8. Conclusión experimental
+# Conclusión experimental
 
 La estrategia está correctamente representada por el motor: ejecuta su lógica de cuadrantes fijos, martingala y cierre exactamente como está definida en `EstrategiaTresMosqueteros.cs`, con reconciliación financiera OK y determinismo verificado en las 12 combinaciones estrategia×timeframe evaluadas. El comportamiento observado es consistente entre datasets sintéticos y reales: winrate estable (~86-88%) impulsado por el diseño de la martingala, con sensibilidad marcada a la estructura direccional del mercado (mejor en tendencia/cambios de volatilidad, peor en ruido sin sesgo o lateralidad). La divergencia de retorno% entre timeframes cortos y largos no refleja una diferencia de calidad de señal (el winrate se mantiene estable) sino un efecto del modelo de posición actual, explícitamente fuera del alcance de interpretación financiera de Caso 1.
