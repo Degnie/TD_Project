@@ -2,6 +2,7 @@ bin/
 obj/
 *.user
 .vs/
+exploration/laboratorio/protocolo/resultados/
 
 agent-workflow/
 skills/

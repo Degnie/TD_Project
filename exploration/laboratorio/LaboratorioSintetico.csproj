@@ -12,6 +12,7 @@
     <Compile Remove="analisis_operacional\**\*.cs" />
     <Compile Remove="datos_reales\**\*.cs" />
     <Compile Remove="evaluacion_multi_tf\**\*.cs" />
+    <Compile Remove="protocolo\**\*.cs" />
     <Compile Remove="reporte_escenarios_mercado\**\*.cs" />
     <Compile Include="..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
     <Compile Include="..\EstrategiaMhiMayoria.cs" Link="Fixtures\EstrategiaMhiMayoria.cs" />

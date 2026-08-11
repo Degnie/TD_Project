@@ -14,6 +14,11 @@ namespace TD_Project.AnalisisEscenariosMercado;
 // No conoce ninguna estrategia (D-016) — solo consume OHLC via VelaDerivadaCruda.
 public static class ClasificadorRegimenV1
 {
+    // D-052 (auditoria, Fase 1.6-C): metadata de identificacion pura, no logica. No cambia
+    // algoritmo, parametros, estados ni salida — verificado por hash de clasificacion completa
+    // antes/despues de este cambio (ver TestsClasificadorRegimenV1.VerificarHashClasificacionSinCambios).
+    public const string Version = "V1";
+
     public const int PeriodoAdx = 14;
     public const decimal UmbralAdxTendencia = 25m;
     public const decimal UmbralSesgoDI = 0.153467m;

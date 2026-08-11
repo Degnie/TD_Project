@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using TD_Project.EvaluacionMultiTf;
 
 namespace TD_Project.AnalisisEscenariosMercado;
@@ -42,8 +44,45 @@ public static class TestsClasificadorRegimenV1
             () => VerificarNoDependenciaDeEstrategia(rutaCsv1m, rutaCsv1D));
         Caso("Compatibilidad con EvaluadorClasificadores — la salida de ClasificadorRegimenV1 puede medirse con la misma infraestructura de Fase 1.4-A",
             () => VerificarCompatibilidadConEvaluador(rutaCsv1m));
+        Caso("Metadata de version (D-052) — ClasificadorRegimenV1.Version existe y tiene el valor esperado",
+            VerificarMetadataDeVersion);
+        Caso("Hash de clasificacion sin cambios (D-052) — agregar Version no altera ningun resultado de clasificacion en los 6 timeframes",
+            () => VerificarHashClasificacionSinCambios(dirDatasets, nombreDataset));
 
         return (total, pasaron, detalles);
+    }
+
+    // D-052: agregar Version debe ser metadata pura — no logica. Se verifica que exista y tenga
+    // el valor esperado, sin inferir el valor desde el nombre del tipo (D-052 exige que la fuente
+    // de verdad viva junto al artefacto, no que el pipeline la adivine).
+    private static void VerificarMetadataDeVersion()
+    {
+        Assert(ClasificadorRegimenV1.Version == "V1", $"ClasificadorRegimenV1.Version debe ser \"V1\", obtuvo \"{ClasificadorRegimenV1.Version}\"");
+    }
+
+    // D-052, requisito explicito de la auditoria: "prueba de igualdad de resultados antes/despues".
+    // El hash se calculo ANTES de agregar el campo Version (678768 ventanas, 6 timeframes,
+    // BTCUSDT_2024-01-02_2025-01-02) y se embebe aqui como valor esperado — si el algoritmo de
+    // clasificacion cambiara por accidente al tocar el archivo, esta prueba lo detectaria.
+    private const string HashClasificacionEsperado = "482A242044303190258DEE3F7C80764D1C2CC1093B5DA0652822D5D85BE34052";
+
+    private static void VerificarHashClasificacionSinCambios(string dirDatasets, string nombreDataset)
+    {
+        var timeframes = new[] { "1m", "5m", "15m", "1h", "4h", "1D" };
+        var sb = new StringBuilder();
+
+        foreach (var tf in timeframes)
+        {
+            var ruta = Path.Combine(dirDatasets, tf, $"{nombreDataset}_{tf}.csv");
+            var velas = LectorDerivado.Leer(ruta);
+            var clasificacion = ClasificadorRegimenV1.Clasificar(velas);
+            foreach (var v in clasificacion)
+                sb.Append(tf).Append('|').Append(v.InicioUtcMs).Append('|').Append(v.Escenario).Append('\n');
+        }
+
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString())));
+        Assert(hash == HashClasificacionEsperado,
+            $"El hash de clasificacion cambio tras agregar Version — esto violaria D-052 (metadata pura, sin cambio de logica). Esperado={HashClasificacionEsperado}, obtuvo={hash}");
     }
 
     private static void VerificarDeterminismo(string rutaCsv)
