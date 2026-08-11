@@ -6,6 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="agregador\**\*.cs" />
+    <Compile Remove="analisis_escenarios_mercado\**\*.cs" />
+    <Compile Remove="analisis_multitimeframe\**\*.cs" />
+    <Compile Remove="analisis_operacional\**\*.cs" />
+    <Compile Remove="datos_reales\**\*.cs" />
+    <Compile Remove="evaluacion_multi_tf\**\*.cs" />
+    <Compile Remove="reporte_escenarios_mercado\**\*.cs" />
     <Compile Include="..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
     <Compile Include="..\EstrategiaMhiMayoria.cs" Link="Fixtures\EstrategiaMhiMayoria.cs" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />

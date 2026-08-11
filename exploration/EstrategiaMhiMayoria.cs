@@ -26,6 +26,7 @@ public sealed class EstrategiaMhiMayoria : IStrategy
     private readonly Action<InfoOperacionResuelta>? _onOperacionResuelta;
     private int _siguienteOperacionId = 1;
     private int _operacionIdActual;
+    private long _timestampEntradaActual;
 
     private enum Fase { Ninguna, EsperandoCierre, EsperandoReapertura }
 
@@ -53,7 +54,7 @@ public sealed class EstrategiaMhiMayoria : IStrategy
             if (acerto || _martingalasUsadas >= _maxMartingalas)
             {
                 _fase = Fase.Ninguna;
-                _onOperacionResuelta?.Invoke(new InfoOperacionResuelta(_operacionIdActual, _martingalasUsadas, acerto));
+                _onOperacionResuelta?.Invoke(new InfoOperacionResuelta(_operacionIdActual, _martingalasUsadas, acerto, _timestampEntradaActual, velaActual.Timestamp));
                 return new[] { new OrderRequest(ladoCierre, OrderType.Market, 1m) };
             }
 
@@ -100,6 +101,7 @@ public sealed class EstrategiaMhiMayoria : IStrategy
         _martingalasUsadas = 0;
         _fase = Fase.EsperandoCierre;
         _operacionIdActual = _siguienteOperacionId++;
+        _timestampEntradaActual = velaActual.Timestamp;
         return new[] { new OrderRequest(colorMayoritario, OrderType.Market, 1m) };
     }
 

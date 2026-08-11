@@ -33,6 +33,7 @@ public sealed class EstrategiaTresMosqueteros : IStrategy
     private readonly Action<InfoOperacionResuelta>? _onOperacionResuelta;
     private int _siguienteOperacionId = 1;
     private int _operacionIdActual;
+    private long _timestampEntradaActual;
 
     // EsperandoCierre: se emitió Buy/Sell en el ciclo anterior (Pending), la vela actual ya es
     // el resultado de esa ejecución. EsperandoReapertura: la apuesta perdió y hay martingalas
@@ -64,7 +65,7 @@ public sealed class EstrategiaTresMosqueteros : IStrategy
             if (acerto || _martingalasUsadas >= _maxMartingalas)
             {
                 _fase = Fase.Ninguna;
-                _onOperacionResuelta?.Invoke(new InfoOperacionResuelta(_operacionIdActual, _martingalasUsadas, acerto));
+                _onOperacionResuelta?.Invoke(new InfoOperacionResuelta(_operacionIdActual, _martingalasUsadas, acerto, _timestampEntradaActual, velaActual.Timestamp));
                 return new[] { new OrderRequest(ladoCierre, OrderType.Market, 1m) };
             }
 
@@ -93,6 +94,7 @@ public sealed class EstrategiaTresMosqueteros : IStrategy
         _martingalasUsadas = 0;
         _fase = Fase.EsperandoCierre;
         _operacionIdActual = _siguienteOperacionId++;
+        _timestampEntradaActual = velaActual.Timestamp;
         return new[] { new OrderRequest(colorReferencia.Value, OrderType.Market, 1m) };
     }
 
@@ -106,4 +108,8 @@ public sealed class EstrategiaTresMosqueteros : IStrategy
 
 // Instrumentacion de analisis: resultado consolidado de UNA operacion logica completa (intento
 // inicial + martingalas), no de cada Trade individual del motor.
-public sealed record InfoOperacionResuelta(int OperacionId, int MartingalasUsadas, bool Gano);
+// TimestampEntrada/TimestampResolucion (D-040): timestamp de la vela donde la estrategia ya tiene
+// el dato en mano (DataSlice.VelaActual.Timestamp) en el ciclo de apertura y en el de resolucion
+// final, respectivamente. Sin martingala ambos coinciden con la misma vela de senal; con
+// martingala, TimestampResolucion queda varias velas despues de TimestampEntrada.
+public sealed record InfoOperacionResuelta(int OperacionId, int MartingalasUsadas, bool Gano, long TimestampEntrada, long TimestampResolucion);
