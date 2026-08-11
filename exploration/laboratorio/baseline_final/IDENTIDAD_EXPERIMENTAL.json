@@ -1,0 +1,9 @@
+{
+  "estrategia": "Tres Mosqueteros",
+  "versionEstrategia": "1.0",
+  "parametros": ["maxMartingalas=2"],
+  "datasetSourceSha256": "f1a9dcbe72bdbca65c5a7de55c776c209a63f8b3ecd93c59a5fca958e4ebded4",
+  "clasificadorRegimenVersion": "V1",
+  "versionProtocolo": "V1",
+  "hashCompuesto": "A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E"
+}

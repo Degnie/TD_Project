@@ -1,0 +1,33 @@
+BASELINE FINAL — Caso 1 / Fase 1.7 / Punto 6
+Estrategia: Tres Mosqueteros | Timeframes: 1m + 1D | Dataset: BTCUSDT_2024-01-02_2025-01-02
+
+Identidad experimental (IdentidadExperimentoCompleta.HashCompuesto, D-049):
+A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E
+
+Origen de la evidencia: corrida A de la validación de repetición (2026-08-11), carpeta original
+protocolo/resultados/TresMosqueteros_20260811T190331Z/. Verificada idéntica contra una corrida B
+independiente (protocolo/resultados/TresMosqueteros_20260811T190353Z/) — mismo HashCompuesto.
+Ambas corridas ejecutadas vía EjecutorProtocolo.Ejecutar (Program.cs), no manualmente.
+
+Checksums SHA256 de los archivos de evidencia contenidos en esta carpeta:
+
+797AEFC0D74511C447678504B191BF0AA6F11EF2F5B6D2286B4B8FDBD22B4A17  IDENTIDAD_EXPERIMENTAL.json
+AC25B05DC6FEFC1ABD907F3534443CA9D2F5165B062428F66E86DDD796617287  REPORTE_EXPERIMENTAL_ESTRATEGIA_V1.md
+7929738CA37382CF4830231946D7AE85FB79D24624EFEDD805D4C93A2D3DE4F6  ANEXOS/REPORTE_EXPERIMENTAL_ESTRATEGIA_V1_ANEXO_1m.md
+86E53E0ED0489476CE9081DB439CCB8BC61FEB307E3C88925935D1F41AEBFFF3  ANEXOS/REPORTE_EXPERIMENTAL_ESTRATEGIA_V1_ANEXO_1D.md
+
+Verificación de repetición (requisito de cierre de Fase 1.7):
+  Corrida A (20260811T190331Z): A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E
+  Corrida B (20260811T190353Z): A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E
+  Resultado: IDÉNTICO — hash A == hash B.
+
+Verificación de coincidencia histórica:
+  Mismo HashCompuesto citado en AUDITORIA_FINAL_CASO1_V1.md §2 (3 ejecuciones previas en esta
+  sesión, mismo resultado) — sin desviación entre auditoría y este baseline.
+
+Identidad congelada — ¿qué experimento exacto produjo esta evidencia? (ver IDENTIDAD_EXPERIMENTAL.json):
+  Estrategia: Tres Mosqueteros, versión 1.0
+  Parámetros: maxMartingalas=2
+  Dataset: BTCUSDT_2024-01-02_2025-01-02
+  Clasificador de régimen: ClasificadorRegimenV1 (V1, D-052)
+  Versión de protocolo: V1
