@@ -24,6 +24,10 @@ public static class BacktestRunner
         var portfolio = new PortfolioState { Cash = config.CapitalInicial };
         var registrador = new RegistradorOrdenes();
         var ordenesPending = new List<Order>();
+        // Mantenida en paralelo a ordenesPending (el registro completo, para el resultado final)
+        // para evitar el filtro O(n) por vela que reconstruia "las Pending" en cada iteracion —
+        // ver docs/PENDIENTES.md, hallazgo de rendimiento O(n^2) descubierto con datos reales.
+        var ordenesActivas = new List<Order>();
         var fills = new List<Fill>();
         var trades = new List<Trade>();
         var acumuladorTradeActivo = new AcumuladorTrade();
@@ -36,7 +40,7 @@ public static class BacktestRunner
             // spec: RN-13 — en N, Strategy lee DataSlice(N); en N+1, Matching cruza contra OHLCV(N+1)
             for (var n = 0; n < config.Velas.Count - 1; n++)
             {
-                var dataSlice = new DataSlice(config.Velas.Take(n + 1).ToList());
+                var dataSlice = new DataSlice(new VentanaDeVelas(config.Velas, n + 1));
                 var requests = strategy.Observar(dataSlice);
 
                 if (requests.Count > 0)
@@ -46,12 +50,16 @@ public static class BacktestRunner
                     if (evaluacion.Aprobada)
                     {
                         foreach (var request in requests)
-                            ordenesPending.Add(registrador.Registrar(request));
+                        {
+                            var orden = registrador.Registrar(request);
+                            ordenesPending.Add(orden);
+                            ordenesActivas.Add(orden);
+                        }
                     }
                 }
 
                 var velaSiguiente = config.Velas[n + 1];
-                var resolucion = ResolutorVela.Resolver(ordenesPending.Where(o => o.Status == OrderStatus.Pending).ToList(), velaSiguiente, portfolio);
+                var resolucion = ResolutorVela.Resolver(ordenesActivas, velaSiguiente, portfolio);
 
                 equityCurve.Add(new EquityPoint(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.UnrealizedPnLFinal, resolucion.EquityFinal));
                 portfolioSnapshots.Add(new PortfolioSnapshot(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.LotesVivosFinal));
@@ -71,13 +79,15 @@ public static class BacktestRunner
                     acumuladorTradeActivo.Registrar(resultadoFill);
                     if (resultadoFill.TradeCerrado is not null)
                         trades.Add(acumuladorTradeActivo.CerrarYExtraer(resultadoFill.TradeCerrado));
-                    var ordenDelFill = ordenesPending.First(o => o.SecuenciaCausal == fill.SecuenciaCausal);
+                    acumuladorTradeActivo.DespuesDeAplicar(resultadoFill, PosicionActual.De(portfolio), fill.PrecioFill);
+                    var ordenDelFill = ordenesActivas.First(o => o.SecuenciaCausal == fill.SecuenciaCausal);
                     OrdenTransiciones.Ejecutar(ordenDelFill);
+                    ordenesActivas.Remove(ordenDelFill);
                 }
             }
 
             // spec: CU-07 (Fin) — ordenes Pending se cancelan; posicion viva se documenta M2M (Etapa posterior)
-            foreach (var orden in ordenesPending.Where(o => o.Status == OrderStatus.Pending))
+            foreach (var orden in ordenesActivas)
                 OrdenTransiciones.Cancelar(orden);
 
             return new ResultadoBacktest(EstadoBacktest.Success, fills, portfolio.Cash, trades, ordenesPending, equityCurve, portfolioSnapshots, branchResolutions);
