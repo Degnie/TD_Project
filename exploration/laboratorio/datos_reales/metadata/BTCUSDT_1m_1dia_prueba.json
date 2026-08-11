@@ -1,0 +1,12 @@
+{
+  "instrumento": "BTCUSDT",
+  "mercado": "Spot",
+  "fuente": "Binance",
+  "intervalo": "1m",
+  "inicioUtcMs": 1735689600000,
+  "finUtcMs": 1735775940000,
+  "descargaUtc": "2026-08-10T23:24:51.8792927Z",
+  "velas": 1440,
+  "valido": true,
+  "sha256": "a5bd03570178c6d08d9f26c7b3c593af1dbf8c0f9d990313ec714c54563c6468"
+}

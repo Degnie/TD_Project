@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="reuso\**\*.cs" />
+    <Compile Remove="limite\**\*.cs" />
+    <Compile Remove="ronda2_lectura\**\*.cs" />
+    <Compile Remove="ronda2_limite\**\*.cs" />
+    <Compile Remove="ronda2_normal\**\*.cs" />
+    <Compile Remove="ronda2_reuso\**\*.cs" />
+    <Compile Remove="tests_estrategias\**\*.cs" />
+    <Compile Remove="laboratorio\**\*.cs" />
+    <ProjectReference Include="..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\src\Application\Application.csproj" />
+  </ItemGroup>
+
+</Project>

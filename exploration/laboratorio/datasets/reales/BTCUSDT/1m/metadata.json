@@ -1,0 +1,16 @@
+{
+  "instrumento": "BTCUSDT",
+  "mercado": "Spot",
+  "fuente": "Binance",
+  "intervalo": "1m",
+  "inicioUtc": "2024-01-02T00:00:00Z",
+  "finUtc": "2025-01-02T00:00:00Z",
+  "velas": 527040,
+  "sha256": "f1a9dcbe72bdbca65c5a7de55c776c209a63f8b3ecd93c59a5fca958e4ebded4",
+  "estado": "APTO_PARA_CONGELAR",
+  "huecos": 0,
+  "duplicados": 0,
+  "errores": 0,
+  "fechaCongelacion": "2026-08-10T23:36:22.6776092Z",
+  "nota": "Ventana movil de 366 dias UTC (2024 fue bisiesto), no un anio calendario. El nombre del archivo refleja el rango exacto para evitar ambiguedad: BTCUSDT_2024-01-02_2025-01-02_1m.csv."
+}

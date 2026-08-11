@@ -1,0 +1,1193 @@
+Velas cargadas: 252 desde velas_simuladas_1anio.csv
+
+=== TresMosqueteros_Caso1_SinMartingala ===
+Estado: Success
+CashFinal: 1007.970
+Trades: 35
+PnL total: 7.97
+Ganadores: 20 · Perdedores: 14 · Neutros(PnL=0): 1
+EquityFinal: 1007.970
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  Trade: CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=102.06 PrecioCierre=102.44 RealizedPnL=-0.38
+  Trade: CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  Trade: CantidadInicial=1 PrecioApertura=101.1 PrecioCierre=100.49 RealizedPnL=0.61
+--- TODOS los trades de TresMosqueteros_Caso1_SinMartingala ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [2] CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  [3] CantidadInicial=1 PrecioApertura=108.33 PrecioCierre=108.46 RealizedPnL=0.13
+  [4] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=1.08
+  [5] CantidadInicial=1 PrecioApertura=105.63 PrecioCierre=104.88 RealizedPnL=0.75
+  [6] CantidadInicial=1 PrecioApertura=102.09 PrecioCierre=100.97 RealizedPnL=-1.12
+  [7] CantidadInicial=1 PrecioApertura=103.74 PrecioCierre=106.06 RealizedPnL=2.32
+  [8] CantidadInicial=1 PrecioApertura=105.33 PrecioCierre=105.46 RealizedPnL=-0.13
+  [9] CantidadInicial=1 PrecioApertura=102.46 PrecioCierre=103.12 RealizedPnL=-0.66
+  [10] CantidadInicial=1 PrecioApertura=101.27 PrecioCierre=100.43 RealizedPnL=0.84
+  [11] CantidadInicial=1 PrecioApertura=99.7 PrecioCierre=99.11 RealizedPnL=-0.59
+  [12] CantidadInicial=1 PrecioApertura=96.57 PrecioCierre=99.6 RealizedPnL=-3.03
+  [13] CantidadInicial=1 PrecioApertura=95.0 PrecioCierre=94.14 RealizedPnL=0.86
+  [14] CantidadInicial=1 PrecioApertura=89.66 PrecioCierre=86.55 RealizedPnL=3.11
+  [15] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=0.40
+  [16] CantidadInicial=1 PrecioApertura=88.36 PrecioCierre=86.85 RealizedPnL=-1.51
+  [17] CantidadInicial=1 PrecioApertura=89.01 PrecioCierre=89.79 RealizedPnL=0.78
+  [18] CantidadInicial=1 PrecioApertura=90.1 PrecioCierre=90.61 RealizedPnL=0.51
+  [19] CantidadInicial=1 PrecioApertura=89.78 PrecioCierre=90.09 RealizedPnL=0.31
+  [20] CantidadInicial=1 PrecioApertura=90.62 PrecioCierre=91.29 RealizedPnL=-0.67
+  [21] CantidadInicial=1 PrecioApertura=91.84 PrecioCierre=91.71 RealizedPnL=-0.13
+  [22] CantidadInicial=1 PrecioApertura=94.68 PrecioCierre=95.34 RealizedPnL=-0.66
+  [23] CantidadInicial=1 PrecioApertura=95.01 PrecioCierre=94.56 RealizedPnL=0.45
+  [24] CantidadInicial=1 PrecioApertura=94.47 PrecioCierre=94.47 RealizedPnL=0.00
+  [25] CantidadInicial=1 PrecioApertura=94.4 PrecioCierre=94.16 RealizedPnL=-0.24
+  [26] CantidadInicial=1 PrecioApertura=92.43 PrecioCierre=91.73 RealizedPnL=-0.70
+  [27] CantidadInicial=1 PrecioApertura=92.65 PrecioCierre=93.78 RealizedPnL=1.13
+  [28] CantidadInicial=1 PrecioApertura=95.58 PrecioCierre=97.34 RealizedPnL=1.76
+  [29] CantidadInicial=1 PrecioApertura=100.74 PrecioCierre=101.91 RealizedPnL=1.17
+  [30] CantidadInicial=1 PrecioApertura=102.66 PrecioCierre=102.89 RealizedPnL=0.23
+  [31] CantidadInicial=1 PrecioApertura=104.96 PrecioCierre=104.75 RealizedPnL=-0.21
+  [32] CantidadInicial=1 PrecioApertura=102.06 PrecioCierre=102.44 RealizedPnL=-0.38
+  [33] CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  [34] CantidadInicial=1 PrecioApertura=101.1 PrecioCierre=100.49 RealizedPnL=0.61
+--- TODOS los fills de TresMosqueteros_Caso1_SinMartingala ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=4 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=5 Timestamp=18 Side=Buy Cantidad=1 PrecioFill=103.6 CostoFriccion=0
+  Seq=6 Timestamp=20 Side=Sell Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=7 Timestamp=25 Side=Buy Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=8 Timestamp=27 Side=Sell Cantidad=1 PrecioFill=108.46 CostoFriccion=0
+  Seq=9 Timestamp=32 Side=Buy Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=10 Timestamp=34 Side=Sell Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=11 Timestamp=39 Side=Sell Cantidad=1 PrecioFill=105.63 CostoFriccion=0
+  Seq=12 Timestamp=41 Side=Buy Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=13 Timestamp=46 Side=Buy Cantidad=1 PrecioFill=102.09 CostoFriccion=0
+  Seq=14 Timestamp=48 Side=Sell Cantidad=1 PrecioFill=100.97 CostoFriccion=0
+  Seq=15 Timestamp=53 Side=Buy Cantidad=1 PrecioFill=103.74 CostoFriccion=0
+  Seq=16 Timestamp=55 Side=Sell Cantidad=1 PrecioFill=106.06 CostoFriccion=0
+  Seq=17 Timestamp=60 Side=Sell Cantidad=1 PrecioFill=105.33 CostoFriccion=0
+  Seq=18 Timestamp=62 Side=Buy Cantidad=1 PrecioFill=105.46 CostoFriccion=0
+  Seq=19 Timestamp=67 Side=Sell Cantidad=1 PrecioFill=102.46 CostoFriccion=0
+  Seq=20 Timestamp=69 Side=Buy Cantidad=1 PrecioFill=103.12 CostoFriccion=0
+  Seq=21 Timestamp=74 Side=Sell Cantidad=1 PrecioFill=101.27 CostoFriccion=0
+  Seq=22 Timestamp=76 Side=Buy Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=23 Timestamp=81 Side=Buy Cantidad=1 PrecioFill=99.7 CostoFriccion=0
+  Seq=24 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=25 Timestamp=88 Side=Sell Cantidad=1 PrecioFill=96.57 CostoFriccion=0
+  Seq=26 Timestamp=90 Side=Buy Cantidad=1 PrecioFill=99.6 CostoFriccion=0
+  Seq=27 Timestamp=95 Side=Sell Cantidad=1 PrecioFill=95.0 CostoFriccion=0
+  Seq=28 Timestamp=97 Side=Buy Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=29 Timestamp=107 Side=Sell Cantidad=1 PrecioFill=89.66 CostoFriccion=0
+  Seq=30 Timestamp=109 Side=Buy Cantidad=1 PrecioFill=86.55 CostoFriccion=0
+  Seq=31 Timestamp=114 Side=Buy Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=32 Timestamp=116 Side=Sell Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=33 Timestamp=121 Side=Buy Cantidad=1 PrecioFill=88.36 CostoFriccion=0
+  Seq=34 Timestamp=123 Side=Sell Cantidad=1 PrecioFill=86.85 CostoFriccion=0
+  Seq=35 Timestamp=128 Side=Buy Cantidad=1 PrecioFill=89.01 CostoFriccion=0
+  Seq=36 Timestamp=130 Side=Sell Cantidad=1 PrecioFill=89.79 CostoFriccion=0
+  Seq=37 Timestamp=135 Side=Buy Cantidad=1 PrecioFill=90.1 CostoFriccion=0
+  Seq=38 Timestamp=137 Side=Sell Cantidad=1 PrecioFill=90.61 CostoFriccion=0
+  Seq=39 Timestamp=142 Side=Buy Cantidad=1 PrecioFill=89.78 CostoFriccion=0
+  Seq=40 Timestamp=144 Side=Sell Cantidad=1 PrecioFill=90.09 CostoFriccion=0
+  Seq=41 Timestamp=149 Side=Sell Cantidad=1 PrecioFill=90.62 CostoFriccion=0
+  Seq=42 Timestamp=151 Side=Buy Cantidad=1 PrecioFill=91.29 CostoFriccion=0
+  Seq=43 Timestamp=156 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=44 Timestamp=158 Side=Sell Cantidad=1 PrecioFill=91.71 CostoFriccion=0
+  Seq=45 Timestamp=163 Side=Sell Cantidad=1 PrecioFill=94.68 CostoFriccion=0
+  Seq=46 Timestamp=165 Side=Buy Cantidad=1 PrecioFill=95.34 CostoFriccion=0
+  Seq=47 Timestamp=170 Side=Sell Cantidad=1 PrecioFill=95.01 CostoFriccion=0
+  Seq=48 Timestamp=172 Side=Buy Cantidad=1 PrecioFill=94.56 CostoFriccion=0
+  Seq=49 Timestamp=177 Side=Sell Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=50 Timestamp=179 Side=Buy Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=51 Timestamp=184 Side=Buy Cantidad=1 PrecioFill=94.4 CostoFriccion=0
+  Seq=52 Timestamp=186 Side=Sell Cantidad=1 PrecioFill=94.16 CostoFriccion=0
+  Seq=53 Timestamp=191 Side=Buy Cantidad=1 PrecioFill=92.43 CostoFriccion=0
+  Seq=54 Timestamp=193 Side=Sell Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=55 Timestamp=198 Side=Buy Cantidad=1 PrecioFill=92.65 CostoFriccion=0
+  Seq=56 Timestamp=200 Side=Sell Cantidad=1 PrecioFill=93.78 CostoFriccion=0
+  Seq=57 Timestamp=205 Side=Buy Cantidad=1 PrecioFill=95.58 CostoFriccion=0
+  Seq=58 Timestamp=207 Side=Sell Cantidad=1 PrecioFill=97.34 CostoFriccion=0
+  Seq=59 Timestamp=212 Side=Buy Cantidad=1 PrecioFill=100.74 CostoFriccion=0
+  Seq=60 Timestamp=214 Side=Sell Cantidad=1 PrecioFill=101.91 CostoFriccion=0
+  Seq=61 Timestamp=219 Side=Buy Cantidad=1 PrecioFill=102.66 CostoFriccion=0
+  Seq=62 Timestamp=221 Side=Sell Cantidad=1 PrecioFill=102.89 CostoFriccion=0
+  Seq=63 Timestamp=226 Side=Buy Cantidad=1 PrecioFill=104.96 CostoFriccion=0
+  Seq=64 Timestamp=228 Side=Sell Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=65 Timestamp=233 Side=Sell Cantidad=1 PrecioFill=102.06 CostoFriccion=0
+  Seq=66 Timestamp=235 Side=Buy Cantidad=1 PrecioFill=102.44 CostoFriccion=0
+  Seq=67 Timestamp=240 Side=Sell Cantidad=1 PrecioFill=101.52 CostoFriccion=0
+  Seq=68 Timestamp=242 Side=Buy Cantidad=1 PrecioFill=101.14 CostoFriccion=0
+  Seq=69 Timestamp=247 Side=Sell Cantidad=1 PrecioFill=101.1 CostoFriccion=0
+  Seq=70 Timestamp=249 Side=Buy Cantidad=1 PrecioFill=100.49 CostoFriccion=0
+
+=== TresMosqueteros_Caso2_1Martingala ===
+Estado: Success
+CashFinal: 994.535
+Trades: 41
+PnL total: 4.63
+Ganadores: 25 · Perdedores: 16 · Neutros(PnL=0): 0
+EquityFinal: 1004.790
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  Trade: CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=102.44 PrecioCierre=101.97 RealizedPnL=-0.47
+  Trade: CantidadInicial=1 PrecioApertura=101.49 PrecioCierre=101.52 RealizedPnL=0.03
+  Trade: CantidadInicial=1 PrecioApertura=101.23 PrecioCierre=101.1 RealizedPnL=0.13
+--- TODOS los trades de TresMosqueteros_Caso2_1Martingala ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [2] CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  [3] CantidadInicial=1 PrecioApertura=108.33 PrecioCierre=108.46 RealizedPnL=0.13
+  [4] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=1.08
+  [5] CantidadInicial=1 PrecioApertura=105.63 PrecioCierre=104.88 RealizedPnL=0.75
+  [6] CantidadInicial=1 PrecioApertura=105.2 PrecioCierre=103.04 RealizedPnL=2.16
+  [7] CantidadInicial=1 PrecioApertura=101.58 PrecioCierre=101.81 RealizedPnL=0.23
+  [8] CantidadInicial=1 PrecioApertura=104.77 PrecioCierre=107.05 RealizedPnL=-2.28
+  [9] CantidadInicial=1 PrecioApertura=105.29 PrecioCierre=106.22 RealizedPnL=-0.93
+  [10] CantidadInicial=1 PrecioApertura=104.22 PrecioCierre=103.17 RealizedPnL=1.05
+  [11] CantidadInicial=1 PrecioApertura=103.12 PrecioCierre=102.49 RealizedPnL=0.63
+  [12] CantidadInicial=1 PrecioApertura=100.43 PrecioCierre=100.14 RealizedPnL=0.29
+  [13] CantidadInicial=1 PrecioApertura=99.11 PrecioCierre=97.69 RealizedPnL=1.42
+  [14] CantidadInicial=1 PrecioApertura=99.6 PrecioCierre=98.48 RealizedPnL=1.12
+  [15] CantidadInicial=1 PrecioApertura=94.14 PrecioCierre=93.84 RealizedPnL=0.30
+  [16] CantidadInicial=1 PrecioApertura=90.86 PrecioCierre=90.56 RealizedPnL=0.30
+  [17] CantidadInicial=1 PrecioApertura=86.18 PrecioCierre=85.83 RealizedPnL=0.35
+  [18] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=-0.40
+  [19] CantidadInicial=1 PrecioApertura=88.36 PrecioCierre=86.85 RealizedPnL=-1.51
+  [20] CantidadInicial=1 PrecioApertura=89.01 PrecioCierre=89.79 RealizedPnL=0.78
+  [21] CantidadInicial=1 PrecioApertura=90.1 PrecioCierre=90.61 RealizedPnL=0.51
+  [22] CantidadInicial=1 PrecioApertura=89.78 PrecioCierre=90.09 RealizedPnL=0.31
+  [23] CantidadInicial=1 PrecioApertura=90.62 PrecioCierre=91.29 RealizedPnL=-0.67
+  [24] CantidadInicial=1 PrecioApertura=91.84 PrecioCierre=91.71 RealizedPnL=-0.13
+  [25] CantidadInicial=1 PrecioApertura=91.73 PrecioCierre=93.71 RealizedPnL=1.98
+  [26] CantidadInicial=1 PrecioApertura=95.6 PrecioCierre=95.28 RealizedPnL=-0.32
+  [27] CantidadInicial=1 PrecioApertura=95.27 PrecioCierre=94.51 RealizedPnL=-0.76
+  [28] CantidadInicial=1 PrecioApertura=94.63 PrecioCierre=94.3 RealizedPnL=-0.33
+  [29] CantidadInicial=1 PrecioApertura=94.4 PrecioCierre=94.16 RealizedPnL=-0.24
+  [30] CantidadInicial=1 PrecioApertura=92.43 PrecioCierre=91.73 RealizedPnL=-0.70
+  [31] CantidadInicial=1 PrecioApertura=91.69 PrecioCierre=92.07 RealizedPnL=0.38
+  [32] CantidadInicial=1 PrecioApertura=93.65 PrecioCierre=94.99 RealizedPnL=-1.34
+  [33] CantidadInicial=1 PrecioApertura=94.72 PrecioCierre=95.76 RealizedPnL=-1.04
+  [34] CantidadInicial=1 PrecioApertura=100.65 PrecioCierre=100.87 RealizedPnL=0.22
+  [35] CantidadInicial=1 PrecioApertura=102.54 PrecioCierre=102.71 RealizedPnL=0.17
+  [36] CantidadInicial=1 PrecioApertura=104.83 PrecioCierre=104.75 RealizedPnL=-0.08
+  [37] CantidadInicial=1 PrecioApertura=104.75 PrecioCierre=105.08 RealizedPnL=0.33
+  [38] CantidadInicial=1 PrecioApertura=102.44 PrecioCierre=101.97 RealizedPnL=-0.47
+  [39] CantidadInicial=1 PrecioApertura=101.49 PrecioCierre=101.52 RealizedPnL=0.03
+  [40] CantidadInicial=1 PrecioApertura=101.23 PrecioCierre=101.1 RealizedPnL=0.13
+--- TODOS los fills de TresMosqueteros_Caso2_1Martingala ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=4 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=5 Timestamp=18 Side=Buy Cantidad=1 PrecioFill=103.6 CostoFriccion=0
+  Seq=6 Timestamp=20 Side=Sell Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=7 Timestamp=25 Side=Buy Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=8 Timestamp=27 Side=Sell Cantidad=1 PrecioFill=108.46 CostoFriccion=0
+  Seq=9 Timestamp=32 Side=Buy Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=10 Timestamp=34 Side=Sell Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=11 Timestamp=39 Side=Sell Cantidad=1 PrecioFill=105.63 CostoFriccion=0
+  Seq=12 Timestamp=41 Side=Buy Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=13 Timestamp=42 Side=Sell Cantidad=1 PrecioFill=105.2 CostoFriccion=0
+  Seq=14 Timestamp=44 Side=Buy Cantidad=1 PrecioFill=103.04 CostoFriccion=0
+  Seq=15 Timestamp=49 Side=Buy Cantidad=1 PrecioFill=101.58 CostoFriccion=0
+  Seq=16 Timestamp=51 Side=Sell Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=17 Timestamp=56 Side=Sell Cantidad=1 PrecioFill=104.77 CostoFriccion=0
+  Seq=18 Timestamp=58 Side=Buy Cantidad=1 PrecioFill=107.05 CostoFriccion=0
+  Seq=19 Timestamp=59 Side=Sell Cantidad=1 PrecioFill=105.29 CostoFriccion=0
+  Seq=20 Timestamp=61 Side=Buy Cantidad=1 PrecioFill=106.22 CostoFriccion=0
+  Seq=21 Timestamp=66 Side=Sell Cantidad=1 PrecioFill=104.22 CostoFriccion=0
+  Seq=22 Timestamp=68 Side=Buy Cantidad=1 PrecioFill=103.17 CostoFriccion=0
+  Seq=23 Timestamp=69 Side=Sell Cantidad=1 PrecioFill=103.12 CostoFriccion=0
+  Seq=24 Timestamp=71 Side=Buy Cantidad=1 PrecioFill=102.49 CostoFriccion=0
+  Seq=25 Timestamp=76 Side=Sell Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=26 Timestamp=78 Side=Buy Cantidad=1 PrecioFill=100.14 CostoFriccion=0
+  Seq=27 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=28 Timestamp=85 Side=Buy Cantidad=1 PrecioFill=97.69 CostoFriccion=0
+  Seq=29 Timestamp=90 Side=Sell Cantidad=1 PrecioFill=99.6 CostoFriccion=0
+  Seq=30 Timestamp=92 Side=Buy Cantidad=1 PrecioFill=98.48 CostoFriccion=0
+  Seq=31 Timestamp=97 Side=Sell Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=32 Timestamp=99 Side=Buy Cantidad=1 PrecioFill=93.84 CostoFriccion=0
+  Seq=33 Timestamp=104 Side=Sell Cantidad=1 PrecioFill=90.86 CostoFriccion=0
+  Seq=34 Timestamp=106 Side=Buy Cantidad=1 PrecioFill=90.56 CostoFriccion=0
+  Seq=35 Timestamp=111 Side=Sell Cantidad=1 PrecioFill=86.18 CostoFriccion=0
+  Seq=36 Timestamp=113 Side=Buy Cantidad=1 PrecioFill=85.83 CostoFriccion=0
+  Seq=37 Timestamp=114 Side=Sell Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=38 Timestamp=116 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=39 Timestamp=121 Side=Buy Cantidad=1 PrecioFill=88.36 CostoFriccion=0
+  Seq=40 Timestamp=123 Side=Sell Cantidad=1 PrecioFill=86.85 CostoFriccion=0
+  Seq=41 Timestamp=128 Side=Buy Cantidad=1 PrecioFill=89.01 CostoFriccion=0
+  Seq=42 Timestamp=130 Side=Sell Cantidad=1 PrecioFill=89.79 CostoFriccion=0
+  Seq=43 Timestamp=135 Side=Buy Cantidad=1 PrecioFill=90.1 CostoFriccion=0
+  Seq=44 Timestamp=137 Side=Sell Cantidad=1 PrecioFill=90.61 CostoFriccion=0
+  Seq=45 Timestamp=142 Side=Buy Cantidad=1 PrecioFill=89.78 CostoFriccion=0
+  Seq=46 Timestamp=144 Side=Sell Cantidad=1 PrecioFill=90.09 CostoFriccion=0
+  Seq=47 Timestamp=149 Side=Sell Cantidad=1 PrecioFill=90.62 CostoFriccion=0
+  Seq=48 Timestamp=151 Side=Buy Cantidad=1 PrecioFill=91.29 CostoFriccion=0
+  Seq=49 Timestamp=156 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=50 Timestamp=158 Side=Sell Cantidad=1 PrecioFill=91.71 CostoFriccion=0
+  Seq=51 Timestamp=159 Side=Buy Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=52 Timestamp=161 Side=Sell Cantidad=1 PrecioFill=93.71 CostoFriccion=0
+  Seq=53 Timestamp=166 Side=Buy Cantidad=1 PrecioFill=95.6 CostoFriccion=0
+  Seq=54 Timestamp=168 Side=Sell Cantidad=1 PrecioFill=95.28 CostoFriccion=0
+  Seq=55 Timestamp=169 Side=Buy Cantidad=1 PrecioFill=95.27 CostoFriccion=0
+  Seq=56 Timestamp=171 Side=Sell Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=57 Timestamp=181 Side=Buy Cantidad=1 PrecioFill=94.63 CostoFriccion=0
+  Seq=58 Timestamp=183 Side=Sell Cantidad=1 PrecioFill=94.3 CostoFriccion=0
+  Seq=59 Timestamp=184 Side=Buy Cantidad=1 PrecioFill=94.4 CostoFriccion=0
+  Seq=60 Timestamp=186 Side=Sell Cantidad=1 PrecioFill=94.16 CostoFriccion=0
+  Seq=61 Timestamp=191 Side=Buy Cantidad=1 PrecioFill=92.43 CostoFriccion=0
+  Seq=62 Timestamp=193 Side=Sell Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=63 Timestamp=194 Side=Buy Cantidad=1 PrecioFill=91.69 CostoFriccion=0
+  Seq=64 Timestamp=196 Side=Sell Cantidad=1 PrecioFill=92.07 CostoFriccion=0
+  Seq=65 Timestamp=201 Side=Sell Cantidad=1 PrecioFill=93.65 CostoFriccion=0
+  Seq=66 Timestamp=203 Side=Buy Cantidad=1 PrecioFill=94.99 CostoFriccion=0
+  Seq=67 Timestamp=204 Side=Sell Cantidad=1 PrecioFill=94.72 CostoFriccion=0
+  Seq=68 Timestamp=206 Side=Buy Cantidad=1 PrecioFill=95.76 CostoFriccion=0
+  Seq=69 Timestamp=211 Side=Buy Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+  Seq=70 Timestamp=213 Side=Sell Cantidad=1 PrecioFill=100.87 CostoFriccion=0
+  Seq=71 Timestamp=218 Side=Buy Cantidad=1 PrecioFill=102.54 CostoFriccion=0
+  Seq=72 Timestamp=220 Side=Sell Cantidad=1 PrecioFill=102.71 CostoFriccion=0
+  Seq=73 Timestamp=225 Side=Buy Cantidad=1 PrecioFill=104.83 CostoFriccion=0
+  Seq=74 Timestamp=227 Side=Sell Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=75 Timestamp=228 Side=Buy Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=76 Timestamp=230 Side=Sell Cantidad=1 PrecioFill=105.08 CostoFriccion=0
+  Seq=77 Timestamp=235 Side=Buy Cantidad=1 PrecioFill=102.44 CostoFriccion=0
+  Seq=78 Timestamp=237 Side=Sell Cantidad=1 PrecioFill=101.97 CostoFriccion=0
+  Seq=79 Timestamp=238 Side=Buy Cantidad=1 PrecioFill=101.49 CostoFriccion=0
+  Seq=80 Timestamp=240 Side=Sell Cantidad=1 PrecioFill=101.52 CostoFriccion=0
+  Seq=81 Timestamp=245 Side=Sell Cantidad=1 PrecioFill=101.23 CostoFriccion=0
+  Seq=82 Timestamp=247 Side=Buy Cantidad=1 PrecioFill=101.1 CostoFriccion=0
+  Seq=83 Timestamp=252 Side=Buy Cantidad=1 PrecioFill=100.95 CostoFriccion=0
+
+=== TresMosqueteros_Caso3_2Martingalas ===
+Estado: Success
+CashFinal: 1008.800
+Trades: 44
+PnL total: 8.80
+Ganadores: 31 · Perdedores: 13 · Neutros(PnL=0): 0
+EquityFinal: 1008.800
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  Trade: CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=101.81 PrecioCierre=101.18 RealizedPnL=-0.63
+  Trade: CantidadInicial=1 PrecioApertura=101.14 PrecioCierre=101.31 RealizedPnL=0.17
+  Trade: CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los trades de TresMosqueteros_Caso3_2Martingalas ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [2] CantidadInicial=1 PrecioApertura=103.6 PrecioCierre=104.9 RealizedPnL=1.3
+  [3] CantidadInicial=1 PrecioApertura=108.33 PrecioCierre=108.46 RealizedPnL=0.13
+  [4] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=1.08
+  [5] CantidadInicial=1 PrecioApertura=105.63 PrecioCierre=104.88 RealizedPnL=0.75
+  [6] CantidadInicial=1 PrecioApertura=105.2 PrecioCierre=103.04 RealizedPnL=2.16
+  [7] CantidadInicial=1 PrecioApertura=101.58 PrecioCierre=101.81 RealizedPnL=0.23
+  [8] CantidadInicial=1 PrecioApertura=104.77 PrecioCierre=107.05 RealizedPnL=-2.28
+  [9] CantidadInicial=1 PrecioApertura=105.29 PrecioCierre=106.22 RealizedPnL=-0.93
+  [10] CantidadInicial=1 PrecioApertura=105.46 PrecioCierre=105.56 RealizedPnL=-0.10
+  [11] CantidadInicial=1 PrecioApertura=103.12 PrecioCierre=102.49 RealizedPnL=0.63
+  [12] CantidadInicial=1 PrecioApertura=100.43 PrecioCierre=100.14 RealizedPnL=0.29
+  [13] CantidadInicial=1 PrecioApertura=99.11 PrecioCierre=97.69 RealizedPnL=1.42
+  [14] CantidadInicial=1 PrecioApertura=99.6 PrecioCierre=98.48 RealizedPnL=1.12
+  [15] CantidadInicial=1 PrecioApertura=94.14 PrecioCierre=93.84 RealizedPnL=0.30
+  [16] CantidadInicial=1 PrecioApertura=90.86 PrecioCierre=90.56 RealizedPnL=0.30
+  [17] CantidadInicial=1 PrecioApertura=86.18 PrecioCierre=85.83 RealizedPnL=0.35
+  [18] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=-0.40
+  [19] CantidadInicial=1 PrecioApertura=86.84 PrecioCierre=87.32 RealizedPnL=-0.48
+  [20] CantidadInicial=1 PrecioApertura=86.98 PrecioCierre=87.64 RealizedPnL=0.66
+  [21] CantidadInicial=1 PrecioApertura=87.48 PrecioCierre=88.6 RealizedPnL=1.12
+  [22] CantidadInicial=1 PrecioApertura=91.16 PrecioCierre=91.47 RealizedPnL=0.31
+  [23] CantidadInicial=1 PrecioApertura=90.48 PrecioCierre=90.99 RealizedPnL=0.51
+  [24] CantidadInicial=1 PrecioApertura=91.16 PrecioCierre=91.3 RealizedPnL=0.14
+  [25] CantidadInicial=1 PrecioApertura=91.33 PrecioCierre=92.03 RealizedPnL=0.70
+  [26] CantidadInicial=1 PrecioApertura=93.47 PrecioCierre=95.11 RealizedPnL=-1.64
+  [27] CantidadInicial=1 PrecioApertura=95.34 PrecioCierre=95.39 RealizedPnL=-0.05
+  [28] CantidadInicial=1 PrecioApertura=94.56 PrecioCierre=94.96 RealizedPnL=0.40
+  [29] CantidadInicial=1 PrecioApertura=94.47 PrecioCierre=94.63 RealizedPnL=-0.16
+  [30] CantidadInicial=1 PrecioApertura=94.52 PrecioCierre=94.4 RealizedPnL=0.12
+  [31] CantidadInicial=1 PrecioApertura=94.27 PrecioCierre=94.25 RealizedPnL=0.02
+  [32] CantidadInicial=1 PrecioApertura=91.86 PrecioCierre=91.69 RealizedPnL=0.17
+  [33] CantidadInicial=1 PrecioApertura=93.23 PrecioCierre=93.65 RealizedPnL=0.42
+  [34] CantidadInicial=1 PrecioApertura=94.51 PrecioCierre=94.72 RealizedPnL=0.21
+  [35] CantidadInicial=1 PrecioApertura=95.58 PrecioCierre=97.34 RealizedPnL=1.76
+  [36] CantidadInicial=1 PrecioApertura=100.74 PrecioCierre=101.91 RealizedPnL=1.17
+  [37] CantidadInicial=1 PrecioApertura=102.66 PrecioCierre=102.89 RealizedPnL=0.23
+  [38] CantidadInicial=1 PrecioApertura=104.96 PrecioCierre=104.75 RealizedPnL=-0.21
+  [39] CantidadInicial=1 PrecioApertura=104.53 PrecioCierre=105.03 RealizedPnL=0.50
+  [40] CantidadInicial=1 PrecioApertura=104.97 PrecioCierre=102.26 RealizedPnL=-2.71
+  [41] CantidadInicial=1 PrecioApertura=101.81 PrecioCierre=101.18 RealizedPnL=-0.63
+  [42] CantidadInicial=1 PrecioApertura=101.14 PrecioCierre=101.31 RealizedPnL=0.17
+  [43] CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los fills de TresMosqueteros_Caso3_2Martingalas ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=4 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=5 Timestamp=18 Side=Buy Cantidad=1 PrecioFill=103.6 CostoFriccion=0
+  Seq=6 Timestamp=20 Side=Sell Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=7 Timestamp=25 Side=Buy Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=8 Timestamp=27 Side=Sell Cantidad=1 PrecioFill=108.46 CostoFriccion=0
+  Seq=9 Timestamp=32 Side=Buy Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=10 Timestamp=34 Side=Sell Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=11 Timestamp=39 Side=Sell Cantidad=1 PrecioFill=105.63 CostoFriccion=0
+  Seq=12 Timestamp=41 Side=Buy Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=13 Timestamp=42 Side=Sell Cantidad=1 PrecioFill=105.2 CostoFriccion=0
+  Seq=14 Timestamp=44 Side=Buy Cantidad=1 PrecioFill=103.04 CostoFriccion=0
+  Seq=15 Timestamp=49 Side=Buy Cantidad=1 PrecioFill=101.58 CostoFriccion=0
+  Seq=16 Timestamp=51 Side=Sell Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=17 Timestamp=56 Side=Sell Cantidad=1 PrecioFill=104.77 CostoFriccion=0
+  Seq=18 Timestamp=58 Side=Buy Cantidad=1 PrecioFill=107.05 CostoFriccion=0
+  Seq=19 Timestamp=59 Side=Sell Cantidad=1 PrecioFill=105.29 CostoFriccion=0
+  Seq=20 Timestamp=61 Side=Buy Cantidad=1 PrecioFill=106.22 CostoFriccion=0
+  Seq=21 Timestamp=62 Side=Sell Cantidad=1 PrecioFill=105.46 CostoFriccion=0
+  Seq=22 Timestamp=64 Side=Buy Cantidad=1 PrecioFill=105.56 CostoFriccion=0
+  Seq=23 Timestamp=69 Side=Sell Cantidad=1 PrecioFill=103.12 CostoFriccion=0
+  Seq=24 Timestamp=71 Side=Buy Cantidad=1 PrecioFill=102.49 CostoFriccion=0
+  Seq=25 Timestamp=76 Side=Sell Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=26 Timestamp=78 Side=Buy Cantidad=1 PrecioFill=100.14 CostoFriccion=0
+  Seq=27 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=28 Timestamp=85 Side=Buy Cantidad=1 PrecioFill=97.69 CostoFriccion=0
+  Seq=29 Timestamp=90 Side=Sell Cantidad=1 PrecioFill=99.6 CostoFriccion=0
+  Seq=30 Timestamp=92 Side=Buy Cantidad=1 PrecioFill=98.48 CostoFriccion=0
+  Seq=31 Timestamp=97 Side=Sell Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=32 Timestamp=99 Side=Buy Cantidad=1 PrecioFill=93.84 CostoFriccion=0
+  Seq=33 Timestamp=104 Side=Sell Cantidad=1 PrecioFill=90.86 CostoFriccion=0
+  Seq=34 Timestamp=106 Side=Buy Cantidad=1 PrecioFill=90.56 CostoFriccion=0
+  Seq=35 Timestamp=111 Side=Sell Cantidad=1 PrecioFill=86.18 CostoFriccion=0
+  Seq=36 Timestamp=113 Side=Buy Cantidad=1 PrecioFill=85.83 CostoFriccion=0
+  Seq=37 Timestamp=114 Side=Sell Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=38 Timestamp=116 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=39 Timestamp=117 Side=Sell Cantidad=1 PrecioFill=86.84 CostoFriccion=0
+  Seq=40 Timestamp=119 Side=Buy Cantidad=1 PrecioFill=87.32 CostoFriccion=0
+  Seq=41 Timestamp=124 Side=Buy Cantidad=1 PrecioFill=86.98 CostoFriccion=0
+  Seq=42 Timestamp=126 Side=Sell Cantidad=1 PrecioFill=87.64 CostoFriccion=0
+  Seq=43 Timestamp=131 Side=Buy Cantidad=1 PrecioFill=87.48 CostoFriccion=0
+  Seq=44 Timestamp=133 Side=Sell Cantidad=1 PrecioFill=88.6 CostoFriccion=0
+  Seq=45 Timestamp=138 Side=Buy Cantidad=1 PrecioFill=91.16 CostoFriccion=0
+  Seq=46 Timestamp=140 Side=Sell Cantidad=1 PrecioFill=91.47 CostoFriccion=0
+  Seq=47 Timestamp=145 Side=Buy Cantidad=1 PrecioFill=90.48 CostoFriccion=0
+  Seq=48 Timestamp=147 Side=Sell Cantidad=1 PrecioFill=90.99 CostoFriccion=0
+  Seq=49 Timestamp=148 Side=Buy Cantidad=1 PrecioFill=91.16 CostoFriccion=0
+  Seq=50 Timestamp=150 Side=Sell Cantidad=1 PrecioFill=91.3 CostoFriccion=0
+  Seq=51 Timestamp=155 Side=Buy Cantidad=1 PrecioFill=91.33 CostoFriccion=0
+  Seq=52 Timestamp=157 Side=Sell Cantidad=1 PrecioFill=92.03 CostoFriccion=0
+  Seq=53 Timestamp=162 Side=Sell Cantidad=1 PrecioFill=93.47 CostoFriccion=0
+  Seq=54 Timestamp=164 Side=Buy Cantidad=1 PrecioFill=95.11 CostoFriccion=0
+  Seq=55 Timestamp=165 Side=Sell Cantidad=1 PrecioFill=95.34 CostoFriccion=0
+  Seq=56 Timestamp=167 Side=Buy Cantidad=1 PrecioFill=95.39 CostoFriccion=0
+  Seq=57 Timestamp=172 Side=Buy Cantidad=1 PrecioFill=94.56 CostoFriccion=0
+  Seq=58 Timestamp=174 Side=Sell Cantidad=1 PrecioFill=94.96 CostoFriccion=0
+  Seq=59 Timestamp=179 Side=Sell Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=60 Timestamp=181 Side=Buy Cantidad=1 PrecioFill=94.63 CostoFriccion=0
+  Seq=61 Timestamp=182 Side=Sell Cantidad=1 PrecioFill=94.52 CostoFriccion=0
+  Seq=62 Timestamp=184 Side=Buy Cantidad=1 PrecioFill=94.4 CostoFriccion=0
+  Seq=63 Timestamp=185 Side=Sell Cantidad=1 PrecioFill=94.27 CostoFriccion=0
+  Seq=64 Timestamp=187 Side=Buy Cantidad=1 PrecioFill=94.25 CostoFriccion=0
+  Seq=65 Timestamp=192 Side=Sell Cantidad=1 PrecioFill=91.86 CostoFriccion=0
+  Seq=66 Timestamp=194 Side=Buy Cantidad=1 PrecioFill=91.69 CostoFriccion=0
+  Seq=67 Timestamp=199 Side=Buy Cantidad=1 PrecioFill=93.23 CostoFriccion=0
+  Seq=68 Timestamp=201 Side=Sell Cantidad=1 PrecioFill=93.65 CostoFriccion=0
+  Seq=69 Timestamp=202 Side=Buy Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=70 Timestamp=204 Side=Sell Cantidad=1 PrecioFill=94.72 CostoFriccion=0
+  Seq=71 Timestamp=205 Side=Buy Cantidad=1 PrecioFill=95.58 CostoFriccion=0
+  Seq=72 Timestamp=207 Side=Sell Cantidad=1 PrecioFill=97.34 CostoFriccion=0
+  Seq=73 Timestamp=212 Side=Buy Cantidad=1 PrecioFill=100.74 CostoFriccion=0
+  Seq=74 Timestamp=214 Side=Sell Cantidad=1 PrecioFill=101.91 CostoFriccion=0
+  Seq=75 Timestamp=219 Side=Buy Cantidad=1 PrecioFill=102.66 CostoFriccion=0
+  Seq=76 Timestamp=221 Side=Sell Cantidad=1 PrecioFill=102.89 CostoFriccion=0
+  Seq=77 Timestamp=226 Side=Buy Cantidad=1 PrecioFill=104.96 CostoFriccion=0
+  Seq=78 Timestamp=228 Side=Sell Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=79 Timestamp=229 Side=Buy Cantidad=1 PrecioFill=104.53 CostoFriccion=0
+  Seq=80 Timestamp=231 Side=Sell Cantidad=1 PrecioFill=105.03 CostoFriccion=0
+  Seq=81 Timestamp=232 Side=Buy Cantidad=1 PrecioFill=104.97 CostoFriccion=0
+  Seq=82 Timestamp=234 Side=Sell Cantidad=1 PrecioFill=102.26 CostoFriccion=0
+  Seq=83 Timestamp=239 Side=Buy Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=84 Timestamp=241 Side=Sell Cantidad=1 PrecioFill=101.18 CostoFriccion=0
+  Seq=85 Timestamp=242 Side=Buy Cantidad=1 PrecioFill=101.14 CostoFriccion=0
+  Seq=86 Timestamp=244 Side=Sell Cantidad=1 PrecioFill=101.31 CostoFriccion=0
+  Seq=87 Timestamp=249 Side=Sell Cantidad=1 PrecioFill=100.49 CostoFriccion=0
+  Seq=88 Timestamp=251 Side=Buy Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+
+=== MhiMayoria_Caso1_SinMartingala ===
+Estado: Success
+CashFinal: 1026.115
+Trades: 80
+PnL total: 36.21
+Ganadores: 56 · Perdedores: 24 · Neutros(PnL=0): 0
+EquityFinal: 1036.370
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  Trade: CantidadInicial=1 PrecioApertura=101.19 PrecioCierre=100.62 RealizedPnL=0.57
+  Trade: CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los trades de MhiMayoria_Caso1_SinMartingala ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  [2] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [3] CantidadInicial=1 PrecioApertura=103.56 PrecioCierre=103.61 RealizedPnL=0.05
+  [4] CantidadInicial=1 PrecioApertura=103.42 PrecioCierre=103.94 RealizedPnL=-0.52
+  [5] CantidadInicial=1 PrecioApertura=104.9 PrecioCierre=104.72 RealizedPnL=-0.18
+  [6] CantidadInicial=1 PrecioApertura=105.4 PrecioCierre=108.33 RealizedPnL=2.93
+  [7] CantidadInicial=1 PrecioApertura=107.86 PrecioCierre=108.25 RealizedPnL=-0.39
+  [8] CantidadInicial=1 PrecioApertura=106.76 PrecioCierre=103.1 RealizedPnL=3.66
+  [9] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=-1.08
+  [10] CantidadInicial=1 PrecioApertura=105.38 PrecioCierre=106.79 RealizedPnL=1.41
+  [11] CantidadInicial=1 PrecioApertura=106.87 PrecioCierre=104.8 RealizedPnL=-2.07
+  [12] CantidadInicial=1 PrecioApertura=104.88 PrecioCierre=103.55 RealizedPnL=1.33
+  [13] CantidadInicial=1 PrecioApertura=103.04 PrecioCierre=102.09 RealizedPnL=0.95
+  [14] CantidadInicial=1 PrecioApertura=100.13 PrecioCierre=101.58 RealizedPnL=-1.45
+  [15] CantidadInicial=1 PrecioApertura=101.51 PrecioCierre=102.73 RealizedPnL=1.22
+  [16] CantidadInicial=1 PrecioApertura=103.74 PrecioCierre=106.06 RealizedPnL=2.32
+  [17] CantidadInicial=1 PrecioApertura=104.77 PrecioCierre=107.05 RealizedPnL=2.28
+  [18] CantidadInicial=1 PrecioApertura=105.29 PrecioCierre=106.22 RealizedPnL=-0.93
+  [19] CantidadInicial=1 PrecioApertura=105.46 PrecioCierre=105.56 RealizedPnL=-0.10
+  [20] CantidadInicial=1 PrecioApertura=105.88 PrecioCierre=102.46 RealizedPnL=-3.42
+  [21] CantidadInicial=1 PrecioApertura=103.17 PrecioCierre=102.86 RealizedPnL=0.31
+  [22] CantidadInicial=1 PrecioApertura=102.49 PrecioCierre=101.34 RealizedPnL=1.15
+  [23] CantidadInicial=1 PrecioApertura=101.27 PrecioCierre=100.43 RealizedPnL=0.84
+  [24] CantidadInicial=1 PrecioApertura=100.85 PrecioCierre=99.73 RealizedPnL=1.12
+  [25] CantidadInicial=1 PrecioApertura=99.59 PrecioCierre=99.39 RealizedPnL=0.20
+  [26] CantidadInicial=1 PrecioApertura=99.11 PrecioCierre=97.69 RealizedPnL=1.42
+  [27] CantidadInicial=1 PrecioApertura=97.66 PrecioCierre=96.57 RealizedPnL=1.09
+  [28] CantidadInicial=1 PrecioApertura=97.11 PrecioCierre=98.53 RealizedPnL=-1.42
+  [29] CantidadInicial=1 PrecioApertura=98.48 PrecioCierre=97.79 RealizedPnL=0.69
+  [30] CantidadInicial=1 PrecioApertura=95.0 PrecioCierre=94.14 RealizedPnL=0.86
+  [31] CantidadInicial=1 PrecioApertura=93.85 PrecioCierre=93.56 RealizedPnL=0.29
+  [32] CantidadInicial=1 PrecioApertura=92.49 PrecioCierre=91.84 RealizedPnL=0.65
+  [33] CantidadInicial=1 PrecioApertura=90.72 PrecioCierre=89.66 RealizedPnL=1.06
+  [34] CantidadInicial=1 PrecioApertura=88.55 PrecioCierre=86.48 RealizedPnL=2.07
+  [35] CantidadInicial=1 PrecioApertura=86.18 PrecioCierre=85.83 RealizedPnL=0.35
+  [36] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=0.40
+  [37] CantidadInicial=1 PrecioApertura=86.84 PrecioCierre=87.32 RealizedPnL=0.48
+  [38] CantidadInicial=1 PrecioApertura=87.68 PrecioCierre=89.1 RealizedPnL=1.42
+  [39] CantidadInicial=1 PrecioApertura=86.85 PrecioCierre=87.43 RealizedPnL=0.58
+  [40] CantidadInicial=1 PrecioApertura=87.64 PrecioCierre=89.01 RealizedPnL=1.37
+  [41] CantidadInicial=1 PrecioApertura=89.19 PrecioCierre=87.48 RealizedPnL=-1.71
+  [42] CantidadInicial=1 PrecioApertura=88.22 PrecioCierre=89.5 RealizedPnL=1.28
+  [43] CantidadInicial=1 PrecioApertura=90.1 PrecioCierre=90.61 RealizedPnL=0.51
+  [44] CantidadInicial=1 PrecioApertura=91.16 PrecioCierre=91.47 RealizedPnL=0.31
+  [45] CantidadInicial=1 PrecioApertura=89.23 PrecioCierre=89.97 RealizedPnL=0.74
+  [46] CantidadInicial=1 PrecioApertura=90.09 PrecioCierre=91.12 RealizedPnL=1.03
+  [47] CantidadInicial=1 PrecioApertura=90.99 PrecioCierre=90.62 RealizedPnL=-0.37
+  [48] CantidadInicial=1 PrecioApertura=91.3 PrecioCierre=91.42 RealizedPnL=0.12
+  [49] CantidadInicial=1 PrecioApertura=91.04 PrecioCierre=91.33 RealizedPnL=-0.29
+  [50] CantidadInicial=1 PrecioApertura=91.84 PrecioCierre=91.71 RealizedPnL=-0.13
+  [51] CantidadInicial=1 PrecioApertura=91.73 PrecioCierre=93.71 RealizedPnL=1.98
+  [52] CantidadInicial=1 PrecioApertura=93.47 PrecioCierre=95.11 RealizedPnL=1.64
+  [53] CantidadInicial=1 PrecioApertura=95.34 PrecioCierre=95.39 RealizedPnL=0.05
+  [54] CantidadInicial=1 PrecioApertura=95.28 PrecioCierre=95.01 RealizedPnL=0.27
+  [55] CantidadInicial=1 PrecioApertura=94.51 PrecioCierre=94.88 RealizedPnL=-0.37
+  [56] CantidadInicial=1 PrecioApertura=94.96 PrecioCierre=94.65 RealizedPnL=-0.31
+  [57] CantidadInicial=1 PrecioApertura=94.47 PrecioCierre=94.63 RealizedPnL=-0.16
+  [58] CantidadInicial=1 PrecioApertura=94.52 PrecioCierre=94.4 RealizedPnL=-0.12
+  [59] CantidadInicial=1 PrecioApertura=94.27 PrecioCierre=94.25 RealizedPnL=0.02
+  [60] CantidadInicial=1 PrecioApertura=94.46 PrecioCierre=91.97 RealizedPnL=-2.49
+  [61] CantidadInicial=1 PrecioApertura=92.43 PrecioCierre=91.73 RealizedPnL=-0.70
+  [62] CantidadInicial=1 PrecioApertura=91.69 PrecioCierre=92.07 RealizedPnL=-0.38
+  [63] CantidadInicial=1 PrecioApertura=92.4 PrecioCierre=93.23 RealizedPnL=0.83
+  [64] CantidadInicial=1 PrecioApertura=93.78 PrecioCierre=94.51 RealizedPnL=0.73
+  [65] CantidadInicial=1 PrecioApertura=94.99 PrecioCierre=95.58 RealizedPnL=0.59
+  [66] CantidadInicial=1 PrecioApertura=95.76 PrecioCierre=98.23 RealizedPnL=2.47
+  [67] CantidadInicial=1 PrecioApertura=99.16 PrecioCierre=100.65 RealizedPnL=1.49
+  [68] CantidadInicial=1 PrecioApertura=100.74 PrecioCierre=101.91 RealizedPnL=1.17
+  [69] CantidadInicial=1 PrecioApertura=101.38 PrecioCierre=102.24 RealizedPnL=0.86
+  [70] CantidadInicial=1 PrecioApertura=102.54 PrecioCierre=102.71 RealizedPnL=0.17
+  [71] CantidadInicial=1 PrecioApertura=102.89 PrecioCierre=104.49 RealizedPnL=1.60
+  [72] CantidadInicial=1 PrecioApertura=104.6 PrecioCierre=104.96 RealizedPnL=0.36
+  [73] CantidadInicial=1 PrecioApertura=104.75 PrecioCierre=104.53 RealizedPnL=-0.22
+  [74] CantidadInicial=1 PrecioApertura=105.03 PrecioCierre=102.06 RealizedPnL=2.97
+  [75] CantidadInicial=1 PrecioApertura=102.26 PrecioCierre=102.15 RealizedPnL=0.11
+  [76] CantidadInicial=1 PrecioApertura=101.97 PrecioCierre=101.81 RealizedPnL=0.16
+  [77] CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  [78] CantidadInicial=1 PrecioApertura=101.19 PrecioCierre=100.62 RealizedPnL=0.57
+  [79] CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los fills de MhiMayoria_Caso1_SinMartingala ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=8 Side=Buy Cantidad=1 PrecioFill=101.08 CostoFriccion=0
+  Seq=4 Timestamp=10 Side=Sell Cantidad=1 PrecioFill=101.47 CostoFriccion=0
+  Seq=5 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=6 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=7 Timestamp=14 Side=Buy Cantidad=1 PrecioFill=103.56 CostoFriccion=0
+  Seq=8 Timestamp=16 Side=Sell Cantidad=1 PrecioFill=103.61 CostoFriccion=0
+  Seq=9 Timestamp=17 Side=Sell Cantidad=1 PrecioFill=103.42 CostoFriccion=0
+  Seq=10 Timestamp=19 Side=Buy Cantidad=1 PrecioFill=103.94 CostoFriccion=0
+  Seq=11 Timestamp=20 Side=Buy Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=12 Timestamp=22 Side=Sell Cantidad=1 PrecioFill=104.72 CostoFriccion=0
+  Seq=13 Timestamp=23 Side=Buy Cantidad=1 PrecioFill=105.4 CostoFriccion=0
+  Seq=14 Timestamp=25 Side=Sell Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=15 Timestamp=26 Side=Sell Cantidad=1 PrecioFill=107.86 CostoFriccion=0
+  Seq=16 Timestamp=28 Side=Buy Cantidad=1 PrecioFill=108.25 CostoFriccion=0
+  Seq=17 Timestamp=29 Side=Sell Cantidad=1 PrecioFill=106.76 CostoFriccion=0
+  Seq=18 Timestamp=31 Side=Buy Cantidad=1 PrecioFill=103.1 CostoFriccion=0
+  Seq=19 Timestamp=32 Side=Sell Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=20 Timestamp=34 Side=Buy Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=21 Timestamp=35 Side=Buy Cantidad=1 PrecioFill=105.38 CostoFriccion=0
+  Seq=22 Timestamp=37 Side=Sell Cantidad=1 PrecioFill=106.79 CostoFriccion=0
+  Seq=23 Timestamp=38 Side=Buy Cantidad=1 PrecioFill=106.87 CostoFriccion=0
+  Seq=24 Timestamp=40 Side=Sell Cantidad=1 PrecioFill=104.8 CostoFriccion=0
+  Seq=25 Timestamp=41 Side=Sell Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=26 Timestamp=43 Side=Buy Cantidad=1 PrecioFill=103.55 CostoFriccion=0
+  Seq=27 Timestamp=44 Side=Sell Cantidad=1 PrecioFill=103.04 CostoFriccion=0
+  Seq=28 Timestamp=46 Side=Buy Cantidad=1 PrecioFill=102.09 CostoFriccion=0
+  Seq=29 Timestamp=47 Side=Sell Cantidad=1 PrecioFill=100.13 CostoFriccion=0
+  Seq=30 Timestamp=49 Side=Buy Cantidad=1 PrecioFill=101.58 CostoFriccion=0
+  Seq=31 Timestamp=50 Side=Buy Cantidad=1 PrecioFill=101.51 CostoFriccion=0
+  Seq=32 Timestamp=52 Side=Sell Cantidad=1 PrecioFill=102.73 CostoFriccion=0
+  Seq=33 Timestamp=53 Side=Buy Cantidad=1 PrecioFill=103.74 CostoFriccion=0
+  Seq=34 Timestamp=55 Side=Sell Cantidad=1 PrecioFill=106.06 CostoFriccion=0
+  Seq=35 Timestamp=56 Side=Buy Cantidad=1 PrecioFill=104.77 CostoFriccion=0
+  Seq=36 Timestamp=58 Side=Sell Cantidad=1 PrecioFill=107.05 CostoFriccion=0
+  Seq=37 Timestamp=59 Side=Sell Cantidad=1 PrecioFill=105.29 CostoFriccion=0
+  Seq=38 Timestamp=61 Side=Buy Cantidad=1 PrecioFill=106.22 CostoFriccion=0
+  Seq=39 Timestamp=62 Side=Sell Cantidad=1 PrecioFill=105.46 CostoFriccion=0
+  Seq=40 Timestamp=64 Side=Buy Cantidad=1 PrecioFill=105.56 CostoFriccion=0
+  Seq=41 Timestamp=65 Side=Buy Cantidad=1 PrecioFill=105.88 CostoFriccion=0
+  Seq=42 Timestamp=67 Side=Sell Cantidad=1 PrecioFill=102.46 CostoFriccion=0
+  Seq=43 Timestamp=68 Side=Sell Cantidad=1 PrecioFill=103.17 CostoFriccion=0
+  Seq=44 Timestamp=70 Side=Buy Cantidad=1 PrecioFill=102.86 CostoFriccion=0
+  Seq=45 Timestamp=71 Side=Sell Cantidad=1 PrecioFill=102.49 CostoFriccion=0
+  Seq=46 Timestamp=73 Side=Buy Cantidad=1 PrecioFill=101.34 CostoFriccion=0
+  Seq=47 Timestamp=74 Side=Sell Cantidad=1 PrecioFill=101.27 CostoFriccion=0
+  Seq=48 Timestamp=76 Side=Buy Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=49 Timestamp=77 Side=Sell Cantidad=1 PrecioFill=100.85 CostoFriccion=0
+  Seq=50 Timestamp=79 Side=Buy Cantidad=1 PrecioFill=99.73 CostoFriccion=0
+  Seq=51 Timestamp=80 Side=Sell Cantidad=1 PrecioFill=99.59 CostoFriccion=0
+  Seq=52 Timestamp=82 Side=Buy Cantidad=1 PrecioFill=99.39 CostoFriccion=0
+  Seq=53 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=54 Timestamp=85 Side=Buy Cantidad=1 PrecioFill=97.69 CostoFriccion=0
+  Seq=55 Timestamp=86 Side=Sell Cantidad=1 PrecioFill=97.66 CostoFriccion=0
+  Seq=56 Timestamp=88 Side=Buy Cantidad=1 PrecioFill=96.57 CostoFriccion=0
+  Seq=57 Timestamp=89 Side=Sell Cantidad=1 PrecioFill=97.11 CostoFriccion=0
+  Seq=58 Timestamp=91 Side=Buy Cantidad=1 PrecioFill=98.53 CostoFriccion=0
+  Seq=59 Timestamp=92 Side=Sell Cantidad=1 PrecioFill=98.48 CostoFriccion=0
+  Seq=60 Timestamp=94 Side=Buy Cantidad=1 PrecioFill=97.79 CostoFriccion=0
+  Seq=61 Timestamp=95 Side=Sell Cantidad=1 PrecioFill=95.0 CostoFriccion=0
+  Seq=62 Timestamp=97 Side=Buy Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=63 Timestamp=98 Side=Sell Cantidad=1 PrecioFill=93.85 CostoFriccion=0
+  Seq=64 Timestamp=100 Side=Buy Cantidad=1 PrecioFill=93.56 CostoFriccion=0
+  Seq=65 Timestamp=101 Side=Sell Cantidad=1 PrecioFill=92.49 CostoFriccion=0
+  Seq=66 Timestamp=103 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=67 Timestamp=105 Side=Sell Cantidad=1 PrecioFill=90.72 CostoFriccion=0
+  Seq=68 Timestamp=107 Side=Buy Cantidad=1 PrecioFill=89.66 CostoFriccion=0
+  Seq=69 Timestamp=108 Side=Sell Cantidad=1 PrecioFill=88.55 CostoFriccion=0
+  Seq=70 Timestamp=110 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=71 Timestamp=111 Side=Sell Cantidad=1 PrecioFill=86.18 CostoFriccion=0
+  Seq=72 Timestamp=113 Side=Buy Cantidad=1 PrecioFill=85.83 CostoFriccion=0
+  Seq=73 Timestamp=114 Side=Buy Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=74 Timestamp=116 Side=Sell Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=75 Timestamp=117 Side=Buy Cantidad=1 PrecioFill=86.84 CostoFriccion=0
+  Seq=76 Timestamp=119 Side=Sell Cantidad=1 PrecioFill=87.32 CostoFriccion=0
+  Seq=77 Timestamp=120 Side=Buy Cantidad=1 PrecioFill=87.68 CostoFriccion=0
+  Seq=78 Timestamp=122 Side=Sell Cantidad=1 PrecioFill=89.1 CostoFriccion=0
+  Seq=79 Timestamp=123 Side=Buy Cantidad=1 PrecioFill=86.85 CostoFriccion=0
+  Seq=80 Timestamp=125 Side=Sell Cantidad=1 PrecioFill=87.43 CostoFriccion=0
+  Seq=81 Timestamp=126 Side=Buy Cantidad=1 PrecioFill=87.64 CostoFriccion=0
+  Seq=82 Timestamp=128 Side=Sell Cantidad=1 PrecioFill=89.01 CostoFriccion=0
+  Seq=83 Timestamp=129 Side=Buy Cantidad=1 PrecioFill=89.19 CostoFriccion=0
+  Seq=84 Timestamp=131 Side=Sell Cantidad=1 PrecioFill=87.48 CostoFriccion=0
+  Seq=85 Timestamp=132 Side=Buy Cantidad=1 PrecioFill=88.22 CostoFriccion=0
+  Seq=86 Timestamp=134 Side=Sell Cantidad=1 PrecioFill=89.5 CostoFriccion=0
+  Seq=87 Timestamp=135 Side=Buy Cantidad=1 PrecioFill=90.1 CostoFriccion=0
+  Seq=88 Timestamp=137 Side=Sell Cantidad=1 PrecioFill=90.61 CostoFriccion=0
+  Seq=89 Timestamp=138 Side=Buy Cantidad=1 PrecioFill=91.16 CostoFriccion=0
+  Seq=90 Timestamp=140 Side=Sell Cantidad=1 PrecioFill=91.47 CostoFriccion=0
+  Seq=91 Timestamp=141 Side=Buy Cantidad=1 PrecioFill=89.23 CostoFriccion=0
+  Seq=92 Timestamp=143 Side=Sell Cantidad=1 PrecioFill=89.97 CostoFriccion=0
+  Seq=93 Timestamp=144 Side=Buy Cantidad=1 PrecioFill=90.09 CostoFriccion=0
+  Seq=94 Timestamp=146 Side=Sell Cantidad=1 PrecioFill=91.12 CostoFriccion=0
+  Seq=95 Timestamp=147 Side=Buy Cantidad=1 PrecioFill=90.99 CostoFriccion=0
+  Seq=96 Timestamp=149 Side=Sell Cantidad=1 PrecioFill=90.62 CostoFriccion=0
+  Seq=97 Timestamp=150 Side=Buy Cantidad=1 PrecioFill=91.3 CostoFriccion=0
+  Seq=98 Timestamp=152 Side=Sell Cantidad=1 PrecioFill=91.42 CostoFriccion=0
+  Seq=99 Timestamp=153 Side=Sell Cantidad=1 PrecioFill=91.04 CostoFriccion=0
+  Seq=100 Timestamp=155 Side=Buy Cantidad=1 PrecioFill=91.33 CostoFriccion=0
+  Seq=101 Timestamp=156 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=102 Timestamp=158 Side=Sell Cantidad=1 PrecioFill=91.71 CostoFriccion=0
+  Seq=103 Timestamp=159 Side=Buy Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=104 Timestamp=161 Side=Sell Cantidad=1 PrecioFill=93.71 CostoFriccion=0
+  Seq=105 Timestamp=162 Side=Buy Cantidad=1 PrecioFill=93.47 CostoFriccion=0
+  Seq=106 Timestamp=164 Side=Sell Cantidad=1 PrecioFill=95.11 CostoFriccion=0
+  Seq=107 Timestamp=165 Side=Buy Cantidad=1 PrecioFill=95.34 CostoFriccion=0
+  Seq=108 Timestamp=167 Side=Sell Cantidad=1 PrecioFill=95.39 CostoFriccion=0
+  Seq=109 Timestamp=168 Side=Sell Cantidad=1 PrecioFill=95.28 CostoFriccion=0
+  Seq=110 Timestamp=170 Side=Buy Cantidad=1 PrecioFill=95.01 CostoFriccion=0
+  Seq=111 Timestamp=171 Side=Sell Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=112 Timestamp=173 Side=Buy Cantidad=1 PrecioFill=94.88 CostoFriccion=0
+  Seq=113 Timestamp=174 Side=Buy Cantidad=1 PrecioFill=94.96 CostoFriccion=0
+  Seq=114 Timestamp=176 Side=Sell Cantidad=1 PrecioFill=94.65 CostoFriccion=0
+  Seq=115 Timestamp=179 Side=Sell Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=116 Timestamp=181 Side=Buy Cantidad=1 PrecioFill=94.63 CostoFriccion=0
+  Seq=117 Timestamp=182 Side=Buy Cantidad=1 PrecioFill=94.52 CostoFriccion=0
+  Seq=118 Timestamp=184 Side=Sell Cantidad=1 PrecioFill=94.4 CostoFriccion=0
+  Seq=119 Timestamp=185 Side=Sell Cantidad=1 PrecioFill=94.27 CostoFriccion=0
+  Seq=120 Timestamp=187 Side=Buy Cantidad=1 PrecioFill=94.25 CostoFriccion=0
+  Seq=121 Timestamp=188 Side=Buy Cantidad=1 PrecioFill=94.46 CostoFriccion=0
+  Seq=122 Timestamp=190 Side=Sell Cantidad=1 PrecioFill=91.97 CostoFriccion=0
+  Seq=123 Timestamp=191 Side=Buy Cantidad=1 PrecioFill=92.43 CostoFriccion=0
+  Seq=124 Timestamp=193 Side=Sell Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=125 Timestamp=194 Side=Sell Cantidad=1 PrecioFill=91.69 CostoFriccion=0
+  Seq=126 Timestamp=196 Side=Buy Cantidad=1 PrecioFill=92.07 CostoFriccion=0
+  Seq=127 Timestamp=197 Side=Buy Cantidad=1 PrecioFill=92.4 CostoFriccion=0
+  Seq=128 Timestamp=199 Side=Sell Cantidad=1 PrecioFill=93.23 CostoFriccion=0
+  Seq=129 Timestamp=200 Side=Buy Cantidad=1 PrecioFill=93.78 CostoFriccion=0
+  Seq=130 Timestamp=202 Side=Sell Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=131 Timestamp=203 Side=Buy Cantidad=1 PrecioFill=94.99 CostoFriccion=0
+  Seq=132 Timestamp=205 Side=Sell Cantidad=1 PrecioFill=95.58 CostoFriccion=0
+  Seq=133 Timestamp=206 Side=Buy Cantidad=1 PrecioFill=95.76 CostoFriccion=0
+  Seq=134 Timestamp=208 Side=Sell Cantidad=1 PrecioFill=98.23 CostoFriccion=0
+  Seq=135 Timestamp=209 Side=Buy Cantidad=1 PrecioFill=99.16 CostoFriccion=0
+  Seq=136 Timestamp=211 Side=Sell Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+  Seq=137 Timestamp=212 Side=Buy Cantidad=1 PrecioFill=100.74 CostoFriccion=0
+  Seq=138 Timestamp=214 Side=Sell Cantidad=1 PrecioFill=101.91 CostoFriccion=0
+  Seq=139 Timestamp=215 Side=Buy Cantidad=1 PrecioFill=101.38 CostoFriccion=0
+  Seq=140 Timestamp=217 Side=Sell Cantidad=1 PrecioFill=102.24 CostoFriccion=0
+  Seq=141 Timestamp=218 Side=Buy Cantidad=1 PrecioFill=102.54 CostoFriccion=0
+  Seq=142 Timestamp=220 Side=Sell Cantidad=1 PrecioFill=102.71 CostoFriccion=0
+  Seq=143 Timestamp=221 Side=Buy Cantidad=1 PrecioFill=102.89 CostoFriccion=0
+  Seq=144 Timestamp=223 Side=Sell Cantidad=1 PrecioFill=104.49 CostoFriccion=0
+  Seq=145 Timestamp=224 Side=Buy Cantidad=1 PrecioFill=104.6 CostoFriccion=0
+  Seq=146 Timestamp=226 Side=Sell Cantidad=1 PrecioFill=104.96 CostoFriccion=0
+  Seq=147 Timestamp=227 Side=Buy Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=148 Timestamp=229 Side=Sell Cantidad=1 PrecioFill=104.53 CostoFriccion=0
+  Seq=149 Timestamp=231 Side=Sell Cantidad=1 PrecioFill=105.03 CostoFriccion=0
+  Seq=150 Timestamp=233 Side=Buy Cantidad=1 PrecioFill=102.06 CostoFriccion=0
+  Seq=151 Timestamp=234 Side=Sell Cantidad=1 PrecioFill=102.26 CostoFriccion=0
+  Seq=152 Timestamp=236 Side=Buy Cantidad=1 PrecioFill=102.15 CostoFriccion=0
+  Seq=153 Timestamp=237 Side=Sell Cantidad=1 PrecioFill=101.97 CostoFriccion=0
+  Seq=154 Timestamp=239 Side=Buy Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=155 Timestamp=240 Side=Sell Cantidad=1 PrecioFill=101.52 CostoFriccion=0
+  Seq=156 Timestamp=242 Side=Buy Cantidad=1 PrecioFill=101.14 CostoFriccion=0
+  Seq=157 Timestamp=246 Side=Sell Cantidad=1 PrecioFill=101.19 CostoFriccion=0
+  Seq=158 Timestamp=248 Side=Buy Cantidad=1 PrecioFill=100.62 CostoFriccion=0
+  Seq=159 Timestamp=249 Side=Sell Cantidad=1 PrecioFill=100.49 CostoFriccion=0
+  Seq=160 Timestamp=251 Side=Buy Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+  Seq=161 Timestamp=252 Side=Buy Cantidad=1 PrecioFill=100.95 CostoFriccion=0
+
+=== MhiMayoria_Caso2_1Martingala ===
+Estado: Success
+CashFinal: 1022.595
+Trades: 81
+PnL total: 32.66
+Ganadores: 55 · Perdedores: 26 · Neutros(PnL=0): 0
+EquityFinal: 1032.200
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=101.14 PrecioCierre=101.31 RealizedPnL=-0.17
+  Trade: CantidadInicial=1 PrecioApertura=101.23 PrecioCierre=101.1 RealizedPnL=0.13
+  Trade: CantidadInicial=1 PrecioApertura=100.62 PrecioCierre=100.68 RealizedPnL=-0.06
+--- TODOS los trades de MhiMayoria_Caso2_1Martingala ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  [2] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [3] CantidadInicial=1 PrecioApertura=103.56 PrecioCierre=103.61 RealizedPnL=0.05
+  [4] CantidadInicial=1 PrecioApertura=103.42 PrecioCierre=103.94 RealizedPnL=-0.52
+  [5] CantidadInicial=1 PrecioApertura=104.9 PrecioCierre=104.72 RealizedPnL=0.18
+  [6] CantidadInicial=1 PrecioApertura=105.4 PrecioCierre=108.33 RealizedPnL=2.93
+  [7] CantidadInicial=1 PrecioApertura=107.86 PrecioCierre=108.25 RealizedPnL=-0.39
+  [8] CantidadInicial=1 PrecioApertura=106.76 PrecioCierre=103.1 RealizedPnL=3.66
+  [9] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=-1.08
+  [10] CantidadInicial=1 PrecioApertura=105.38 PrecioCierre=106.79 RealizedPnL=-1.41
+  [11] CantidadInicial=1 PrecioApertura=106.87 PrecioCierre=104.8 RealizedPnL=-2.07
+  [12] CantidadInicial=1 PrecioApertura=104.88 PrecioCierre=103.55 RealizedPnL=-1.33
+  [13] CantidadInicial=1 PrecioApertura=103.04 PrecioCierre=102.09 RealizedPnL=0.95
+  [14] CantidadInicial=1 PrecioApertura=100.13 PrecioCierre=101.58 RealizedPnL=-1.45
+  [15] CantidadInicial=1 PrecioApertura=101.51 PrecioCierre=102.73 RealizedPnL=1.22
+  [16] CantidadInicial=1 PrecioApertura=103.74 PrecioCierre=106.06 RealizedPnL=2.32
+  [17] CantidadInicial=1 PrecioApertura=104.77 PrecioCierre=107.05 RealizedPnL=2.28
+  [18] CantidadInicial=1 PrecioApertura=105.29 PrecioCierre=106.22 RealizedPnL=-0.93
+  [19] CantidadInicial=1 PrecioApertura=105.46 PrecioCierre=105.56 RealizedPnL=-0.10
+  [20] CantidadInicial=1 PrecioApertura=105.88 PrecioCierre=102.46 RealizedPnL=-3.42
+  [21] CantidadInicial=1 PrecioApertura=103.17 PrecioCierre=102.86 RealizedPnL=-0.31
+  [22] CantidadInicial=1 PrecioApertura=102.49 PrecioCierre=101.34 RealizedPnL=1.15
+  [23] CantidadInicial=1 PrecioApertura=101.27 PrecioCierre=100.43 RealizedPnL=0.84
+  [24] CantidadInicial=1 PrecioApertura=100.85 PrecioCierre=99.73 RealizedPnL=1.12
+  [25] CantidadInicial=1 PrecioApertura=99.59 PrecioCierre=99.39 RealizedPnL=0.20
+  [26] CantidadInicial=1 PrecioApertura=99.11 PrecioCierre=97.69 RealizedPnL=1.42
+  [27] CantidadInicial=1 PrecioApertura=97.66 PrecioCierre=96.57 RealizedPnL=1.09
+  [28] CantidadInicial=1 PrecioApertura=97.11 PrecioCierre=98.53 RealizedPnL=-1.42
+  [29] CantidadInicial=1 PrecioApertura=98.48 PrecioCierre=97.79 RealizedPnL=0.69
+  [30] CantidadInicial=1 PrecioApertura=95.0 PrecioCierre=94.14 RealizedPnL=0.86
+  [31] CantidadInicial=1 PrecioApertura=93.85 PrecioCierre=93.56 RealizedPnL=0.29
+  [32] CantidadInicial=1 PrecioApertura=92.49 PrecioCierre=91.84 RealizedPnL=0.65
+  [33] CantidadInicial=1 PrecioApertura=90.72 PrecioCierre=89.66 RealizedPnL=1.06
+  [34] CantidadInicial=1 PrecioApertura=88.55 PrecioCierre=86.48 RealizedPnL=2.07
+  [35] CantidadInicial=1 PrecioApertura=86.18 PrecioCierre=85.83 RealizedPnL=0.35
+  [36] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=-0.40
+  [37] CantidadInicial=1 PrecioApertura=86.84 PrecioCierre=87.32 RealizedPnL=0.48
+  [38] CantidadInicial=1 PrecioApertura=87.68 PrecioCierre=89.1 RealizedPnL=1.42
+  [39] CantidadInicial=1 PrecioApertura=86.85 PrecioCierre=87.43 RealizedPnL=0.58
+  [40] CantidadInicial=1 PrecioApertura=87.64 PrecioCierre=89.01 RealizedPnL=1.37
+  [41] CantidadInicial=1 PrecioApertura=89.19 PrecioCierre=87.48 RealizedPnL=-1.71
+  [42] CantidadInicial=1 PrecioApertura=88.22 PrecioCierre=89.5 RealizedPnL=1.28
+  [43] CantidadInicial=1 PrecioApertura=90.1 PrecioCierre=90.61 RealizedPnL=0.51
+  [44] CantidadInicial=1 PrecioApertura=91.16 PrecioCierre=91.47 RealizedPnL=0.31
+  [45] CantidadInicial=1 PrecioApertura=89.23 PrecioCierre=89.97 RealizedPnL=0.74
+  [46] CantidadInicial=1 PrecioApertura=90.09 PrecioCierre=91.12 RealizedPnL=1.03
+  [47] CantidadInicial=1 PrecioApertura=90.99 PrecioCierre=90.62 RealizedPnL=-0.37
+  [48] CantidadInicial=1 PrecioApertura=91.3 PrecioCierre=91.42 RealizedPnL=0.12
+  [49] CantidadInicial=1 PrecioApertura=91.04 PrecioCierre=91.33 RealizedPnL=-0.29
+  [50] CantidadInicial=1 PrecioApertura=91.84 PrecioCierre=91.71 RealizedPnL=0.13
+  [51] CantidadInicial=1 PrecioApertura=91.73 PrecioCierre=93.71 RealizedPnL=1.98
+  [52] CantidadInicial=1 PrecioApertura=93.47 PrecioCierre=95.11 RealizedPnL=1.64
+  [53] CantidadInicial=1 PrecioApertura=95.34 PrecioCierre=95.39 RealizedPnL=0.05
+  [54] CantidadInicial=1 PrecioApertura=95.28 PrecioCierre=95.01 RealizedPnL=-0.27
+  [55] CantidadInicial=1 PrecioApertura=94.51 PrecioCierre=94.88 RealizedPnL=-0.37
+  [56] CantidadInicial=1 PrecioApertura=94.96 PrecioCierre=94.65 RealizedPnL=0.31
+  [57] CantidadInicial=1 PrecioApertura=94.47 PrecioCierre=94.63 RealizedPnL=-0.16
+  [58] CantidadInicial=1 PrecioApertura=94.52 PrecioCierre=94.4 RealizedPnL=0.12
+  [59] CantidadInicial=1 PrecioApertura=94.27 PrecioCierre=94.25 RealizedPnL=0.02
+  [60] CantidadInicial=1 PrecioApertura=94.46 PrecioCierre=91.97 RealizedPnL=2.49
+  [61] CantidadInicial=1 PrecioApertura=92.43 PrecioCierre=91.73 RealizedPnL=-0.70
+  [62] CantidadInicial=1 PrecioApertura=91.69 PrecioCierre=92.07 RealizedPnL=0.38
+  [63] CantidadInicial=1 PrecioApertura=92.4 PrecioCierre=93.23 RealizedPnL=0.83
+  [64] CantidadInicial=1 PrecioApertura=93.78 PrecioCierre=94.51 RealizedPnL=0.73
+  [65] CantidadInicial=1 PrecioApertura=94.99 PrecioCierre=95.58 RealizedPnL=0.59
+  [66] CantidadInicial=1 PrecioApertura=95.76 PrecioCierre=98.23 RealizedPnL=2.47
+  [67] CantidadInicial=1 PrecioApertura=99.16 PrecioCierre=100.65 RealizedPnL=1.49
+  [68] CantidadInicial=1 PrecioApertura=100.74 PrecioCierre=101.91 RealizedPnL=1.17
+  [69] CantidadInicial=1 PrecioApertura=101.38 PrecioCierre=102.24 RealizedPnL=0.86
+  [70] CantidadInicial=1 PrecioApertura=102.54 PrecioCierre=102.71 RealizedPnL=0.17
+  [71] CantidadInicial=1 PrecioApertura=102.89 PrecioCierre=104.49 RealizedPnL=1.60
+  [72] CantidadInicial=1 PrecioApertura=104.6 PrecioCierre=104.96 RealizedPnL=0.36
+  [73] CantidadInicial=1 PrecioApertura=104.75 PrecioCierre=104.53 RealizedPnL=-0.22
+  [74] CantidadInicial=1 PrecioApertura=105.08 PrecioCierre=104.97 RealizedPnL=-0.11
+  [75] CantidadInicial=1 PrecioApertura=102.06 PrecioCierre=102.44 RealizedPnL=-0.38
+  [76] CantidadInicial=1 PrecioApertura=102.15 PrecioCierre=101.49 RealizedPnL=0.66
+  [77] CantidadInicial=1 PrecioApertura=101.81 PrecioCierre=101.18 RealizedPnL=0.63
+  [78] CantidadInicial=1 PrecioApertura=101.14 PrecioCierre=101.31 RealizedPnL=-0.17
+  [79] CantidadInicial=1 PrecioApertura=101.23 PrecioCierre=101.1 RealizedPnL=0.13
+  [80] CantidadInicial=1 PrecioApertura=100.62 PrecioCierre=100.68 RealizedPnL=-0.06
+--- TODOS los fills de MhiMayoria_Caso2_1Martingala ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=8 Side=Buy Cantidad=1 PrecioFill=101.08 CostoFriccion=0
+  Seq=4 Timestamp=10 Side=Sell Cantidad=1 PrecioFill=101.47 CostoFriccion=0
+  Seq=5 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=6 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=7 Timestamp=14 Side=Buy Cantidad=1 PrecioFill=103.56 CostoFriccion=0
+  Seq=8 Timestamp=16 Side=Sell Cantidad=1 PrecioFill=103.61 CostoFriccion=0
+  Seq=9 Timestamp=17 Side=Sell Cantidad=1 PrecioFill=103.42 CostoFriccion=0
+  Seq=10 Timestamp=19 Side=Buy Cantidad=1 PrecioFill=103.94 CostoFriccion=0
+  Seq=11 Timestamp=20 Side=Sell Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=12 Timestamp=22 Side=Buy Cantidad=1 PrecioFill=104.72 CostoFriccion=0
+  Seq=13 Timestamp=23 Side=Buy Cantidad=1 PrecioFill=105.4 CostoFriccion=0
+  Seq=14 Timestamp=25 Side=Sell Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=15 Timestamp=26 Side=Sell Cantidad=1 PrecioFill=107.86 CostoFriccion=0
+  Seq=16 Timestamp=28 Side=Buy Cantidad=1 PrecioFill=108.25 CostoFriccion=0
+  Seq=17 Timestamp=29 Side=Sell Cantidad=1 PrecioFill=106.76 CostoFriccion=0
+  Seq=18 Timestamp=31 Side=Buy Cantidad=1 PrecioFill=103.1 CostoFriccion=0
+  Seq=19 Timestamp=32 Side=Sell Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=20 Timestamp=34 Side=Buy Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=21 Timestamp=35 Side=Sell Cantidad=1 PrecioFill=105.38 CostoFriccion=0
+  Seq=22 Timestamp=37 Side=Buy Cantidad=1 PrecioFill=106.79 CostoFriccion=0
+  Seq=23 Timestamp=38 Side=Buy Cantidad=1 PrecioFill=106.87 CostoFriccion=0
+  Seq=24 Timestamp=40 Side=Sell Cantidad=1 PrecioFill=104.8 CostoFriccion=0
+  Seq=25 Timestamp=41 Side=Buy Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=26 Timestamp=43 Side=Sell Cantidad=1 PrecioFill=103.55 CostoFriccion=0
+  Seq=27 Timestamp=44 Side=Sell Cantidad=1 PrecioFill=103.04 CostoFriccion=0
+  Seq=28 Timestamp=46 Side=Buy Cantidad=1 PrecioFill=102.09 CostoFriccion=0
+  Seq=29 Timestamp=47 Side=Sell Cantidad=1 PrecioFill=100.13 CostoFriccion=0
+  Seq=30 Timestamp=49 Side=Buy Cantidad=1 PrecioFill=101.58 CostoFriccion=0
+  Seq=31 Timestamp=50 Side=Buy Cantidad=1 PrecioFill=101.51 CostoFriccion=0
+  Seq=32 Timestamp=52 Side=Sell Cantidad=1 PrecioFill=102.73 CostoFriccion=0
+  Seq=33 Timestamp=53 Side=Buy Cantidad=1 PrecioFill=103.74 CostoFriccion=0
+  Seq=34 Timestamp=55 Side=Sell Cantidad=1 PrecioFill=106.06 CostoFriccion=0
+  Seq=35 Timestamp=56 Side=Buy Cantidad=1 PrecioFill=104.77 CostoFriccion=0
+  Seq=36 Timestamp=58 Side=Sell Cantidad=1 PrecioFill=107.05 CostoFriccion=0
+  Seq=37 Timestamp=59 Side=Sell Cantidad=1 PrecioFill=105.29 CostoFriccion=0
+  Seq=38 Timestamp=61 Side=Buy Cantidad=1 PrecioFill=106.22 CostoFriccion=0
+  Seq=39 Timestamp=62 Side=Sell Cantidad=1 PrecioFill=105.46 CostoFriccion=0
+  Seq=40 Timestamp=64 Side=Buy Cantidad=1 PrecioFill=105.56 CostoFriccion=0
+  Seq=41 Timestamp=65 Side=Buy Cantidad=1 PrecioFill=105.88 CostoFriccion=0
+  Seq=42 Timestamp=67 Side=Sell Cantidad=1 PrecioFill=102.46 CostoFriccion=0
+  Seq=43 Timestamp=68 Side=Buy Cantidad=1 PrecioFill=103.17 CostoFriccion=0
+  Seq=44 Timestamp=70 Side=Sell Cantidad=1 PrecioFill=102.86 CostoFriccion=0
+  Seq=45 Timestamp=71 Side=Sell Cantidad=1 PrecioFill=102.49 CostoFriccion=0
+  Seq=46 Timestamp=73 Side=Buy Cantidad=1 PrecioFill=101.34 CostoFriccion=0
+  Seq=47 Timestamp=74 Side=Sell Cantidad=1 PrecioFill=101.27 CostoFriccion=0
+  Seq=48 Timestamp=76 Side=Buy Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=49 Timestamp=77 Side=Sell Cantidad=1 PrecioFill=100.85 CostoFriccion=0
+  Seq=50 Timestamp=79 Side=Buy Cantidad=1 PrecioFill=99.73 CostoFriccion=0
+  Seq=51 Timestamp=80 Side=Sell Cantidad=1 PrecioFill=99.59 CostoFriccion=0
+  Seq=52 Timestamp=82 Side=Buy Cantidad=1 PrecioFill=99.39 CostoFriccion=0
+  Seq=53 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=54 Timestamp=85 Side=Buy Cantidad=1 PrecioFill=97.69 CostoFriccion=0
+  Seq=55 Timestamp=86 Side=Sell Cantidad=1 PrecioFill=97.66 CostoFriccion=0
+  Seq=56 Timestamp=88 Side=Buy Cantidad=1 PrecioFill=96.57 CostoFriccion=0
+  Seq=57 Timestamp=89 Side=Sell Cantidad=1 PrecioFill=97.11 CostoFriccion=0
+  Seq=58 Timestamp=91 Side=Buy Cantidad=1 PrecioFill=98.53 CostoFriccion=0
+  Seq=59 Timestamp=92 Side=Sell Cantidad=1 PrecioFill=98.48 CostoFriccion=0
+  Seq=60 Timestamp=94 Side=Buy Cantidad=1 PrecioFill=97.79 CostoFriccion=0
+  Seq=61 Timestamp=95 Side=Sell Cantidad=1 PrecioFill=95.0 CostoFriccion=0
+  Seq=62 Timestamp=97 Side=Buy Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=63 Timestamp=98 Side=Sell Cantidad=1 PrecioFill=93.85 CostoFriccion=0
+  Seq=64 Timestamp=100 Side=Buy Cantidad=1 PrecioFill=93.56 CostoFriccion=0
+  Seq=65 Timestamp=101 Side=Sell Cantidad=1 PrecioFill=92.49 CostoFriccion=0
+  Seq=66 Timestamp=103 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=67 Timestamp=105 Side=Sell Cantidad=1 PrecioFill=90.72 CostoFriccion=0
+  Seq=68 Timestamp=107 Side=Buy Cantidad=1 PrecioFill=89.66 CostoFriccion=0
+  Seq=69 Timestamp=108 Side=Sell Cantidad=1 PrecioFill=88.55 CostoFriccion=0
+  Seq=70 Timestamp=110 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=71 Timestamp=111 Side=Sell Cantidad=1 PrecioFill=86.18 CostoFriccion=0
+  Seq=72 Timestamp=113 Side=Buy Cantidad=1 PrecioFill=85.83 CostoFriccion=0
+  Seq=73 Timestamp=114 Side=Sell Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=74 Timestamp=116 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=75 Timestamp=117 Side=Buy Cantidad=1 PrecioFill=86.84 CostoFriccion=0
+  Seq=76 Timestamp=119 Side=Sell Cantidad=1 PrecioFill=87.32 CostoFriccion=0
+  Seq=77 Timestamp=120 Side=Buy Cantidad=1 PrecioFill=87.68 CostoFriccion=0
+  Seq=78 Timestamp=122 Side=Sell Cantidad=1 PrecioFill=89.1 CostoFriccion=0
+  Seq=79 Timestamp=123 Side=Buy Cantidad=1 PrecioFill=86.85 CostoFriccion=0
+  Seq=80 Timestamp=125 Side=Sell Cantidad=1 PrecioFill=87.43 CostoFriccion=0
+  Seq=81 Timestamp=126 Side=Buy Cantidad=1 PrecioFill=87.64 CostoFriccion=0
+  Seq=82 Timestamp=128 Side=Sell Cantidad=1 PrecioFill=89.01 CostoFriccion=0
+  Seq=83 Timestamp=129 Side=Buy Cantidad=1 PrecioFill=89.19 CostoFriccion=0
+  Seq=84 Timestamp=131 Side=Sell Cantidad=1 PrecioFill=87.48 CostoFriccion=0
+  Seq=85 Timestamp=132 Side=Buy Cantidad=1 PrecioFill=88.22 CostoFriccion=0
+  Seq=86 Timestamp=134 Side=Sell Cantidad=1 PrecioFill=89.5 CostoFriccion=0
+  Seq=87 Timestamp=135 Side=Buy Cantidad=1 PrecioFill=90.1 CostoFriccion=0
+  Seq=88 Timestamp=137 Side=Sell Cantidad=1 PrecioFill=90.61 CostoFriccion=0
+  Seq=89 Timestamp=138 Side=Buy Cantidad=1 PrecioFill=91.16 CostoFriccion=0
+  Seq=90 Timestamp=140 Side=Sell Cantidad=1 PrecioFill=91.47 CostoFriccion=0
+  Seq=91 Timestamp=141 Side=Buy Cantidad=1 PrecioFill=89.23 CostoFriccion=0
+  Seq=92 Timestamp=143 Side=Sell Cantidad=1 PrecioFill=89.97 CostoFriccion=0
+  Seq=93 Timestamp=144 Side=Buy Cantidad=1 PrecioFill=90.09 CostoFriccion=0
+  Seq=94 Timestamp=146 Side=Sell Cantidad=1 PrecioFill=91.12 CostoFriccion=0
+  Seq=95 Timestamp=147 Side=Buy Cantidad=1 PrecioFill=90.99 CostoFriccion=0
+  Seq=96 Timestamp=149 Side=Sell Cantidad=1 PrecioFill=90.62 CostoFriccion=0
+  Seq=97 Timestamp=150 Side=Buy Cantidad=1 PrecioFill=91.3 CostoFriccion=0
+  Seq=98 Timestamp=152 Side=Sell Cantidad=1 PrecioFill=91.42 CostoFriccion=0
+  Seq=99 Timestamp=153 Side=Sell Cantidad=1 PrecioFill=91.04 CostoFriccion=0
+  Seq=100 Timestamp=155 Side=Buy Cantidad=1 PrecioFill=91.33 CostoFriccion=0
+  Seq=101 Timestamp=156 Side=Sell Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=102 Timestamp=158 Side=Buy Cantidad=1 PrecioFill=91.71 CostoFriccion=0
+  Seq=103 Timestamp=159 Side=Buy Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=104 Timestamp=161 Side=Sell Cantidad=1 PrecioFill=93.71 CostoFriccion=0
+  Seq=105 Timestamp=162 Side=Buy Cantidad=1 PrecioFill=93.47 CostoFriccion=0
+  Seq=106 Timestamp=164 Side=Sell Cantidad=1 PrecioFill=95.11 CostoFriccion=0
+  Seq=107 Timestamp=165 Side=Buy Cantidad=1 PrecioFill=95.34 CostoFriccion=0
+  Seq=108 Timestamp=167 Side=Sell Cantidad=1 PrecioFill=95.39 CostoFriccion=0
+  Seq=109 Timestamp=168 Side=Buy Cantidad=1 PrecioFill=95.28 CostoFriccion=0
+  Seq=110 Timestamp=170 Side=Sell Cantidad=1 PrecioFill=95.01 CostoFriccion=0
+  Seq=111 Timestamp=171 Side=Sell Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=112 Timestamp=173 Side=Buy Cantidad=1 PrecioFill=94.88 CostoFriccion=0
+  Seq=113 Timestamp=174 Side=Sell Cantidad=1 PrecioFill=94.96 CostoFriccion=0
+  Seq=114 Timestamp=176 Side=Buy Cantidad=1 PrecioFill=94.65 CostoFriccion=0
+  Seq=115 Timestamp=179 Side=Sell Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=116 Timestamp=181 Side=Buy Cantidad=1 PrecioFill=94.63 CostoFriccion=0
+  Seq=117 Timestamp=182 Side=Sell Cantidad=1 PrecioFill=94.52 CostoFriccion=0
+  Seq=118 Timestamp=184 Side=Buy Cantidad=1 PrecioFill=94.4 CostoFriccion=0
+  Seq=119 Timestamp=185 Side=Sell Cantidad=1 PrecioFill=94.27 CostoFriccion=0
+  Seq=120 Timestamp=187 Side=Buy Cantidad=1 PrecioFill=94.25 CostoFriccion=0
+  Seq=121 Timestamp=188 Side=Sell Cantidad=1 PrecioFill=94.46 CostoFriccion=0
+  Seq=122 Timestamp=190 Side=Buy Cantidad=1 PrecioFill=91.97 CostoFriccion=0
+  Seq=123 Timestamp=191 Side=Buy Cantidad=1 PrecioFill=92.43 CostoFriccion=0
+  Seq=124 Timestamp=193 Side=Sell Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=125 Timestamp=194 Side=Buy Cantidad=1 PrecioFill=91.69 CostoFriccion=0
+  Seq=126 Timestamp=196 Side=Sell Cantidad=1 PrecioFill=92.07 CostoFriccion=0
+  Seq=127 Timestamp=197 Side=Buy Cantidad=1 PrecioFill=92.4 CostoFriccion=0
+  Seq=128 Timestamp=199 Side=Sell Cantidad=1 PrecioFill=93.23 CostoFriccion=0
+  Seq=129 Timestamp=200 Side=Buy Cantidad=1 PrecioFill=93.78 CostoFriccion=0
+  Seq=130 Timestamp=202 Side=Sell Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=131 Timestamp=203 Side=Buy Cantidad=1 PrecioFill=94.99 CostoFriccion=0
+  Seq=132 Timestamp=205 Side=Sell Cantidad=1 PrecioFill=95.58 CostoFriccion=0
+  Seq=133 Timestamp=206 Side=Buy Cantidad=1 PrecioFill=95.76 CostoFriccion=0
+  Seq=134 Timestamp=208 Side=Sell Cantidad=1 PrecioFill=98.23 CostoFriccion=0
+  Seq=135 Timestamp=209 Side=Buy Cantidad=1 PrecioFill=99.16 CostoFriccion=0
+  Seq=136 Timestamp=211 Side=Sell Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+  Seq=137 Timestamp=212 Side=Buy Cantidad=1 PrecioFill=100.74 CostoFriccion=0
+  Seq=138 Timestamp=214 Side=Sell Cantidad=1 PrecioFill=101.91 CostoFriccion=0
+  Seq=139 Timestamp=215 Side=Buy Cantidad=1 PrecioFill=101.38 CostoFriccion=0
+  Seq=140 Timestamp=217 Side=Sell Cantidad=1 PrecioFill=102.24 CostoFriccion=0
+  Seq=141 Timestamp=218 Side=Buy Cantidad=1 PrecioFill=102.54 CostoFriccion=0
+  Seq=142 Timestamp=220 Side=Sell Cantidad=1 PrecioFill=102.71 CostoFriccion=0
+  Seq=143 Timestamp=221 Side=Buy Cantidad=1 PrecioFill=102.89 CostoFriccion=0
+  Seq=144 Timestamp=223 Side=Sell Cantidad=1 PrecioFill=104.49 CostoFriccion=0
+  Seq=145 Timestamp=224 Side=Buy Cantidad=1 PrecioFill=104.6 CostoFriccion=0
+  Seq=146 Timestamp=226 Side=Sell Cantidad=1 PrecioFill=104.96 CostoFriccion=0
+  Seq=147 Timestamp=227 Side=Buy Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=148 Timestamp=229 Side=Sell Cantidad=1 PrecioFill=104.53 CostoFriccion=0
+  Seq=149 Timestamp=230 Side=Buy Cantidad=1 PrecioFill=105.08 CostoFriccion=0
+  Seq=150 Timestamp=232 Side=Sell Cantidad=1 PrecioFill=104.97 CostoFriccion=0
+  Seq=151 Timestamp=233 Side=Sell Cantidad=1 PrecioFill=102.06 CostoFriccion=0
+  Seq=152 Timestamp=235 Side=Buy Cantidad=1 PrecioFill=102.44 CostoFriccion=0
+  Seq=153 Timestamp=236 Side=Sell Cantidad=1 PrecioFill=102.15 CostoFriccion=0
+  Seq=154 Timestamp=238 Side=Buy Cantidad=1 PrecioFill=101.49 CostoFriccion=0
+  Seq=155 Timestamp=239 Side=Sell Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=156 Timestamp=241 Side=Buy Cantidad=1 PrecioFill=101.18 CostoFriccion=0
+  Seq=157 Timestamp=242 Side=Sell Cantidad=1 PrecioFill=101.14 CostoFriccion=0
+  Seq=158 Timestamp=244 Side=Buy Cantidad=1 PrecioFill=101.31 CostoFriccion=0
+  Seq=159 Timestamp=245 Side=Sell Cantidad=1 PrecioFill=101.23 CostoFriccion=0
+  Seq=160 Timestamp=247 Side=Buy Cantidad=1 PrecioFill=101.1 CostoFriccion=0
+  Seq=161 Timestamp=248 Side=Sell Cantidad=1 PrecioFill=100.62 CostoFriccion=0
+  Seq=162 Timestamp=250 Side=Buy Cantidad=1 PrecioFill=100.68 CostoFriccion=0
+  Seq=163 Timestamp=251 Side=Sell Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+
+=== MhiMayoria_Caso3_2Martingalas ===
+Estado: Success
+CashFinal: 1020.665
+Trades: 81
+PnL total: 30.76
+Ganadores: 54 · Perdedores: 26 · Neutros(PnL=0): 1
+EquityFinal: 1030.920
+  Trade: CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  Trade: CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  Trade: CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  ...
+  Trade: CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  Trade: CantidadInicial=1 PrecioApertura=101.19 PrecioCierre=100.62 RealizedPnL=0.57
+  Trade: CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los trades de MhiMayoria_Caso3_2Martingalas ---
+  [0] CantidadInicial=1 PrecioApertura=100.77 PrecioCierre=99.9 RealizedPnL=-0.87
+  [1] CantidadInicial=1 PrecioApertura=101.08 PrecioCierre=101.47 RealizedPnL=0.39
+  [2] CantidadInicial=1 PrecioApertura=102.18 PrecioCierre=102.93 RealizedPnL=0.75
+  [3] CantidadInicial=1 PrecioApertura=103.56 PrecioCierre=103.61 RealizedPnL=0.05
+  [4] CantidadInicial=1 PrecioApertura=103.42 PrecioCierre=103.94 RealizedPnL=-0.52
+  [5] CantidadInicial=1 PrecioApertura=104.9 PrecioCierre=104.72 RealizedPnL=0.18
+  [6] CantidadInicial=1 PrecioApertura=105.4 PrecioCierre=108.33 RealizedPnL=-2.93
+  [7] CantidadInicial=1 PrecioApertura=107.86 PrecioCierre=108.25 RealizedPnL=-0.39
+  [8] CantidadInicial=1 PrecioApertura=106.76 PrecioCierre=103.1 RealizedPnL=3.66
+  [9] CantidadInicial=1 PrecioApertura=103.51 PrecioCierre=104.59 RealizedPnL=-1.08
+  [10] CantidadInicial=1 PrecioApertura=105.38 PrecioCierre=106.79 RealizedPnL=-1.41
+  [11] CantidadInicial=1 PrecioApertura=106.87 PrecioCierre=104.8 RealizedPnL=2.07
+  [12] CantidadInicial=1 PrecioApertura=104.88 PrecioCierre=103.55 RealizedPnL=1.33
+  [13] CantidadInicial=1 PrecioApertura=103.04 PrecioCierre=102.09 RealizedPnL=0.95
+  [14] CantidadInicial=1 PrecioApertura=100.13 PrecioCierre=101.58 RealizedPnL=-1.45
+  [15] CantidadInicial=1 PrecioApertura=101.51 PrecioCierre=102.73 RealizedPnL=-1.22
+  [16] CantidadInicial=1 PrecioApertura=103.74 PrecioCierre=106.06 RealizedPnL=2.32
+  [17] CantidadInicial=1 PrecioApertura=104.77 PrecioCierre=107.05 RealizedPnL=2.28
+  [18] CantidadInicial=1 PrecioApertura=105.29 PrecioCierre=106.22 RealizedPnL=-0.93
+  [19] CantidadInicial=1 PrecioApertura=105.46 PrecioCierre=105.56 RealizedPnL=-0.10
+  [20] CantidadInicial=1 PrecioApertura=105.88 PrecioCierre=102.46 RealizedPnL=3.42
+  [21] CantidadInicial=1 PrecioApertura=103.17 PrecioCierre=102.86 RealizedPnL=0.31
+  [22] CantidadInicial=1 PrecioApertura=102.49 PrecioCierre=101.34 RealizedPnL=1.15
+  [23] CantidadInicial=1 PrecioApertura=101.27 PrecioCierre=100.43 RealizedPnL=0.84
+  [24] CantidadInicial=1 PrecioApertura=100.85 PrecioCierre=99.73 RealizedPnL=1.12
+  [25] CantidadInicial=1 PrecioApertura=99.59 PrecioCierre=99.39 RealizedPnL=0.20
+  [26] CantidadInicial=1 PrecioApertura=99.11 PrecioCierre=97.69 RealizedPnL=1.42
+  [27] CantidadInicial=1 PrecioApertura=97.66 PrecioCierre=96.57 RealizedPnL=1.09
+  [28] CantidadInicial=1 PrecioApertura=97.11 PrecioCierre=98.53 RealizedPnL=-1.42
+  [29] CantidadInicial=1 PrecioApertura=98.48 PrecioCierre=97.79 RealizedPnL=0.69
+  [30] CantidadInicial=1 PrecioApertura=95.0 PrecioCierre=94.14 RealizedPnL=0.86
+  [31] CantidadInicial=1 PrecioApertura=93.85 PrecioCierre=93.56 RealizedPnL=0.29
+  [32] CantidadInicial=1 PrecioApertura=92.49 PrecioCierre=91.84 RealizedPnL=0.65
+  [33] CantidadInicial=1 PrecioApertura=90.72 PrecioCierre=89.66 RealizedPnL=1.06
+  [34] CantidadInicial=1 PrecioApertura=88.55 PrecioCierre=86.48 RealizedPnL=2.07
+  [35] CantidadInicial=1 PrecioApertura=86.18 PrecioCierre=85.83 RealizedPnL=0.35
+  [36] CantidadInicial=1 PrecioApertura=86.08 PrecioCierre=86.48 RealizedPnL=-0.40
+  [37] CantidadInicial=1 PrecioApertura=86.84 PrecioCierre=87.32 RealizedPnL=-0.48
+  [38] CantidadInicial=1 PrecioApertura=87.68 PrecioCierre=89.1 RealizedPnL=1.42
+  [39] CantidadInicial=1 PrecioApertura=86.85 PrecioCierre=87.43 RealizedPnL=0.58
+  [40] CantidadInicial=1 PrecioApertura=87.64 PrecioCierre=89.01 RealizedPnL=1.37
+  [41] CantidadInicial=1 PrecioApertura=89.19 PrecioCierre=87.48 RealizedPnL=-1.71
+  [42] CantidadInicial=1 PrecioApertura=88.22 PrecioCierre=89.5 RealizedPnL=1.28
+  [43] CantidadInicial=1 PrecioApertura=90.1 PrecioCierre=90.61 RealizedPnL=0.51
+  [44] CantidadInicial=1 PrecioApertura=91.16 PrecioCierre=91.47 RealizedPnL=0.31
+  [45] CantidadInicial=1 PrecioApertura=89.23 PrecioCierre=89.97 RealizedPnL=0.74
+  [46] CantidadInicial=1 PrecioApertura=90.09 PrecioCierre=91.12 RealizedPnL=1.03
+  [47] CantidadInicial=1 PrecioApertura=90.99 PrecioCierre=90.62 RealizedPnL=-0.37
+  [48] CantidadInicial=1 PrecioApertura=91.3 PrecioCierre=91.42 RealizedPnL=0.12
+  [49] CantidadInicial=1 PrecioApertura=91.04 PrecioCierre=91.33 RealizedPnL=-0.29
+  [50] CantidadInicial=1 PrecioApertura=91.84 PrecioCierre=91.71 RealizedPnL=0.13
+  [51] CantidadInicial=1 PrecioApertura=91.73 PrecioCierre=93.71 RealizedPnL=1.98
+  [52] CantidadInicial=1 PrecioApertura=93.47 PrecioCierre=95.11 RealizedPnL=1.64
+  [53] CantidadInicial=1 PrecioApertura=95.34 PrecioCierre=95.39 RealizedPnL=0.05
+  [54] CantidadInicial=1 PrecioApertura=95.28 PrecioCierre=95.01 RealizedPnL=-0.27
+  [55] CantidadInicial=1 PrecioApertura=94.51 PrecioCierre=94.88 RealizedPnL=0.37
+  [56] CantidadInicial=1 PrecioApertura=94.96 PrecioCierre=94.65 RealizedPnL=-0.31
+  [57] CantidadInicial=1 PrecioApertura=94.47 PrecioCierre=94.47 RealizedPnL=0.00
+  [58] CantidadInicial=1 PrecioApertura=94.56 PrecioCierre=94.52 RealizedPnL=-0.04
+  [59] CantidadInicial=1 PrecioApertura=94.3 PrecioCierre=94.27 RealizedPnL=0.03
+  [60] CantidadInicial=1 PrecioApertura=94.16 PrecioCierre=94.46 RealizedPnL=-0.30
+  [61] CantidadInicial=1 PrecioApertura=91.74 PrecioCierre=92.43 RealizedPnL=-0.69
+  [62] CantidadInicial=1 PrecioApertura=91.86 PrecioCierre=91.69 RealizedPnL=0.17
+  [63] CantidadInicial=1 PrecioApertura=91.51 PrecioCierre=92.4 RealizedPnL=-0.89
+  [64] CantidadInicial=1 PrecioApertura=92.65 PrecioCierre=93.78 RealizedPnL=-1.13
+  [65] CantidadInicial=1 PrecioApertura=93.65 PrecioCierre=94.99 RealizedPnL=-1.34
+  [66] CantidadInicial=1 PrecioApertura=94.72 PrecioCierre=95.76 RealizedPnL=1.04
+  [67] CantidadInicial=1 PrecioApertura=97.34 PrecioCierre=99.16 RealizedPnL=1.82
+  [68] CantidadInicial=1 PrecioApertura=99.95 PrecioCierre=100.74 RealizedPnL=0.79
+  [69] CantidadInicial=1 PrecioApertura=100.87 PrecioCierre=101.38 RealizedPnL=0.51
+  [70] CantidadInicial=1 PrecioApertura=102.13 PrecioCierre=102.54 RealizedPnL=0.41
+  [71] CantidadInicial=1 PrecioApertura=102.66 PrecioCierre=102.89 RealizedPnL=0.23
+  [72] CantidadInicial=1 PrecioApertura=103.61 PrecioCierre=104.6 RealizedPnL=0.99
+  [73] CantidadInicial=1 PrecioApertura=104.83 PrecioCierre=104.75 RealizedPnL=-0.08
+  [74] CantidadInicial=1 PrecioApertura=104.75 PrecioCierre=105.08 RealizedPnL=0.33
+  [75] CantidadInicial=1 PrecioApertura=105.03 PrecioCierre=102.06 RealizedPnL=2.97
+  [76] CantidadInicial=1 PrecioApertura=102.26 PrecioCierre=102.15 RealizedPnL=0.11
+  [77] CantidadInicial=1 PrecioApertura=101.97 PrecioCierre=101.81 RealizedPnL=0.16
+  [78] CantidadInicial=1 PrecioApertura=101.52 PrecioCierre=101.14 RealizedPnL=0.38
+  [79] CantidadInicial=1 PrecioApertura=101.19 PrecioCierre=100.62 RealizedPnL=0.57
+  [80] CantidadInicial=1 PrecioApertura=100.49 PrecioCierre=100.65 RealizedPnL=-0.16
+--- TODOS los fills de MhiMayoria_Caso3_2Martingalas ---
+  Seq=1 Timestamp=4 Side=Buy Cantidad=1 PrecioFill=100.77 CostoFriccion=0
+  Seq=2 Timestamp=6 Side=Sell Cantidad=1 PrecioFill=99.9 CostoFriccion=0
+  Seq=3 Timestamp=8 Side=Buy Cantidad=1 PrecioFill=101.08 CostoFriccion=0
+  Seq=4 Timestamp=10 Side=Sell Cantidad=1 PrecioFill=101.47 CostoFriccion=0
+  Seq=5 Timestamp=11 Side=Buy Cantidad=1 PrecioFill=102.18 CostoFriccion=0
+  Seq=6 Timestamp=13 Side=Sell Cantidad=1 PrecioFill=102.93 CostoFriccion=0
+  Seq=7 Timestamp=14 Side=Buy Cantidad=1 PrecioFill=103.56 CostoFriccion=0
+  Seq=8 Timestamp=16 Side=Sell Cantidad=1 PrecioFill=103.61 CostoFriccion=0
+  Seq=9 Timestamp=17 Side=Sell Cantidad=1 PrecioFill=103.42 CostoFriccion=0
+  Seq=10 Timestamp=19 Side=Buy Cantidad=1 PrecioFill=103.94 CostoFriccion=0
+  Seq=11 Timestamp=20 Side=Sell Cantidad=1 PrecioFill=104.9 CostoFriccion=0
+  Seq=12 Timestamp=22 Side=Buy Cantidad=1 PrecioFill=104.72 CostoFriccion=0
+  Seq=13 Timestamp=23 Side=Sell Cantidad=1 PrecioFill=105.4 CostoFriccion=0
+  Seq=14 Timestamp=25 Side=Buy Cantidad=1 PrecioFill=108.33 CostoFriccion=0
+  Seq=15 Timestamp=26 Side=Sell Cantidad=1 PrecioFill=107.86 CostoFriccion=0
+  Seq=16 Timestamp=28 Side=Buy Cantidad=1 PrecioFill=108.25 CostoFriccion=0
+  Seq=17 Timestamp=29 Side=Sell Cantidad=1 PrecioFill=106.76 CostoFriccion=0
+  Seq=18 Timestamp=31 Side=Buy Cantidad=1 PrecioFill=103.1 CostoFriccion=0
+  Seq=19 Timestamp=32 Side=Sell Cantidad=1 PrecioFill=103.51 CostoFriccion=0
+  Seq=20 Timestamp=34 Side=Buy Cantidad=1 PrecioFill=104.59 CostoFriccion=0
+  Seq=21 Timestamp=35 Side=Sell Cantidad=1 PrecioFill=105.38 CostoFriccion=0
+  Seq=22 Timestamp=37 Side=Buy Cantidad=1 PrecioFill=106.79 CostoFriccion=0
+  Seq=23 Timestamp=38 Side=Sell Cantidad=1 PrecioFill=106.87 CostoFriccion=0
+  Seq=24 Timestamp=40 Side=Buy Cantidad=1 PrecioFill=104.8 CostoFriccion=0
+  Seq=25 Timestamp=41 Side=Sell Cantidad=1 PrecioFill=104.88 CostoFriccion=0
+  Seq=26 Timestamp=43 Side=Buy Cantidad=1 PrecioFill=103.55 CostoFriccion=0
+  Seq=27 Timestamp=44 Side=Sell Cantidad=1 PrecioFill=103.04 CostoFriccion=0
+  Seq=28 Timestamp=46 Side=Buy Cantidad=1 PrecioFill=102.09 CostoFriccion=0
+  Seq=29 Timestamp=47 Side=Sell Cantidad=1 PrecioFill=100.13 CostoFriccion=0
+  Seq=30 Timestamp=49 Side=Buy Cantidad=1 PrecioFill=101.58 CostoFriccion=0
+  Seq=31 Timestamp=50 Side=Sell Cantidad=1 PrecioFill=101.51 CostoFriccion=0
+  Seq=32 Timestamp=52 Side=Buy Cantidad=1 PrecioFill=102.73 CostoFriccion=0
+  Seq=33 Timestamp=53 Side=Buy Cantidad=1 PrecioFill=103.74 CostoFriccion=0
+  Seq=34 Timestamp=55 Side=Sell Cantidad=1 PrecioFill=106.06 CostoFriccion=0
+  Seq=35 Timestamp=56 Side=Buy Cantidad=1 PrecioFill=104.77 CostoFriccion=0
+  Seq=36 Timestamp=58 Side=Sell Cantidad=1 PrecioFill=107.05 CostoFriccion=0
+  Seq=37 Timestamp=59 Side=Sell Cantidad=1 PrecioFill=105.29 CostoFriccion=0
+  Seq=38 Timestamp=61 Side=Buy Cantidad=1 PrecioFill=106.22 CostoFriccion=0
+  Seq=39 Timestamp=62 Side=Sell Cantidad=1 PrecioFill=105.46 CostoFriccion=0
+  Seq=40 Timestamp=64 Side=Buy Cantidad=1 PrecioFill=105.56 CostoFriccion=0
+  Seq=41 Timestamp=65 Side=Sell Cantidad=1 PrecioFill=105.88 CostoFriccion=0
+  Seq=42 Timestamp=67 Side=Buy Cantidad=1 PrecioFill=102.46 CostoFriccion=0
+  Seq=43 Timestamp=68 Side=Sell Cantidad=1 PrecioFill=103.17 CostoFriccion=0
+  Seq=44 Timestamp=70 Side=Buy Cantidad=1 PrecioFill=102.86 CostoFriccion=0
+  Seq=45 Timestamp=71 Side=Sell Cantidad=1 PrecioFill=102.49 CostoFriccion=0
+  Seq=46 Timestamp=73 Side=Buy Cantidad=1 PrecioFill=101.34 CostoFriccion=0
+  Seq=47 Timestamp=74 Side=Sell Cantidad=1 PrecioFill=101.27 CostoFriccion=0
+  Seq=48 Timestamp=76 Side=Buy Cantidad=1 PrecioFill=100.43 CostoFriccion=0
+  Seq=49 Timestamp=77 Side=Sell Cantidad=1 PrecioFill=100.85 CostoFriccion=0
+  Seq=50 Timestamp=79 Side=Buy Cantidad=1 PrecioFill=99.73 CostoFriccion=0
+  Seq=51 Timestamp=80 Side=Sell Cantidad=1 PrecioFill=99.59 CostoFriccion=0
+  Seq=52 Timestamp=82 Side=Buy Cantidad=1 PrecioFill=99.39 CostoFriccion=0
+  Seq=53 Timestamp=83 Side=Sell Cantidad=1 PrecioFill=99.11 CostoFriccion=0
+  Seq=54 Timestamp=85 Side=Buy Cantidad=1 PrecioFill=97.69 CostoFriccion=0
+  Seq=55 Timestamp=86 Side=Sell Cantidad=1 PrecioFill=97.66 CostoFriccion=0
+  Seq=56 Timestamp=88 Side=Buy Cantidad=1 PrecioFill=96.57 CostoFriccion=0
+  Seq=57 Timestamp=89 Side=Sell Cantidad=1 PrecioFill=97.11 CostoFriccion=0
+  Seq=58 Timestamp=91 Side=Buy Cantidad=1 PrecioFill=98.53 CostoFriccion=0
+  Seq=59 Timestamp=92 Side=Sell Cantidad=1 PrecioFill=98.48 CostoFriccion=0
+  Seq=60 Timestamp=94 Side=Buy Cantidad=1 PrecioFill=97.79 CostoFriccion=0
+  Seq=61 Timestamp=95 Side=Sell Cantidad=1 PrecioFill=95.0 CostoFriccion=0
+  Seq=62 Timestamp=97 Side=Buy Cantidad=1 PrecioFill=94.14 CostoFriccion=0
+  Seq=63 Timestamp=98 Side=Sell Cantidad=1 PrecioFill=93.85 CostoFriccion=0
+  Seq=64 Timestamp=100 Side=Buy Cantidad=1 PrecioFill=93.56 CostoFriccion=0
+  Seq=65 Timestamp=101 Side=Sell Cantidad=1 PrecioFill=92.49 CostoFriccion=0
+  Seq=66 Timestamp=103 Side=Buy Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=67 Timestamp=105 Side=Sell Cantidad=1 PrecioFill=90.72 CostoFriccion=0
+  Seq=68 Timestamp=107 Side=Buy Cantidad=1 PrecioFill=89.66 CostoFriccion=0
+  Seq=69 Timestamp=108 Side=Sell Cantidad=1 PrecioFill=88.55 CostoFriccion=0
+  Seq=70 Timestamp=110 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=71 Timestamp=111 Side=Sell Cantidad=1 PrecioFill=86.18 CostoFriccion=0
+  Seq=72 Timestamp=113 Side=Buy Cantidad=1 PrecioFill=85.83 CostoFriccion=0
+  Seq=73 Timestamp=114 Side=Sell Cantidad=1 PrecioFill=86.08 CostoFriccion=0
+  Seq=74 Timestamp=116 Side=Buy Cantidad=1 PrecioFill=86.48 CostoFriccion=0
+  Seq=75 Timestamp=117 Side=Sell Cantidad=1 PrecioFill=86.84 CostoFriccion=0
+  Seq=76 Timestamp=119 Side=Buy Cantidad=1 PrecioFill=87.32 CostoFriccion=0
+  Seq=77 Timestamp=120 Side=Buy Cantidad=1 PrecioFill=87.68 CostoFriccion=0
+  Seq=78 Timestamp=122 Side=Sell Cantidad=1 PrecioFill=89.1 CostoFriccion=0
+  Seq=79 Timestamp=123 Side=Buy Cantidad=1 PrecioFill=86.85 CostoFriccion=0
+  Seq=80 Timestamp=125 Side=Sell Cantidad=1 PrecioFill=87.43 CostoFriccion=0
+  Seq=81 Timestamp=126 Side=Buy Cantidad=1 PrecioFill=87.64 CostoFriccion=0
+  Seq=82 Timestamp=128 Side=Sell Cantidad=1 PrecioFill=89.01 CostoFriccion=0
+  Seq=83 Timestamp=129 Side=Buy Cantidad=1 PrecioFill=89.19 CostoFriccion=0
+  Seq=84 Timestamp=131 Side=Sell Cantidad=1 PrecioFill=87.48 CostoFriccion=0
+  Seq=85 Timestamp=132 Side=Buy Cantidad=1 PrecioFill=88.22 CostoFriccion=0
+  Seq=86 Timestamp=134 Side=Sell Cantidad=1 PrecioFill=89.5 CostoFriccion=0
+  Seq=87 Timestamp=135 Side=Buy Cantidad=1 PrecioFill=90.1 CostoFriccion=0
+  Seq=88 Timestamp=137 Side=Sell Cantidad=1 PrecioFill=90.61 CostoFriccion=0
+  Seq=89 Timestamp=138 Side=Buy Cantidad=1 PrecioFill=91.16 CostoFriccion=0
+  Seq=90 Timestamp=140 Side=Sell Cantidad=1 PrecioFill=91.47 CostoFriccion=0
+  Seq=91 Timestamp=141 Side=Buy Cantidad=1 PrecioFill=89.23 CostoFriccion=0
+  Seq=92 Timestamp=143 Side=Sell Cantidad=1 PrecioFill=89.97 CostoFriccion=0
+  Seq=93 Timestamp=144 Side=Buy Cantidad=1 PrecioFill=90.09 CostoFriccion=0
+  Seq=94 Timestamp=146 Side=Sell Cantidad=1 PrecioFill=91.12 CostoFriccion=0
+  Seq=95 Timestamp=147 Side=Buy Cantidad=1 PrecioFill=90.99 CostoFriccion=0
+  Seq=96 Timestamp=149 Side=Sell Cantidad=1 PrecioFill=90.62 CostoFriccion=0
+  Seq=97 Timestamp=150 Side=Buy Cantidad=1 PrecioFill=91.3 CostoFriccion=0
+  Seq=98 Timestamp=152 Side=Sell Cantidad=1 PrecioFill=91.42 CostoFriccion=0
+  Seq=99 Timestamp=153 Side=Sell Cantidad=1 PrecioFill=91.04 CostoFriccion=0
+  Seq=100 Timestamp=155 Side=Buy Cantidad=1 PrecioFill=91.33 CostoFriccion=0
+  Seq=101 Timestamp=156 Side=Sell Cantidad=1 PrecioFill=91.84 CostoFriccion=0
+  Seq=102 Timestamp=158 Side=Buy Cantidad=1 PrecioFill=91.71 CostoFriccion=0
+  Seq=103 Timestamp=159 Side=Buy Cantidad=1 PrecioFill=91.73 CostoFriccion=0
+  Seq=104 Timestamp=161 Side=Sell Cantidad=1 PrecioFill=93.71 CostoFriccion=0
+  Seq=105 Timestamp=162 Side=Buy Cantidad=1 PrecioFill=93.47 CostoFriccion=0
+  Seq=106 Timestamp=164 Side=Sell Cantidad=1 PrecioFill=95.11 CostoFriccion=0
+  Seq=107 Timestamp=165 Side=Buy Cantidad=1 PrecioFill=95.34 CostoFriccion=0
+  Seq=108 Timestamp=167 Side=Sell Cantidad=1 PrecioFill=95.39 CostoFriccion=0
+  Seq=109 Timestamp=168 Side=Buy Cantidad=1 PrecioFill=95.28 CostoFriccion=0
+  Seq=110 Timestamp=170 Side=Sell Cantidad=1 PrecioFill=95.01 CostoFriccion=0
+  Seq=111 Timestamp=171 Side=Buy Cantidad=1 PrecioFill=94.51 CostoFriccion=0
+  Seq=112 Timestamp=173 Side=Sell Cantidad=1 PrecioFill=94.88 CostoFriccion=0
+  Seq=113 Timestamp=174 Side=Buy Cantidad=1 PrecioFill=94.96 CostoFriccion=0
+  Seq=114 Timestamp=176 Side=Sell Cantidad=1 PrecioFill=94.65 CostoFriccion=0
+  Seq=115 Timestamp=177 Side=Buy Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=116 Timestamp=179 Side=Sell Cantidad=1 PrecioFill=94.47 CostoFriccion=0
+  Seq=117 Timestamp=180 Side=Buy Cantidad=1 PrecioFill=94.56 CostoFriccion=0
+  Seq=118 Timestamp=182 Side=Sell Cantidad=1 PrecioFill=94.52 CostoFriccion=0
+  Seq=119 Timestamp=183 Side=Sell Cantidad=1 PrecioFill=94.3 CostoFriccion=0
+  Seq=120 Timestamp=185 Side=Buy Cantidad=1 PrecioFill=94.27 CostoFriccion=0
+  Seq=121 Timestamp=186 Side=Sell Cantidad=1 PrecioFill=94.16 CostoFriccion=0
+  Seq=122 Timestamp=188 Side=Buy Cantidad=1 PrecioFill=94.46 CostoFriccion=0
+  Seq=123 Timestamp=189 Side=Sell Cantidad=1 PrecioFill=91.74 CostoFriccion=0
+  Seq=124 Timestamp=191 Side=Buy Cantidad=1 PrecioFill=92.43 CostoFriccion=0
+  Seq=125 Timestamp=192 Side=Sell Cantidad=1 PrecioFill=91.86 CostoFriccion=0
+  Seq=126 Timestamp=194 Side=Buy Cantidad=1 PrecioFill=91.69 CostoFriccion=0
+  Seq=127 Timestamp=195 Side=Sell Cantidad=1 PrecioFill=91.51 CostoFriccion=0
+  Seq=128 Timestamp=197 Side=Buy Cantidad=1 PrecioFill=92.4 CostoFriccion=0
+  Seq=129 Timestamp=198 Side=Sell Cantidad=1 PrecioFill=92.65 CostoFriccion=0
+  Seq=130 Timestamp=200 Side=Buy Cantidad=1 PrecioFill=93.78 CostoFriccion=0
+  Seq=131 Timestamp=201 Side=Sell Cantidad=1 PrecioFill=93.65 CostoFriccion=0
+  Seq=132 Timestamp=203 Side=Buy Cantidad=1 PrecioFill=94.99 CostoFriccion=0
+  Seq=133 Timestamp=204 Side=Buy Cantidad=1 PrecioFill=94.72 CostoFriccion=0
+  Seq=134 Timestamp=206 Side=Sell Cantidad=1 PrecioFill=95.76 CostoFriccion=0
+  Seq=135 Timestamp=207 Side=Buy Cantidad=1 PrecioFill=97.34 CostoFriccion=0
+  Seq=136 Timestamp=209 Side=Sell Cantidad=1 PrecioFill=99.16 CostoFriccion=0
+  Seq=137 Timestamp=210 Side=Buy Cantidad=1 PrecioFill=99.95 CostoFriccion=0
+  Seq=138 Timestamp=212 Side=Sell Cantidad=1 PrecioFill=100.74 CostoFriccion=0
+  Seq=139 Timestamp=213 Side=Buy Cantidad=1 PrecioFill=100.87 CostoFriccion=0
+  Seq=140 Timestamp=215 Side=Sell Cantidad=1 PrecioFill=101.38 CostoFriccion=0
+  Seq=141 Timestamp=216 Side=Buy Cantidad=1 PrecioFill=102.13 CostoFriccion=0
+  Seq=142 Timestamp=218 Side=Sell Cantidad=1 PrecioFill=102.54 CostoFriccion=0
+  Seq=143 Timestamp=219 Side=Buy Cantidad=1 PrecioFill=102.66 CostoFriccion=0
+  Seq=144 Timestamp=221 Side=Sell Cantidad=1 PrecioFill=102.89 CostoFriccion=0
+  Seq=145 Timestamp=222 Side=Buy Cantidad=1 PrecioFill=103.61 CostoFriccion=0
+  Seq=146 Timestamp=224 Side=Sell Cantidad=1 PrecioFill=104.6 CostoFriccion=0
+  Seq=147 Timestamp=225 Side=Buy Cantidad=1 PrecioFill=104.83 CostoFriccion=0
+  Seq=148 Timestamp=227 Side=Sell Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=149 Timestamp=228 Side=Buy Cantidad=1 PrecioFill=104.75 CostoFriccion=0
+  Seq=150 Timestamp=230 Side=Sell Cantidad=1 PrecioFill=105.08 CostoFriccion=0
+  Seq=151 Timestamp=231 Side=Sell Cantidad=1 PrecioFill=105.03 CostoFriccion=0
+  Seq=152 Timestamp=233 Side=Buy Cantidad=1 PrecioFill=102.06 CostoFriccion=0
+  Seq=153 Timestamp=234 Side=Sell Cantidad=1 PrecioFill=102.26 CostoFriccion=0
+  Seq=154 Timestamp=236 Side=Buy Cantidad=1 PrecioFill=102.15 CostoFriccion=0
+  Seq=155 Timestamp=237 Side=Sell Cantidad=1 PrecioFill=101.97 CostoFriccion=0
+  Seq=156 Timestamp=239 Side=Buy Cantidad=1 PrecioFill=101.81 CostoFriccion=0
+  Seq=157 Timestamp=240 Side=Sell Cantidad=1 PrecioFill=101.52 CostoFriccion=0
+  Seq=158 Timestamp=242 Side=Buy Cantidad=1 PrecioFill=101.14 CostoFriccion=0
+  Seq=159 Timestamp=246 Side=Sell Cantidad=1 PrecioFill=101.19 CostoFriccion=0
+  Seq=160 Timestamp=248 Side=Buy Cantidad=1 PrecioFill=100.62 CostoFriccion=0
+  Seq=161 Timestamp=249 Side=Sell Cantidad=1 PrecioFill=100.49 CostoFriccion=0
+  Seq=162 Timestamp=251 Side=Buy Cantidad=1 PrecioFill=100.65 CostoFriccion=0
+  Seq=163 Timestamp=252 Side=Buy Cantidad=1 PrecioFill=100.95 CostoFriccion=0
