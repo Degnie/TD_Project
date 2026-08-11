@@ -5,5 +5,6 @@ public sealed record FillLogEntryDto(
     string Side,
     decimal Cantidad,
     decimal PrecioFill,
+    decimal CostoFriccionReal,
     long VelaTimestamp,
     string TipoOrdenOriginal);

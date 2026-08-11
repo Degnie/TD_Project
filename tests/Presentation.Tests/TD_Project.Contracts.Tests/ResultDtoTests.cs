@@ -10,7 +10,7 @@ public class ResultDtoTests
         ExperimentInfo: new ExperimentInfoDto(FechaInicioTimestamp: 1, FechaFinTimestamp: 10, TotalVelas: 10),
         EquityCurve: new[] { new EquityPointDto(Timestamp: 2, Cash: 900m, Margin: 100m, UnrealizedPnL: 50m, Equity: 1050m) },
         Trades: new[] { new TradeDto(CantidadInicial: 10m, PrecioApertura: 100m, PrecioCierre: 110m, RealizedPnL: 100m) },
-        FillLog: new[] { new FillLogEntryDto(SecuenciaCausal: 1, Side: "Buy", Cantidad: 10m, PrecioFill: 100m, VelaTimestamp: 2, TipoOrdenOriginal: "Market") },
+        FillLog: new[] { new FillLogEntryDto(SecuenciaCausal: 1, Side: "Buy", Cantidad: 10m, PrecioFill: 100m, CostoFriccionReal: 0.5m, VelaTimestamp: 2, TipoOrdenOriginal: "Market") },
         PortfolioSnapshots: new[] { new PortfolioSnapshotDto(Timestamp: 2, Cash: 900m, Margin: 100m, LotesVivos: new[] { new LoteDto(Cantidad: 10m, PrecioEntrada: 100m, Margin: 100m) }) },
         Metrics: new MetricsDto(EquityFinal: 1050m, PnLTotal: 100m, TotalTrades: 1),
         BranchResolutions: new[] { new BranchResolutionDto(Timestamp: 2, TrayectoriaOficial: "A", EquityA: 1050m, EquityB: 1040m, FillsA: Array.Empty<FillLogEntryDto>(), FillsB: Array.Empty<FillLogEntryDto>()) });

@@ -29,7 +29,7 @@ public static class ResultDtoMapper
             FillLog: fillLog,
             PortfolioSnapshots: portfolioSnapshots,
             Metrics: new MetricsDto(
-                EquityFinal: equityCurve.Count > 0 ? equityCurve[^1].Equity : 0m,
+                EquityFinal: resultado.EquityCurve.Count > 0 ? EquityFinalReportado(resultado.EquityCurve[^1]) : 0m,
                 PnLTotal: trades.Sum(t => t.RealizedPnL),
                 TotalTrades: trades.Count),
             BranchResolutions: branchResolutions);
@@ -38,11 +38,17 @@ public static class ResultDtoMapper
     private static EquityPointDto MapearEquityPoint(EquityPoint p) =>
         new(p.Timestamp, p.Cash, p.Margin, p.UnrealizedPnL, p.Equity);
 
+    // spec: RNF-05 — Equity_rep = Cash_rep + Margin_rep + UnrealizedPnL_rep, redondeo Half-to-Even
+    // a 2 decimales exclusivo al final. EquityCurve conserva precision completa (RNF-05 tambien
+    // exige 8 decimales intermedios); solo el agregado de reporte en Metrics se redondea.
+    private static decimal EquityFinalReportado(EquityPoint ultimo) =>
+        RedondeoReporte.EquityReportado(ultimo.Cash, ultimo.Margin, ultimo.UnrealizedPnL);
+
     private static TradeDto MapearTrade(Trade t) =>
         new(t.CantidadInicial, t.PrecioApertura, t.PrecioCierre, t.RealizedPnL);
 
     private static FillLogEntryDto MapearFill(Fill f) =>
-        new(f.SecuenciaCausal, f.Side.ToString(), f.Cantidad, f.PrecioFill, f.Timestamp, f.TipoOrdenOriginal.ToString());
+        new(f.SecuenciaCausal, f.Side.ToString(), f.Cantidad, f.PrecioFill, f.CostoFriccionReal, f.Timestamp, f.TipoOrdenOriginal.ToString());
 
     private static LoteDto MapearLote(Lote l) =>
         new(l.Cantidad, l.PrecioEntrada, l.Margin);

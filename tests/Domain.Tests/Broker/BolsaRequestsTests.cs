@@ -36,4 +36,31 @@ public class BolsaRequestsTests
         Assert.False(resultado.Aprobada);
         Assert.Equal(bolsa.Length, resultado.Rechazadas.Count);
     }
+
+    // spec: RN-08, RN-14 — la direccion pertenece exclusivamente a Side; Cantidad debe ser
+    // magnitud estrictamente positiva. Una Cantidad negativa duplicaria la fuente de verdad de
+    // direccion (Side contra el signo de Cantidad), pudiendo contradecirse.
+    [Fact]
+    public void OrderRequestConCantidadNegativaEsRechazado()
+    {
+        var bolsa = new[] { new OrderRequest(Side.Buy, OrderType.Market, Cantidad: -10m) };
+
+        var resultado = ValidadorBolsaRequests.Evaluar(bolsa);
+
+        Assert.False(resultado.Aprobada);
+        Assert.Equal(bolsa.Length, resultado.Rechazadas.Count);
+    }
+
+    // spec: RN-08, RN-14 — Cantidad = 0 no representa ninguna operacion real, viola la misma
+    // invariante de magnitud estrictamente positiva.
+    [Fact]
+    public void OrderRequestConCantidadCeroEsRechazado()
+    {
+        var bolsa = new[] { new OrderRequest(Side.Buy, OrderType.Market, Cantidad: 0m) };
+
+        var resultado = ValidadorBolsaRequests.Evaluar(bolsa);
+
+        Assert.False(resultado.Aprobada);
+        Assert.Equal(bolsa.Length, resultado.Rechazadas.Count);
+    }
 }

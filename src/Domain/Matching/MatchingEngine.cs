@@ -30,24 +30,48 @@ public static class MatchingEngine
         return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, CostoFriccionReal: 0m, vela.Timestamp, orden.Type);
     }
 
-    // spec: RN-06 — Stop se dispara y, en la misma vela, si el rango restante cruza el Limit, hace Fill
+    // spec: RN-06, RN-11 — Stop se dispara y, en el recorrido temporal simulado que queda desde el
+    // punto de disparo hasta el Close (segun la trayectoria A u B), si el Limit es cruzado, hace Fill.
     private static Fill? ResolverStopLimit(Order orden, Candle vela, Trayectoria trayectoria)
     {
         var precioStop = orden.PrecioStop!.Value;
-        var disparado = CruzaInclusiveStop(orden.Side, vela.Open, precioStop) || RangoCruzaStop(orden.Side, vela, precioStop);
-        if (!disparado)
+        var recorrido = RecorridoVela.Para(vela, trayectoria);
+        var tramoRestante = PuntoDeDisparo(orden.Side, recorrido, precioStop);
+        if (tramoRestante is null)
             return null;
 
         var tipoOrdenOriginal = orden.Type;
         OrdenTransiciones.Disparar(orden, orden.PrecioLimite!.Value);
 
-        var precioFill = PrecioCruceLimiteDesdeDisparo(orden, vela);
+        var precioFill = PrecioCruceLimiteDesdeDisparo(orden, tramoRestante);
         if (precioFill is null)
             return null;
 
         OrdenTransiciones.Ejecutar(orden);
         return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, CostoFriccionReal: 0m, vela.Timestamp, tipoOrdenOriginal);
     }
+
+    // spec: RN-11 — recorre Open->Primero->Segundo->Close buscando el primer tramo donde el Stop
+    // se dispara; devuelve el tramo restante en el que el Limit todavia puede ser evaluado: el
+    // camino que falta recorrer DESPUES del punto de disparo, nunca el punto de disparo repetido.
+    private static decimal[]? PuntoDeDisparo(Side side, RecorridoVela recorrido, decimal precioStop)
+    {
+        var puntos = new[] { recorrido.Open, recorrido.Primero, recorrido.Segundo, recorrido.Close };
+        if (CruzaInclusiveStop(side, puntos[0], precioStop))
+            return puntos;
+
+        for (var i = 0; i < puntos.Length - 1; i++)
+        {
+            var desde = puntos[i];
+            var hasta = puntos[i + 1];
+            if (CruzaTramoStop(side, desde, hasta, precioStop))
+                return puntos[(i + 1)..];
+        }
+        return null;
+    }
+
+    private static bool CruzaTramoStop(Side side, decimal desde, decimal hasta, decimal precioObjetivo) =>
+        side == Side.Buy ? hasta >= precioObjetivo : hasta <= precioObjetivo;
 
     // spec: RN-03, CU-09..11, EC-01 — Limit se dispara cuando el precio se mueve a favor del comprador/vendedor
     // (Buy: precio baja hasta el limite; Sell: precio sube hasta el limite).
@@ -73,16 +97,25 @@ public static class MatchingEngine
         return null;
     }
 
-    // spec: RN-06, CU-13, CU-14 — tras dispararse el Stop, el precio sigue moviendose en la
-    // direccion del disparo (Buy: subiendo; Sell: bajando). El Limit intercepta en esa misma
-    // direccion (techo de precio a pagar / piso de precio a recibir), no en la direccion de un Limit aislado.
-    private static decimal? PrecioCruceLimiteDesdeDisparo(Order orden, Candle vela)
+    // spec: RN-06, RN-11, CU-13, CU-14 — tras dispararse el Stop, el precio sigue moviendose en la
+    // direccion del disparo (Buy: subiendo; Sell: bajando), pero solo dentro del tramo restante del
+    // recorrido temporal simulado (no de la vela completa). El Limit intercepta en esa misma
+    // direccion (techo de precio a pagar / piso de precio a recibir).
+    private static decimal? PrecioCruceLimiteDesdeDisparo(Order orden, decimal[] tramoRestante)
     {
         var precioLimite = orden.PrecioLimite!.Value;
-        if (RangoCruzaStop(orden.Side, vela, precioLimite))
-            return precioLimite;
+        for (var i = 0; i < tramoRestante.Length - 1; i++)
+        {
+            if (CruzaTramoLimit(orden.Side, tramoRestante[i], tramoRestante[i + 1], precioLimite))
+                return precioLimite;
+        }
         return null;
     }
+
+    private static bool CruzaTramoLimit(Side side, decimal desde, decimal hasta, decimal precioObjetivo) =>
+        side == Side.Buy
+            ? desde >= precioObjetivo && hasta <= precioObjetivo
+            : desde <= precioObjetivo && hasta >= precioObjetivo;
 
     // spec: RN-03 — evaluacion inclusiva (>=, <=). El Open es el primer precio observable.
     private static bool CruzaInclusiveLimit(Side side, decimal open, decimal precioObjetivo) =>

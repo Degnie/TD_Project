@@ -53,6 +53,8 @@ public class DashboardTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains("dto.equityCurve", js);
         Assert.Contains("dto.trades", js);
         Assert.Contains("dto.branchResolutions", js);
+        Assert.Contains("dto.fillLog", js);
+        Assert.Contains("dto.portfolioSnapshots", js);
     }
 
     // spec: RNF-12 — el dashboard no trae dependencias frontend externas (sin npm/CDN/framework);

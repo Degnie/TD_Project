@@ -1,55 +1,110 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="color-scheme: dark">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TD_Project — Visor de Backtest</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header>
-  <h1>TD_Project — Visor de Backtest</h1>
-  <button id="btn-ejecutar">Ejecutar</button>
-  <span id="estado-badge"></span>
+<header class="panel-header">
+  <div class="header-title">
+    <span class="header-eyebrow">Motor de Backtesting Cuantitativo</span>
+    <h1>TD_Project</h1>
+  </div>
+  <div class="header-controls">
+    <span id="estado-badge" class="badge" role="status"></span>
+    <button id="btn-ejecutar" type="button" class="btn-primary">Ejecutar</button>
+  </div>
 </header>
 
 <main id="resultado" hidden>
-  <section id="resumen">
-    <h2>Resumen</h2>
-    <dl>
-      <dt>Estado</dt><dd id="resumen-estado"></dd>
-      <dt>Equity final</dt><dd id="resumen-equity-final"></dd>
-      <dt>PnL total</dt><dd id="resumen-pnl-total"></dd>
-      <dt>Trades</dt><dd id="resumen-total-trades"></dd>
+  <section id="resumen" class="panel" aria-labelledby="resumen-titulo">
+    <h2 id="resumen-titulo">Resumen</h2>
+    <dl class="metric-grid">
+      <div class="metric"><dt>Estado</dt><dd id="resumen-estado"></dd></div>
+      <div class="metric"><dt>Equity final</dt><dd id="resumen-equity-final"></dd></div>
+      <div class="metric"><dt>PnL total</dt><dd id="resumen-pnl-total"></dd></div>
+      <div class="metric"><dt>Trades</dt><dd id="resumen-total-trades"></dd></div>
     </dl>
   </section>
 
-  <section id="curva-equity">
-    <h2>Curva de Equity</h2>
-    <svg id="svg-equity" width="600" height="200" role="img" aria-label="Curva de Equity"></svg>
+  <section id="curva-equity" class="panel" aria-labelledby="curva-equity-titulo">
+    <h2 id="curva-equity-titulo">Curva de Equity</h2>
+    <svg id="svg-equity" width="600" height="200" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Curva de Equity"></svg>
   </section>
 
-  <section id="trades">
-    <h2>Trades</h2>
+  <section id="branch-resolutions" class="panel panel-signature" aria-labelledby="branch-titulo">
+    <h2 id="branch-titulo">Resolución RN-11 <span class="section-sub">— trayectorias A/B</span></h2>
     <table>
+      <caption class="sr-only">Trayectoria oficial seleccionada por vela, según menor Equity final entre las ramas A y B</caption>
       <thead>
-        <tr><th>Cantidad inicial</th><th>Precio apertura</th><th>Precio cierre</th><th>RealizedPnL</th></tr>
+        <tr>
+          <th scope="col">Timestamp</th>
+          <th scope="col">Trayectoria oficial</th>
+          <th scope="col">Equity A</th>
+          <th scope="col">Equity B</th>
+          <th scope="col">Fills A</th>
+          <th scope="col">Fills B</th>
+        </tr>
+      </thead>
+      <tbody id="branch-body"></tbody>
+    </table>
+  </section>
+
+  <section id="trades" class="panel" aria-labelledby="trades-titulo">
+    <h2 id="trades-titulo">Trades</h2>
+    <table>
+      <caption class="sr-only">Ciclos de posición cerrados durante el backtest</caption>
+      <thead>
+        <tr>
+          <th scope="col">Cantidad inicial</th>
+          <th scope="col">Precio apertura</th>
+          <th scope="col">Precio cierre</th>
+          <th scope="col">RealizedPnL</th>
+        </tr>
       </thead>
       <tbody id="trades-body"></tbody>
     </table>
   </section>
 
-  <section id="branch-resolutions">
-    <h2>Resolución RN-11 (trayectorias A/B)</h2>
+  <section id="fill-log" class="panel" aria-labelledby="fill-log-titulo">
+    <h2 id="fill-log-titulo">Fill Log</h2>
     <table>
+      <caption class="sr-only">Registro mínimo de cada Fill ejecutado, en orden de secuencia causal</caption>
       <thead>
-        <tr><th>Timestamp</th><th>Trayectoria oficial</th><th>Equity A</th><th>Equity B</th><th>Fills A</th><th>Fills B</th></tr>
+        <tr>
+          <th scope="col">Secuencia</th>
+          <th scope="col">Lado</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio Fill</th>
+          <th scope="col">Costo fricción real</th>
+          <th scope="col">Timestamp vela</th>
+          <th scope="col">Tipo orden</th>
+        </tr>
       </thead>
-      <tbody id="branch-body"></tbody>
+      <tbody id="fill-log-body"></tbody>
+    </table>
+  </section>
+
+  <section id="portfolio-snapshots" class="panel" aria-labelledby="portfolio-snapshots-titulo">
+    <h2 id="portfolio-snapshots-titulo">Posición por vela <span class="section-sub">— Cash / Margin / Lotes vivos</span></h2>
+    <table>
+      <caption class="sr-only">Estado del portfolio al cierre de cada vela procesada, incluida la exposición viva no cerrada</caption>
+      <thead>
+        <tr>
+          <th scope="col">Timestamp</th>
+          <th scope="col">Cash</th>
+          <th scope="col">Margin</th>
+          <th scope="col">Lotes vivos</th>
+        </tr>
+      </thead>
+      <tbody id="portfolio-snapshots-body"></tbody>
     </table>
   </section>
 </main>
 
-<p id="mensaje-error" hidden></p>
+<p id="mensaje-error" class="mensaje-error" hidden></p>
 
 <script src="app.js"></script>
 </body>

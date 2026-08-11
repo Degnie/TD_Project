@@ -82,6 +82,19 @@ public class ResultDtoMapperTests
         Assert.Equal("A", dto.BranchResolutions[0].TrayectoriaOficial);
     }
 
+    // spec: RNF-08 — "Fill Log Minimo" exige Costo Friccion Real como dato obligatorio por Fill,
+    // para que la simulacion sea deterministicamente reconstruible. FillLogEntryDto lo omitia:
+    // Domain.Shared.Fill ya lo calcula (CostoFriccionReal), pero el mapeo lo descartaba en
+    // silencio, dejando al consumidor del JSON sin forma de conocer el costo de friccion real
+    // de cada Fill (ni de distinguirlo de PrecioFill, que no lo incluye).
+    [Fact]
+    public void PropagaElCostoDeFriccionRealDeCadaFillAlLog()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Equal(0.5m, dto.FillLog[0].CostoFriccionReal);
+    }
+
     // spec: RNF-09 — un resultado no-Success (listas vacias) se mapea sin lanzar excepcion, y
     // el Estado permite distinguirlo de un experimento valido con cero actividad.
     [Fact]
@@ -149,5 +162,58 @@ public class ResultDtoMapperTests
 
         Assert.Equal("InternalCrash", dto.Estado);
         Assert.NotEqual("Success", dto.Estado);
+    }
+
+    // spec: RNF-09 — un Success con cero actividad real y un resultado no-Success producen
+    // exactamente la misma forma de datos (Trades/EquityCurve vacios, Metrics en cero): la forma
+    // estructural del payload NO alcanza para interpretar el resultado. Estado es el unico
+    // discriminante valido; un consumidor que ignore Estado no puede distinguir "no gano nada"
+    // de "no llego a evaluarse".
+    [Fact]
+    public void UnResultadoNoSuccessMantieneEstadoDistintoAunqueLaFormaDeDatosSeaIgual()
+    {
+        var configSinActividad = new ConfiguracionExperimento(CapitalInicial: 1000m, Velas: new[]
+        {
+            new Candle(1, 100m, 105m, 95m, 102m, 500m),
+            new Candle(2, 102m, 106m, 100m, 104m, 500m)
+        });
+        var resultadoSuccessSinActividad = new ResultadoBacktest(
+            EstadoBacktest.Success, Array.Empty<Fill>(), 1000m, Array.Empty<Trade>(), Array.Empty<Order>(),
+            Array.Empty<EquityPoint>(), Array.Empty<PortfolioSnapshot>(), Array.Empty<BranchResolutionInfo>());
+        var resultadoNotEvaluable = new ResultadoBacktest(
+            EstadoBacktest.NotEvaluable, Array.Empty<Fill>(), 0m, Array.Empty<Trade>(), Array.Empty<Order>(),
+            Array.Empty<EquityPoint>(), Array.Empty<PortfolioSnapshot>(), Array.Empty<BranchResolutionInfo>());
+
+        var dtoSuccess = ResultDtoMapper.Mapear(resultadoSuccessSinActividad, configSinActividad);
+        var dtoNotEvaluable = ResultDtoMapper.Mapear(resultadoNotEvaluable, configSinActividad);
+
+        Assert.Equal(dtoSuccess.Trades, dtoNotEvaluable.Trades);
+        Assert.Equal(dtoSuccess.EquityCurve, dtoNotEvaluable.EquityCurve);
+        Assert.Equal(dtoSuccess.Metrics.TotalTrades, dtoNotEvaluable.Metrics.TotalTrades);
+        Assert.Equal(dtoSuccess.Metrics.PnLTotal, dtoNotEvaluable.Metrics.PnLTotal);
+        Assert.Equal(dtoSuccess.Metrics.EquityFinal, dtoNotEvaluable.Metrics.EquityFinal);
+        Assert.NotEqual(dtoSuccess.Estado, dtoNotEvaluable.Estado);
+        Assert.Equal("Success", dtoSuccess.Estado);
+        Assert.Equal("NotEvaluable", dtoNotEvaluable.Estado);
+    }
+
+    // spec: RNF-05 — "redondeo exclusivo al final, Half-to-Even a 2 decimales; Equity_rep es la
+    // suma estricta de sus componentes ya redondeados". RedondeoReporte.EquityReportado ya existe
+    // y esta probado en aislamiento (tests/Domain.Tests/Precision/RedondeoDecimalTests.cs), pero
+    // ResultDtoMapper.Mapear nunca lo invocaba: MetricsDto.EquityFinal tomaba el ultimo
+    // EquityPoint.Equity crudo, sin aplicar el redondeo de reporte exigido por el SPEC.
+    [Fact]
+    public void MetricsEquityFinalAplicaElRedondeoDeReporteExigidoPorRnf05()
+    {
+        var resultado = CrearResultadoDeEjemplo() with
+        {
+            EquityCurve = new[] { new EquityPoint(Timestamp: 2, Cash: 100.005m, Margin: 50.005m, UnrealizedPnL: 0.005m, Equity: 150.015m) }
+        };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo());
+
+        var esperado = RedondeoReporte.EquityReportado(100.005m, 50.005m, 0.005m);
+        Assert.Equal(esperado, dto.Metrics.EquityFinal);
+        Assert.NotEqual(150.015m, dto.Metrics.EquityFinal);
     }
 }

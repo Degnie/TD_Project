@@ -94,6 +94,29 @@ public class TrayectoriasCanonicasTests
         Assert.Equal(Trayectoria.A, resultado.TrayectoriaOficial);
     }
 
+    // spec: RN-11 — caso canonico de divergencia real (ver StopLimitTests.StopLimitPuedeDivergirEntreTrayectorias).
+    // Buy Stop-Limit 102/101 en vela Open=100/High=102/Low=90/Close=102: trayectoria A hace Fill
+    // (posicion Long, Equity valorada M2M al Close), trayectoria B no hace Fill (Equity = Cash puro).
+    // No se asume cual gana: se calcula EquityA/EquityB y se confirma que la oficial es el minimo real.
+    [Fact]
+    public void TrayectoriaSeleccionadaSigueSiendoLaDeMenorEquityCuandoDivergenPorStopLimit()
+    {
+        var ordenesPending = new[]
+        {
+            new Order { SecuenciaCausal = 1, Side = Side.Buy, Type = OrderType.StopLimit, Cantidad = 1m, PrecioStop = 102m, PrecioLimite = 101m }
+        };
+        var vela = new Candle(Timestamp: 2, Open: 100m, High: 102m, Low: 90m, Close: 102m, Volume: 500m);
+        var portfolio = new TD_Project.Domain.Portfolio.PortfolioState { Cash = 1000m };
+
+        var resultado = ResolutorVela.Resolver(ordenesPending, vela, portfolio);
+
+        Assert.Single(resultado.FillsA);
+        Assert.Empty(resultado.FillsB);
+        Assert.NotEqual(resultado.EquityA, resultado.EquityB);
+        Assert.Equal(Math.Min(resultado.EquityA, resultado.EquityB), resultado.EquityFinal);
+        Assert.Equal(resultado.EquityA <= resultado.EquityB ? Trayectoria.A : Trayectoria.B, resultado.TrayectoriaOficial);
+    }
+
     // spec: RN-08, RN-11 — el desglose Cash/Margin/UnrealizedPnL/LotesVivos expuesto corresponde
     // a la rama OFICIAL unicamente (no a una mezcla ni a la rama descartada).
     [Fact]

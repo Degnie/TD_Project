@@ -141,4 +141,53 @@ public class CicloVitalTests
         Assert.Equal(2, resultado.BranchResolutions.Count);
         Assert.All(resultado.EquityCurve, p => Assert.Equal(1000m, p.Equity));
     }
+
+    // spec: RN-10, glosario "Trade" — tres Cross-Zero consecutivos deben producir tres Trades,
+    // cada uno con el PrecioApertura/CantidadInicial REALES de su propio ciclo, no heredados del
+    // ciclo anterior. Buy 10@100 (abre) -> Sell 15@105 (cierra Trade1, abre Short 5) -> Buy
+    // 8@110 (cierra Trade2, abre Long 3) -> Sell 6@120 (cierra Trade3, abre Short 3 viva).
+    [Fact]
+    public void TresCrossZeroConsecutivosReportanElPrecioDeAperturaRealDeCadaCiclo()
+    {
+        var config = new ConfiguracionExperimento(CapitalInicial: 100000m, Velas: new[]
+        {
+            new Candle(1, 100m, 100m, 100m, 100m, 500m),
+            new Candle(2, 100m, 100m, 100m, 100m, 500m),
+            new Candle(3, 105m, 105m, 105m, 105m, 500m),
+            new Candle(4, 110m, 110m, 110m, 110m, 500m),
+            new Candle(5, 120m, 120m, 120m, 120m, 500m)
+        });
+
+        var resultado = BacktestRunner.Ejecutar(config, new EstrategiaTresCrossZeroConsecutivos());
+
+        Assert.Equal(3, resultado.Trades.Count);
+        Assert.Equal(100m, resultado.Trades[0].PrecioApertura);
+        Assert.Equal(10m, resultado.Trades[0].CantidadInicial);
+        Assert.Equal(105m, resultado.Trades[1].PrecioApertura);
+        Assert.Equal(5m, resultado.Trades[1].CantidadInicial);
+        Assert.Equal(110m, resultado.Trades[2].PrecioApertura);
+        Assert.Equal(3m, resultado.Trades[2].CantidadInicial);
+    }
+
+    // spec: RN-11, RNF-06 — el caso canonico de divergencia (ver StopLimitTests) corrido a traves
+    // del flujo real de BacktestRunner produce el mismo resultado en ejecuciones repetidas con el
+    // mismo input, y las dos ramas dejan de ser trivialmente identicas (FillsA != FillsB).
+    [Fact]
+    public void BacktestCompletoMantieneDeterminismoConNuevaResolucionTemporal()
+    {
+        var config = new ConfiguracionExperimento(CapitalInicial: 1000m, Velas: new[]
+        {
+            new Candle(1, 90m, 90m, 90m, 90m, 500m),
+            new Candle(2, 100m, 102m, 90m, 102m, 500m)
+        });
+
+        var primeraEjecucion = BacktestRunner.Ejecutar(config, new EstrategiaStopLimitDivergente());
+        var segundaEjecucion = BacktestRunner.Ejecutar(config, new EstrategiaStopLimitDivergente());
+
+        Assert.Equal(primeraEjecucion.CashFinal, segundaEjecucion.CashFinal);
+        Assert.Equal(primeraEjecucion.Fills.Count, segundaEjecucion.Fills.Count);
+
+        var resolucion = Assert.Single(primeraEjecucion.BranchResolutions);
+        Assert.NotEqual(resolucion.FillsA.Count, resolucion.FillsB.Count);
+    }
 }
