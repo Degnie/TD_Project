@@ -18,6 +18,7 @@ void CorrerSuite(string titulo, (int Total, int Pasaron, IReadOnlyList<string> D
 
 CorrerSuite("Caso 3A — EstrategiaZScoreReversion", TestsCaso3.EjecutarTodos());
 CorrerSuite("Caso 3A — EstrategiaNeutral", TestsEstrategiaNeutral.EjecutarTodos(dirDatasets));
+CorrerSuite("Caso 3B — EstrategiaVolumenBreakout", TestsEstrategiaVolumenBreakout.EjecutarTodos(dirDatasets));
 
 Console.WriteLine($"TOTAL: {pasaronGeneral}/{totalGeneral} pruebas pasaron.");
 if (pasaronGeneral != totalGeneral)

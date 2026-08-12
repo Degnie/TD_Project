@@ -1,12 +1,13 @@
-# Índice Global de Decisiones — D-001 a D-098
+# Índice Global de Decisiones — D-001 a D-107
 
-Estado: **documento de referencia — actualizado al cierre de Caso 4**. Consolida en un único
+Estado: **documento de referencia — actualizado al cierre de Caso 3B**. Consolida en un único
 lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
-(`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`) y
-Caso 4 (`DECISIONES_CASO4_V1.md`, `DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`,
-`DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`), evitando que abrir una fase nueva requiera rastrear
-varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
-ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
+(`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`),
+Caso 3B (`DECISIONES_CASO3B_V1.md`) y Caso 4 (`DECISIONES_CASO4_V1.md`,
+`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`),
+evitando que abrir una fase nueva requiera rastrear varios documentos distintos para saber si un
+tema ya fue decidido. No redefine ni reinterpreta ninguna decisión — cada fila remite al documento
+de origen, que sigue siendo la fuente autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -192,6 +193,39 @@ Congelado como **V1 Experimental** (tag `caso3a-v1-experimental`). Fuente comple
 
 ---
 
+## Caso 3B — Generalización experimental, composición jerárquica (D-099 a D-107)
+
+Congelado como **V1 Experimental** (tag `caso3b-v1-experimental`), independiente de
+`caso3a-v1-experimental` — mismo objetivo general (generalización experimental de estrategias),
+experimentos distintos. Fuente completa: `DECISIONES_CASO3B_V1.md`, auditoría en
+`caso3/AUDITORIA_CASO3B_V1.md`, congelamiento en `caso3/VERSION_EXPERIMENTAL_CASO3B_V1.md`.
+
+Retoma el Candidato E (señal multi-condición), evaluado y diferido en
+`EVALUACION_SEGUNDA_FAMILIA_CASO3_V1.md` durante la selección de la segunda familia de Caso 3A.
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-099 | Semántica de multi-condición: jerárquica — primaria habilita evaluación de secundaria (Opción C) | 🟢 Congelada |
+| D-100 | Representación interna: objetos internos de condición con estado propio | 🟢 Congelada |
+| D-101 | Observabilidad estructural, derivada de D-100, sin metadata nueva en `IStrategy` | 🟢 Congelada |
+| D-102 | Familia concreta: Candidato H — volumen (contexto) + precio (breakout) | 🟢 Congelada |
+| D-103 | Condiciones: P3 (múltiplo fijo sobre ventana) + S2 (ruptura de rango/breakout) | 🟢 Congelada |
+| D-104 | `EstrategiaVolumenBreakout`: objetos con estado propio, callback existente, sin martingala/1 posición | 🟢 Congelada |
+| D-105 | Parámetros: `N=20`, múltiplo `1.5×`, extremos excluyen vela actual, operador estricto — ampliada a bidireccional tras D-107 | 🟢 Congelada |
+| D-106 | Especificación de implementación y pruebas | 🟢 Congelada |
+| D-107 | Cierre por señal contraria — misma jerarquía evaluada en sentido opuesto a la posición abierta | 🟢 Congelada |
+
+### Pendientes de Caso 3B (deuda técnica, no bloqueante)
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| — | Tercer nivel jerárquico / condiciones adicionales | 🟢 Bajo | No — D-100 rechazó diseñar para N niveles sin necesidad demostrada; candidato de fase futura si se justifica |
+| D-055 | No activada adicionalmente — mismo perfil sin martingala ya cubierto por Z-Score/Neutral | 🟢 Bajo | No — postergar |
+| D-044 | No activada — Caso 3B no estudia interacción estrategia/régimen | 🟢 Bajo | No — candidato de fase futura si se estudia esa interacción |
+| D-084/Caso 4 | No activada dentro de Caso 3B — `GestorCapital`/sizing no interviene en esta familia | — | Solo si una fase futura combina generalización de estrategia con sizing avanzado |
+
+---
+
 ## Caso 4 — Evolución financiera (D-091 a D-098, resuelve D-084/D-085)
 
 Congelado como **V1 Experimental** (tag `caso4-v1-experimental`). Fuente completa:
@@ -233,12 +267,13 @@ CASO4_V1.md`.
 
 ---
 
-## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 4 como referencia estable?
+## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4 como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
 congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
-`caso4-v1-experimental`. La deuda de impacto alto que existía (D-084) fue resuelta de punta a
-punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abierta.
+`caso3b-v1-experimental`/`caso4-v1-experimental`. La deuda de impacto alto que existía (D-084) fue
+resuelta de punta a punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece
+abierta.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
@@ -246,6 +281,8 @@ punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abi
 - D-044 — si una fase futura estudia interacción estrategia/régimen.
 - Modo estricto de `ValidadorCapacidad` — si una fase futura introduce políticas de riesgo o
   bloqueo automático.
+- Tercer nivel jerárquico/condiciones adicionales (Caso 3B) — si una fase futura extiende la
+  composición de condiciones.
 
 **Deuda que permanece como límite conocido del modelo, sin fecha de resolución**:
 D-011, D-012, D-013, D-018, D-019, D-020, D-074, spread/funding, sizing alternativo, referencia
@@ -260,11 +297,12 @@ documental obsoleta de D-085 en el reporte financiero.
 | `caso1-v1-experimental` | `eaaddb5` | Laboratorio de estrategias, D-001 a D-056 |
 | `caso2-v1-experimental` | `1f0f967` | Modelo financiero, D-057 a D-085 |
 | `caso3a-v1-experimental` | `43852ab` | Generalización experimental, D-086 a D-090 |
-| `caso4-v1-experimental` | _(pendiente)_ | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
+| `caso4-v1-experimental` | `6594c9e` | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
+| `caso3b-v1-experimental` | _(pendiente)_ | Composición jerárquica de condiciones, D-099 a D-107 |
 
 ---
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 4 cerrado, pendiente de commit/tag. Próxima fase (Caso 3B / Caso 5)
+Ninguno abierto todavía — Caso 3B cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5)
 pendiente de decisión del auditor.
