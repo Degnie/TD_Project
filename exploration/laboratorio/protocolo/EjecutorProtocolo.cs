@@ -5,6 +5,7 @@ using TD_Project.Domain.Shared;
 using TD_Project.Domain.Strategy;
 using TD_Project.EvaluacionMultiTf;
 using TD_Project.Exploration;
+using TD_Project.ModeloFinanciero;
 using TD_Project.ReporteEscenariosMercado;
 
 namespace TD_Project.Protocolo;
@@ -21,12 +22,15 @@ public enum EstadoCorridaTimeframe { Success, Failed, Incomplete }
 
 // spec-lab: ESPECIFICACION_PIPELINE_EXPERIMENTAL_V1.md §6 — un fallo en un timeframe no detiene
 // la evaluacion de los demas. Cada timeframe produce su propio resultado, con su propio estado.
+// spec: Caso 2 D-072/D-073/D-075/D-077/D-078 — MetricasFinancieras opcional, poblada solo en la
+// rama Success (mismo criterio D-061/D-069: no rompe call sites existentes de TestsEjecutorProtocolo).
 public sealed record ResultadoCorridaTimeframe(
     string Timeframe,
     EstadoCorridaTimeframe Estado,
     string? MotivoFallo,
     PerfilMultiTf? Perfil,
-    string? Anexo);
+    string? Anexo,
+    MetricasFinancieras? MetricasFinancieras = null);
 
 public sealed record ResultadoProtocolo(
     string Estrategia,
@@ -34,6 +38,9 @@ public sealed record ResultadoProtocolo(
     IReadOnlyList<ResultadoCorridaTimeframe> Corridas,
     PerfilMultiTimeframe? MultiTimeframe); // null si ningun timeframe completo Success (no hay nada que comparar)
 
+// spec: Caso 2 D-079 — Instrumento/Costes/Sizing opcionales, default null = comportamiento
+// historico (mismo criterio D-061). Permite que una corrida del protocolo use el modelo
+// economico/costes/gestion de capital de Caso 2 en lugar de los defaults de Caso 1.
 public sealed record EntradaProtocolo(
     string Estrategia,
     string VersionEstrategia,
@@ -42,7 +49,10 @@ public sealed record EntradaProtocolo(
     IReadOnlyList<string> Timeframes,
     string DirDatasets,
     string NombreDataset,
-    decimal CapitalInicial);
+    decimal CapitalInicial,
+    Instrumento? Instrumento = null,
+    ConfiguracionCostes? Costes = null,
+    ConfiguracionSizing? Sizing = null);
 
 public static class EjecutorProtocolo
 {
@@ -73,7 +83,8 @@ public static class EjecutorProtocolo
         var identidad = IdentidadExperimentoCompleta.Calcular(
             entrada.Estrategia, entrada.VersionEstrategia, entrada.Parametros,
             datasetSourceSha256 ?? "(sin corridas exitosas — sin hash de dataset disponible)",
-            ClasificadorRegimenV1.Version, VersionProtocolo);
+            ClasificadorRegimenV1.Version, VersionProtocolo,
+            entrada.Instrumento, entrada.Costes, entrada.Sizing);
 
         return new ResultadoProtocolo(entrada.Estrategia, identidad, corridas, multiTimeframe);
     }
@@ -96,12 +107,14 @@ public static class EjecutorProtocolo
         // §5 del protocolo: validacion de determinismo — 2 corridas, comparar campo por campo.
         var operaciones1 = new List<InfoOperacionResuelta>();
         var resultado1 = BacktestRunner.Ejecutar(
-            new ConfiguracionExperimento(CapitalInicial: entrada.CapitalInicial, Velas: velas),
+            new ConfiguracionExperimento(CapitalInicial: entrada.CapitalInicial, Velas: velas,
+                Instrumento: entrada.Instrumento, Costes: entrada.Costes, Sizing: entrada.Sizing),
             entrada.CrearEstrategia(operaciones1.Add));
 
         var operaciones2 = new List<InfoOperacionResuelta>();
         var resultado2 = BacktestRunner.Ejecutar(
-            new ConfiguracionExperimento(CapitalInicial: entrada.CapitalInicial, Velas: velas),
+            new ConfiguracionExperimento(CapitalInicial: entrada.CapitalInicial, Velas: velas,
+                Instrumento: entrada.Instrumento, Costes: entrada.Costes, Sizing: entrada.Sizing),
             entrada.CrearEstrategia(operaciones2.Add));
 
         var motivoNoDeterminismo = VerificarDeterminismo(operaciones1, operaciones2, resultado1, resultado2);
@@ -125,7 +138,11 @@ public static class EjecutorProtocolo
         var metricas = MetricasPorEscenario.Calcular(operacionesConRegimen);
         var anexo = ReporteEscenariosGenerador.Generar(identidad, perfil.OperacionesCompletadas, metricas);
 
-        return new ResultadoCorridaTimeframe(tf, EstadoCorridaTimeframe.Success, null, perfil, anexo);
+        // spec: Caso 2 D-072/D-077 — resultado1 (ResultadoBacktest) y entrada.CapitalInicial ya
+        // estan disponibles en este scope, fuente oficial unica (sin recalculo paralelo).
+        var metricasFinancieras = CalculadoraMetricasFinancieras.Calcular(resultado1, entrada.CapitalInicial);
+
+        return new ResultadoCorridaTimeframe(tf, EstadoCorridaTimeframe.Success, null, perfil, anexo, metricasFinancieras);
     }
 
     private static string? VerificarDeterminismo(

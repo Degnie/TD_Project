@@ -22,6 +22,9 @@
     <Compile Include="..\reporte_escenarios_mercado\AsignadorOperacionRegimen.cs" Link="Fixtures\AsignadorOperacionRegimen.cs" />
     <Compile Include="..\reporte_escenarios_mercado\MetricasPorEscenario.cs" Link="Fixtures\MetricasPorEscenario.cs" />
     <Compile Include="..\reporte_escenarios_mercado\ReporteEscenariosGenerador.cs" Link="Fixtures\ReporteEscenariosGenerador.cs" />
+    <Compile Include="..\modelo_financiero\MetricasFinancieras.cs" Link="Fixtures\MetricasFinancieras.cs" />
+    <Compile Include="..\modelo_financiero\CalculadoraMetricasFinancieras.cs" Link="Fixtures\CalculadoraMetricasFinancieras.cs" />
+    <Compile Include="..\modelo_financiero\ReporteFinancieroGenerador.cs" Link="Fixtures\ReporteFinancieroGenerador.cs" />
     <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\..\src\Application\Application.csproj" />
   </ItemGroup>

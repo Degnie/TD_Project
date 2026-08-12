@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
+    <Compile Include="..\..\evaluacion_multi_tf\LectorDerivado.cs" Link="Fixtures\LectorDerivado.cs" />
+    <Compile Include="..\..\evaluacion_multi_tf\IdentidadExperimento.cs" Link="Fixtures\IdentidadExperimento.cs" />
+    <Compile Include="..\..\evaluacion_multi_tf\PerfilMultiTf.cs" Link="Fixtures\PerfilMultiTf.cs" />
+    <Compile Include="..\..\Validadores\ValidadorReconciliacionFinanciera.cs" Link="Fixtures\ValidadorReconciliacionFinanciera.cs" />
+    <Compile Include="..\..\analisis_operacional\AnalizadorOperacional.cs" Link="Fixtures\AnalizadorOperacional.cs" />
+    <Compile Include="..\..\analisis_multitimeframe\PerfilMultiTimeframe.cs" Link="Fixtures\PerfilMultiTimeframe.cs" />
+    <Compile Include="..\..\analisis_escenarios_mercado\Escenario.cs" Link="Fixtures\Escenario.cs" />
+    <Compile Include="..\..\analisis_escenarios_mercado\CalibradorUmbralSesgoDI.cs" Link="Fixtures\CalibradorUmbralSesgoDI.cs" />
+    <Compile Include="..\..\analisis_escenarios_mercado\ClasificadorRegimenV1.cs" Link="Fixtures\ClasificadorRegimenV1.cs" />
+    <Compile Include="..\..\reporte_escenarios_mercado\AsignadorOperacionRegimen.cs" Link="Fixtures\AsignadorOperacionRegimen.cs" />
+    <Compile Include="..\..\reporte_escenarios_mercado\MetricasPorEscenario.cs" Link="Fixtures\MetricasPorEscenario.cs" />
+    <Compile Include="..\..\reporte_escenarios_mercado\ReporteEscenariosGenerador.cs" Link="Fixtures\ReporteEscenariosGenerador.cs" />
+    <Compile Include="..\..\protocolo\EjecutorProtocolo.cs" Link="Fixtures\EjecutorProtocolo.cs" />
+    <Compile Include="..\..\protocolo\IdentidadExperimentoCompleta.cs" Link="Fixtures\IdentidadExperimentoCompleta.cs" />
+    <Compile Include="..\MetricasFinancieras.cs" Link="Fixtures\MetricasFinancieras.cs" />
+    <Compile Include="..\CalculadoraMetricasFinancieras.cs" Link="Fixtures\CalculadoraMetricasFinancieras.cs" />
+    <Compile Include="..\ReporteFinancieroGenerador.cs" Link="Fixtures\ReporteFinancieroGenerador.cs" />
+    <ProjectReference Include="..\..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Application\Application.csproj" />
+  </ItemGroup>
+</Project>

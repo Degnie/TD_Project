@@ -41,8 +41,27 @@ public static class TestsEjecutorProtocolo
             () => VerificarEvidenciaAlmacenada(dirDatasets, dirResultados));
         Caso("Fase 1.6-D — EMA Cross (estrategia estructuralmente distinta, sin martingala ni cuadrantes) se integra al pipeline sin cambios de código",
             () => VerificarIntegracionEmaCross(dirDatasets));
+        Caso("Caso 2.4 — MetricasFinancieras se puebla en corridas Success con CapitalInicial correcto, y queda null en corridas no exitosas",
+            () => VerificarMetricasFinancierasIntegradas(dirDatasets));
 
         return (total, pasaron, detalles);
+    }
+
+    // spec: Caso 2 D-072/D-077 — verifica que MetricasFinancieras.CapitalInicial coincide con
+    // EntradaProtocolo.CapitalInicial en una corrida real, y que un timeframe no exitoso nunca
+    // trae MetricasFinancieras (mismo criterio que Perfil/Anexo, D-059: nunca ocultar ni inventar).
+    private static void VerificarMetricasFinancierasIntegradas(string dirDatasets)
+    {
+        var entrada = EntradaDePrueba(dirDatasets, new[] { "1D", "timeframe_inexistente_metricas" });
+        var resultado = EjecutorProtocolo.Ejecutar(entrada);
+
+        var corrida1D = resultado.Corridas.Single(c => c.Timeframe == "1D");
+        Assert(corrida1D.MetricasFinancieras is not null, "Un timeframe Success debe traer MetricasFinancieras");
+        Assert(corrida1D.MetricasFinancieras!.CapitalInicial == entrada.CapitalInicial,
+            $"CapitalInicial debe coincidir con EntradaProtocolo, esperado {entrada.CapitalInicial}, obtuvo {corrida1D.MetricasFinancieras.CapitalInicial}");
+
+        var corridaFallida = resultado.Corridas.Single(c => c.Timeframe == "timeframe_inexistente_metricas");
+        Assert(corridaFallida.MetricasFinancieras is null, "Un timeframe Incomplete no debe traer MetricasFinancieras");
     }
 
     // Fase 1.6-D (D-054): EMA Cross valida que el pipeline generaliza a una estrategia sin
