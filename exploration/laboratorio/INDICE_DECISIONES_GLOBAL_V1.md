@@ -1,13 +1,13 @@
-# Índice Global de Decisiones — D-001 a D-107
+# Índice Global de Decisiones — D-001 a D-111
 
-Estado: **documento de referencia — actualizado al cierre de Caso 3B**. Consolida en un único
+Estado: **documento de referencia — actualizado al cierre de Caso 5A**. Consolida en un único
 lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
 (`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`),
-Caso 3B (`DECISIONES_CASO3B_V1.md`) y Caso 4 (`DECISIONES_CASO4_V1.md`,
-`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`),
-evitando que abrir una fase nueva requiera rastrear varios documentos distintos para saber si un
-tema ya fue decidido. No redefine ni reinterpreta ninguna decisión — cada fila remite al documento
-de origen, que sigue siendo la fuente autoritativa.
+Caso 3B (`DECISIONES_CASO3B_V1.md`), Caso 4 (`DECISIONES_CASO4_V1.md`,
+`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`) y
+Caso 5A (`caso5/DECISIONES_CASO5_V1.md`), evitando que abrir una fase nueva requiera rastrear
+varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
+ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -267,13 +267,45 @@ CASO4_V1.md`.
 
 ---
 
-## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4 como referencia estable?
+## Caso 5A — Evaluación comparativa de gestores de riesgo (D-108 a D-111)
+
+Congelado como **V1 Experimental** (tag `caso5a-v1-experimental`, pendiente de commit). Primera
+fase que modifica `src/` desde Caso 4 — capacidad transversal de gestión de capital intercambiable,
+no una nueva familia de estrategias. Fuente completa: `caso5/DECISIONES_CASO5_V1.md`, especificación
+en `caso5/ESPECIFICACION_IMPLEMENTACION_GESTORES_RIESGO_V1.md`, auditoría en
+`caso5/AUDITORIA_CASO5A_V1.md`, congelamiento en `caso5/VERSION_EXPERIMENTAL_CASO5A_V1.md`.
+
+Retoma el framework de gestores intercambiables del mapa de evolución V3 (Caso 5A), distinto del
+framing original de "gestión de exposición/límites/drawdown" propuesto inicialmente para "Caso 5" —
+ese framing queda diferido a una fase posterior distinta (ver exclusiones en
+`VERSION_EXPERIMENTAL_CASO5A_V1.md`).
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-108 | Aislamiento cálculo/clasificación: `IGestorRiesgo` (único método, calcula cantidad) + `GestorCapital` orquesta, conserva D-092/D-095 sin duplicar | 🟢 Congelada |
+| D-109 | `ConfiguracionSizing` describe una elección (`GestorActivo: IGestorRiesgo`), no un enum de tipos — precisión derivada: identidad experimental separada vía `IIdentidadGestorRiesgo`, no forma parte del contrato funcional del gestor | 🟢 Congelada |
+| D-110 | Alcance inicial: Fixed Fractional (control) → Fixed Risk → Volatility Sizing; Kelly/Masaniello diferidos, comparten el bloqueo metodológico de Caso 2.3 | 🟢 Congelada |
+| D-111 | Métricas de comparación por categoría — `ProfitFactor`/`CapitalLibreMinimo`/`MargenMaximoUtilizado`(=`ExposicionMaxima`) implementadas; `RachaPositivaMaxima`/duración de drawdown/riesgo de ruina diferidas, no bloqueantes | 🟢 Congelada |
+
+### Pendientes de Caso 5A (deuda técnica, no bloqueante)
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| D-110 | Kelly fraccionado/Masaniello — comparten el bloqueo de probabilidad-de-acierto de Caso 2.3 | 🟡 Medio | Sí, para incluirlos — requiere resolver primero la fuente de esa probabilidad como valor fijo declarado |
+| D-111 | `RachaPositivaMaxima` — requiere tocar `PerfilMultiTf.cs`, fuera del alcance autorizado de Caso 5A | 🟢 Bajo | No — candidato de una fase que amplíe capacidades de análisis operacional |
+| D-111 | Duración de drawdown, riesgo de ruina — sin fuente de dato tan directa como las métricas ya implementadas | 🟢 Bajo | No — postergar hasta tener definición formal |
+| — | `LaboratorioSintetico.csproj` no compila — falla preexistente, no causada por Caso 5A (verificado por `git log`) | 🟢 Bajo | No — corrección de build compartido, fuera del alcance de cualquier Caso individual |
+| — | Sistema recomendador de gestores (Caso 5B), gestión avanzada de exposición/límites, portfolio multi-instrumento | — | No bloquean Caso 5A — son fases futuras distintas, condicionadas a que Caso 5A produzca evidencia comparativa primero |
+
+---
+
+## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
 congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
-`caso3b-v1-experimental`/`caso4-v1-experimental`. La deuda de impacto alto que existía (D-084) fue
-resuelta de punta a punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece
-abierta.
+`caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`. La deuda de impacto alto
+que existía (D-084) fue resuelta de punta a punta en Caso 4, junto con D-085 — ninguna deuda de
+impacto alto permanece abierta.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
@@ -283,6 +315,10 @@ abierta.
   bloqueo automático.
 - Tercer nivel jerárquico/condiciones adicionales (Caso 3B) — si una fase futura extiende la
   composición de condiciones.
+- D-110 (Kelly/Masaniello) — si una fase futura resuelve la fuente de probabilidad-de-acierto como
+  valor fijo declarado.
+- D-111 (`RachaPositivaMaxima`/duración de drawdown/riesgo de ruina) — si una fase futura amplía
+  `PerfilMultiTf.cs` o define formalmente "ruina"/duración de drawdown.
 
 **Deuda que permanece como límite conocido del modelo, sin fecha de resolución**:
 D-011, D-012, D-013, D-018, D-019, D-020, D-074, spread/funding, sizing alternativo, referencia
@@ -298,11 +334,12 @@ documental obsoleta de D-085 en el reporte financiero.
 | `caso2-v1-experimental` | `1f0f967` | Modelo financiero, D-057 a D-085 |
 | `caso3a-v1-experimental` | `43852ab` | Generalización experimental, D-086 a D-090 |
 | `caso4-v1-experimental` | `6594c9e` | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
-| `caso3b-v1-experimental` | _(pendiente)_ | Composición jerárquica de condiciones, D-099 a D-107 |
+| `caso3b-v1-experimental` | `282e307` | Composición jerárquica de condiciones, D-099 a D-107 |
+| `caso5a-v1-experimental` | _(pendiente)_ | Gestores de riesgo intercambiables, D-108 a D-111 |
 
 ---
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 3B cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5)
-pendiente de decisión del auditor.
+Ninguno abierto todavía — Caso 5A cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5B
+/ gestión avanzada de exposición) pendiente de decisión del auditor.

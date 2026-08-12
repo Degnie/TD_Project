@@ -54,7 +54,7 @@ public static class BacktestRunner
                 // (closeSiguiente) para el mismo proposito conceptual de estimar magnitud
                 // economica antes del Fill real (ESPECIFICACION_IMPLEMENTACION_SIZING_
                 // CORREGIDO_V1.md S2).
-                requests = GestorCapital.Ajustar(requests, portfolio, config.Sizing, config.Velas[n + 1].Close, instrumento.TasaMargen);
+                requests = GestorCapital.Ajustar(requests, portfolio, config.Sizing, dataSlice, config.Velas[n + 1].Close, instrumento.TasaMargen);
 
                 if (requests.Count > 0)
                 {

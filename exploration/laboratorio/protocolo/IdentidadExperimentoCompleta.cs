@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using TD_Project.Domain.Portfolio;
 using TD_Project.Domain.Shared;
 
 namespace TD_Project.Protocolo;
@@ -52,13 +53,27 @@ public sealed record IdentidadExperimentoCompleta(
     // texto, para que "no configurar nada" y "configurar explicitamente el default" produzcan el
     // mismo HashConfiguracionEconomica (misma corrida logica economica). Sizing inactivo
     // (Default=null en si mismo, ver ConfiguracionSizing.cs) usa el literal "sin-sizing", nunca un
-    // ConfiguracionSizing con PorcentajeRiesgo=0 (serian dos configuraciones distintas).
+    // ConfiguracionSizing con un gestor de riesgo neutro (serian dos configuraciones distintas).
+    // spec: Caso 5A, precision derivada de D-109 (DECISIONES_CASO5_V1.md) — la identidad del
+    // gestor activo se obtiene via IIdentidadGestorRiesgo, nunca por pattern-matching sobre el
+    // tipo concreto (esta clase no debe conocer GestorFixedFractional/FixedRisk/VolatilitySizing
+    // por nombre). Si el gestor activo no implementa esa interfaz, la configuracion no es
+    // reproducible de forma verificable — falla explicitamente en vez de inventar un hash
+    // aproximado (mismo principio D-055/D-062/D-095 de no ocultar un supuesto no satisfecho).
     private static string CalcularHashConfiguracionEconomica(
         Instrumento? instrumento, ConfiguracionCostes? costes, ConfiguracionSizing? sizing)
     {
         var instrumentoEfectivo = instrumento ?? Instrumento.Default;
         var costesEfectivos = costes ?? ConfiguracionCostes.Default;
-        var textoSizing = sizing is null ? "sin-sizing" : $"sizing:{sizing.PorcentajeRiesgo}";
+        var textoSizing = sizing switch
+        {
+            null => "sin-sizing",
+            { GestorActivo: IIdentidadGestorRiesgo identidad } => identidad.ObtenerIdentidadConfiguracion(),
+            _ => throw new InvalidOperationException(
+                $"GestorActivo de tipo '{sizing.GestorActivo.GetType().Name}' no implementa " +
+                $"IIdentidadGestorRiesgo — configuracion no reproducible, HashConfiguracionEconomica " +
+                $"no puede calcularse.")
+        };
 
         var texto = string.Join(" ",
             $"instrumento:{instrumentoEfectivo.Simbolo}:{instrumentoEfectivo.TasaMargen}",

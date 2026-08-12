@@ -1,4 +1,4 @@
-using TD_Project.Application.Tests.Fakes;
+﻿using TD_Project.Application.Tests.Fakes;
 using TD_Project.Domain.Portfolio;
 using TD_Project.Domain.Shared;
 using Xunit;
@@ -23,6 +23,11 @@ public class GestorCapitalTests
             new Candle(3, 104m, 108m, 102m, 106m, 500m)
         }, Sizing: sizing);
 
+    // spec: Caso 5A D-108 — GestorCapital.Ajustar ahora recibe DataSlice (ver GestorCapital.cs).
+    // Las pruebas que invocan Ajustar directamente (sin pasar por BacktestRunner) construyen un
+    // DataSlice minimo — ningun gestor usado en estas pruebas (GestorFixedFractional) lo consume.
+    private static DataSlice DataSliceDePrueba() => new(new[] { new Candle(1, 100m, 100m, 100m, 100m, 0m) });
+
     // P1 — regresion sin sizing: Sizing=null produce resultado identico al historico.
     [Fact]
     public void SinSizingElResultadoEsIdenticoAlHistorico()
@@ -39,7 +44,7 @@ public class GestorCapitalTests
     [Fact]
     public void ConSizingActivoLaCantidadEsMargenObjetivoEntrePrecioPorTasaMargen()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var config = ConfigConVelas(1000m, sizing);
 
         var resultado = BacktestRunner.Ejecutar(config, new EstrategiaMarketSiempre());
@@ -56,7 +61,7 @@ public class GestorCapitalTests
     [Fact]
     public void GestorCapitalNoModificaDireccionNiTipoDeOrden()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.05m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.05m));
         var config = ConfigConVelas(1000m, sizing);
 
         var resultado = BacktestRunner.Ejecutar(config, new EstrategiaMarketSiempre());
@@ -70,7 +75,7 @@ public class GestorCapitalTests
     [Fact]
     public void OrdenesDeLaMismaBolsaRecibenLaMismaCantidadCalculada()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var config = ConfigConVelas(1000m, sizing);
 
         var resultado = BacktestRunner.Ejecutar(config, new EstrategiaOcoDosOrdenes());
@@ -86,7 +91,7 @@ public class GestorCapitalTests
     [Fact]
     public void MismaEntradaConSizingProduceElMismoResultadoEnDosEjecuciones()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var config = ConfigConVelas(1000m, sizing);
 
         var r1 = BacktestRunner.Ejecutar(config, new EstrategiaMarketSiempre());
@@ -103,7 +108,7 @@ public class GestorCapitalTests
     public void ConfiguracionConYSinSizingProducenConfiguracionesDistintas()
     {
         var configSinSizing = ConfigConVelas(1000m);
-        var configConSizing = ConfigConVelas(1000m, new ConfiguracionSizing(PorcentajeRiesgo: 0.1m));
+        var configConSizing = ConfigConVelas(1000m, new ConfiguracionSizing(new GestorFixedFractional(0.1m)));
 
         Assert.NotEqual(configSinSizing.Sizing, configConSizing.Sizing);
 
@@ -123,7 +128,7 @@ public class GestorCapitalTests
     [Fact]
     public void CierreTotalConservaLaCantidadOriginalNoLaDeSizing()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var config = ConfigConVelas(1000m, sizing);
 
         var resultado = BacktestRunner.Ejecutar(config, new EstrategiaAbreYCierraAlternado());
@@ -144,7 +149,7 @@ public class GestorCapitalTests
     [Fact]
     public void CrossZeroEspurioSeNormalizaACierreTotalConLaPosicionRealBajoSizing()
     {
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var config = ConfigConVelas(1000m, sizing);
 
         var resultado = BacktestRunner.Ejecutar(config, new EstrategiaCrossZeroControlada());
@@ -168,14 +173,14 @@ public class GestorCapitalTests
     {
         var portfolio = new PortfolioState { Cash = 1000m };
         AplicadorFill.Aplicar(portfolio, new Fill(1, Side.Buy, 1m, 100m, 0m, 1, OrderType.Market));
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var requests = new[]
         {
             new OrderRequest(Side.Sell, OrderType.Market, 1m),
             new OrderRequest(Side.Sell, OrderType.Market, 1m)
         };
 
-        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, precioReferencia: 100m, tasaMargen: 0.1m);
+        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, DataSliceDePrueba(), 100m, 0.1m);
 
         // Primera Sell: cierra el Long=1 vivo -> CierreTotal -> conserva Cantidad=1 original.
         // Segunda Sell (misma bolsa): clasificada contra la posicion ya proyectada en 0 tras la
@@ -194,14 +199,14 @@ public class GestorCapitalTests
         var cashAntes = portfolio.Cash;
         var marginAntes = portfolio.Margin;
         var lotesAntes = portfolio.LotesVivos.Count;
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var requests = new[]
         {
             new OrderRequest(Side.Sell, OrderType.Market, 1m),
             new OrderRequest(Side.Sell, OrderType.Market, 1m)
         };
 
-        GestorCapital.Ajustar(requests, portfolio, sizing, precioReferencia: 100m, tasaMargen: 0.1m);
+        GestorCapital.Ajustar(requests, portfolio, sizing, DataSliceDePrueba(), 100m, 0.1m);
 
         Assert.Equal(cashAntes, portfolio.Cash);
         Assert.Equal(marginAntes, portfolio.Margin);
@@ -219,16 +224,17 @@ public class GestorCapitalTests
     public void MargenRetenidoTrasElFillCoincideConElMargenObjetivo()
     {
         var portfolio = new PortfolioState { Cash = 1000m };
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var porcentajeRiesgo = 0.1m;
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(porcentajeRiesgo));
         var requests = new[] { new OrderRequest(Side.Buy, OrderType.Market, 1m) };
         var precioReferencia = 100m;
         var tasaMargen = 0.1m;
 
-        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, precioReferencia, tasaMargen);
+        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, DataSliceDePrueba(), precioReferencia, tasaMargen);
         AplicadorFill.Aplicar(portfolio, new Fill(1, Side.Buy, ajustadas[0].Cantidad, precioReferencia, 0m, 1, OrderType.Market), tasaMargen);
 
         var capitalDisponible = 1000m - 0m;
-        var margenObjetivo = capitalDisponible * sizing.PorcentajeRiesgo;
+        var margenObjetivo = capitalDisponible * porcentajeRiesgo;
         Assert.Equal(margenObjetivo, portfolio.Margin);
     }
 
@@ -240,10 +246,10 @@ public class GestorCapitalTests
     {
         var portfolio = new PortfolioState { Cash = 1000m };
         AplicadorFill.Aplicar(portfolio, new Fill(1, Side.Buy, 1m, 100m, 0m, 1, OrderType.Market));
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var requests = new[] { new OrderRequest(Side.Sell, OrderType.Market, 1m) };
 
-        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, precioReferencia: 100m, tasaMargen: 0.1m);
+        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, DataSliceDePrueba(), 100m, 0.1m);
 
         Assert.Equal(1m, ajustadas[0].Cantidad);
     }
@@ -261,10 +267,10 @@ public class GestorCapitalTests
     {
         var portfolio = new PortfolioState { Cash = 1000m };
         AplicadorFill.Aplicar(portfolio, new Fill(1, Side.Buy, 1m, 100m, 0m, 1, OrderType.Market));
-        var sizing = new ConfiguracionSizing(PorcentajeRiesgo: 0.1m);
+        var sizing = new ConfiguracionSizing(new GestorFixedFractional(0.1m));
         var requests = new[] { new OrderRequest(Side.Sell, OrderType.Market, 0.5m) };
 
-        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, precioReferencia: 100m, tasaMargen: 0.1m);
+        var ajustadas = GestorCapital.Ajustar(requests, portfolio, sizing, DataSliceDePrueba(), 100m, 0.1m);
 
         Assert.Equal(0.5m, ajustadas[0].Cantidad);
     }

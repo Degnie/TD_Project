@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using TD_Project.Domain.Portfolio;
 using TD_Project.Protocolo;
 
 namespace TD_Project.ModeloFinanciero;
@@ -32,8 +33,10 @@ public static class ReporteFinancieroGenerador
         sb.AppendLine($"   Instrumento: Simbolo={instrumento.Simbolo}, TasaMargen={instrumento.TasaMargen}");
         var costes = entrada.Costes ?? Domain.Shared.ConfiguracionCostes.Default;
         sb.AppendLine($"   Costes: TasaComision={costes.TasaComision}, TasaSlippage={costes.TasaSlippage}");
-        sb.AppendLine(entrada.Sizing is not null
-            ? $"   Sizing: PorcentajeRiesgo={entrada.Sizing.PorcentajeRiesgo} (GestorCapital activo)"
+        // spec: Caso 5A, precision derivada de D-109 — identidad del gestor via IIdentidadGestorRiesgo,
+        // nunca por PorcentajeRiesgo directo (ya no existe en ConfiguracionSizing, ver GestorFixedFractional.cs).
+        sb.AppendLine(entrada.Sizing?.GestorActivo is IIdentidadGestorRiesgo identidadGestor
+            ? $"   Sizing: {identidadGestor.ObtenerIdentidadConfiguracion()} (GestorCapital activo)"
             : "   Sizing: inactivo (Cantidad de la estrategia sin ajustar)");
         sb.AppendLine();
 

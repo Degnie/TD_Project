@@ -1,3 +1,4 @@
+using TD_Project.Domain.Portfolio;
 using TD_Project.Domain.Shared;
 using TD_Project.EvaluacionMultiTf;
 using TD_Project.Exploration;
@@ -77,7 +78,7 @@ var identidadJson = $$"""
       "hashConfiguracionEconomica": "{{corridaA.Identidad.HashConfiguracionEconomica}}",
       "instrumento": { "simbolo": "{{instrumento.Simbolo}}", "tasaMargen": {{instrumento.TasaMargen}} },
       "costes": { "tasaComision": {{costes.TasaComision}}, "tasaSlippage": {{costes.TasaSlippage}} },
-      "sizing": {{(sizing is null ? "null" : $"{{ \"porcentajeRiesgo\": {sizing.PorcentajeRiesgo} }}")}}
+      "sizing": {{(sizing?.GestorActivo is IIdentidadGestorRiesgo identidadGestor ? $"{{ \"gestor\": \"{identidadGestor.ObtenerIdentidadConfiguracion()}\" }}" : "null")}}
     }
     """;
 File.WriteAllText(Path.Combine(dirSalida, "IDENTIDAD_EXPERIMENTAL.json"), identidadJson);

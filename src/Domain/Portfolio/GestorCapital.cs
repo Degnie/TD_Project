@@ -11,13 +11,6 @@ namespace TD_Project.Domain.Portfolio;
 // efectiva (magnitud real, D-095), evitando el residuo de lotes que originó D-084. La bolsa se
 // clasifica secuencialmente contra una posicion PROYECTADA local (S2) — nunca PortfolioState.
 // LotesVivos real, que sigue mutando exclusivamente via AplicadorFill (D-071).
-// spec: Caso 4 D-093/D-094 — PorcentajeRiesgo es fraccion de CapitalDisponible objetivo como
-// MARGEN, no como Cantidad de activo directamente (D-085: la interpretacion anterior mezclaba
-// unidad monetaria con unidad de activo sin conversion). CantidadActivo se despeja de la misma
-// ecuacion que CalculadoraLotes.AbrirLote ya usa (Margin = Cantidad * PrecioFill * TasaMargen):
-// CantidadActivo = MargenObjetivo / (PrecioReferencia * TasaMargen). PrecioReferencia = Close de
-// la vela siguiente (D-094), misma referencia que ValidadorCapacidad/CalculadoraReservaPreventiva
-// ya usan para el mismo proposito (ESPECIFICACION_IMPLEMENTACION_SIZING_CORREGIDO_V1.md).
 // spec: Caso 4 D-095 — bajo sizing activo, una orden de cierre con Cantidad nominal fija de una
 // estrategia historica casi nunca coincide con la posicion real que sizing dejo abierta. Un
 // CrossZero detectado por el clasificador en ese contexto es espurio (la estrategia "quiso" cerrar
@@ -25,18 +18,22 @@ namespace TD_Project.Domain.Portfolio;
 // de la posicion proyectada, nunca la Cantidad nominal (ESPECIFICACION_NORMALIZACION_CIERRES_
 // SIZING_V1.md S3). Solo aplica con sizing activo: bajo Sizing=null este metodo retorna temprano
 // (linea siguiente), preservando intacto el CrossZero genuino de fixtures/baselines historicos.
+// spec: Caso 5A D-108 (DECISIONES_CASO5_V1.md) — GestorCapital orquesta: invoca al IGestorRiesgo
+// activo para obtener cantidadCalculada (antes, formula de Fixed Fractional inline aqui mismo,
+// Caso 4 D-093/D-094 — ver GestorFixedFractional.cs para la formula migrada sin cambios), y
+// conserva integra la clasificacion de intencion + normalizacion de Cross-Zero (D-092/D-095) como
+// codigo unico, compartido por cualquier gestor. DataSlice se agrega a la firma (antes solo
+// precioReferencia escalar) porque GestorVolatilitySizing requiere una ventana de Closes que un
+// escalar no puede proveer (hallazgo S1, ESPECIFICACION_IMPLEMENTACION_GESTORES_RIESGO_V1.md) —
+// mismo dato que BacktestRunner ya construye para la Strategy, sin calculo adicional.
 public static class GestorCapital
 {
-    public static IReadOnlyList<OrderRequest> Ajustar(IReadOnlyList<OrderRequest> requests, PortfolioState portfolio, ConfiguracionSizing? sizing, decimal precioReferencia, decimal tasaMargen)
+    public static IReadOnlyList<OrderRequest> Ajustar(IReadOnlyList<OrderRequest> requests, PortfolioState portfolio, ConfiguracionSizing? sizing, DataSlice dataSlice, decimal precioReferencia, decimal tasaMargen)
     {
         if (sizing is null)
             return requests;
 
-        // spec: D-067 — CapitalDisponible = Cash - Margin (no Equity: PortfolioState no expone
-        // UnrealizedPnL en este punto del ciclo, ver DECISIONES_MODELO_ECONOMICO_V1.md D-067).
-        var capitalDisponible = portfolio.Cash - portfolio.Margin;
-        var margenObjetivo = capitalDisponible * sizing.PorcentajeRiesgo;
-        var cantidadCalculada = margenObjetivo / (precioReferencia * tasaMargen);
+        var cantidadCalculada = sizing.GestorActivo.CalcularCantidad(portfolio, dataSlice, precioReferencia, tasaMargen);
 
         var posicionProyectada = PosicionActual.De(portfolio);
         var resultado = new List<OrderRequest>(requests.Count);
