@@ -32,15 +32,22 @@ public sealed record ResultadoCorridaTimeframe(
     string? Anexo,
     MetricasFinancieras? MetricasFinancieras = null);
 
+// spec: Caso 3 D-090 — Caracteristicas es propiedad de la Estrategia, no de una corrida por
+// timeframe (una sola declaracion vale para todos los timeframes de ResultadoProtocolo).
 public sealed record ResultadoProtocolo(
     string Estrategia,
     IdentidadExperimentoCompleta Identidad,
     IReadOnlyList<ResultadoCorridaTimeframe> Corridas,
-    PerfilMultiTimeframe? MultiTimeframe); // null si ningun timeframe completo Success (no hay nada que comparar)
+    PerfilMultiTimeframe? MultiTimeframe, // null si ningun timeframe completo Success (no hay nada que comparar)
+    CaracteristicasEstrategia? Caracteristicas = null);
 
 // spec: Caso 2 D-079 — Instrumento/Costes/Sizing opcionales, default null = comportamiento
 // historico (mismo criterio D-061). Permite que una corrida del protocolo use el modelo
 // economico/costes/gestion de capital de Caso 2 en lugar de los defaults de Caso 1.
+// spec: Caso 3 D-090 — CaracteristicasEstrategia opcional, metadata declarativa externa a
+// IStrategy (D-088). null = no declarado (no se asume UsaMartingala=true ni false por defecto —
+// distinto de D-061/D-079, donde el default representa un comportamiento economico neutro;
+// aqui "no declarado" es un tercer estado honesto, ver EjecutorProtocolo.EjecutarUnTimeframe).
 public sealed record EntradaProtocolo(
     string Estrategia,
     string VersionEstrategia,
@@ -52,7 +59,15 @@ public sealed record EntradaProtocolo(
     decimal CapitalInicial,
     Instrumento? Instrumento = null,
     ConfiguracionCostes? Costes = null,
-    ConfiguracionSizing? Sizing = null);
+    ConfiguracionSizing? Sizing = null,
+    CaracteristicasEstrategia? Caracteristicas = null);
+
+// spec: Caso 3 D-088/D-090 — metadata declarativa de capacidades de la estrategia, externa a
+// IStrategy (no contamina el contrato de ejecucion). Deliberadamente minima: solo el campo que
+// D-088 necesita resolver ahora. No incluye UsaSizingPropio/UsaEstadoInternoPersistente u otros
+// campos sin consumidor concreto (mismo principio que evito extender IStrategy sin necesidad
+// demostrada, ver ESPECIFICACION_IMPLEMENTACION_ZSCORE_REVERSAL_V1.md §3).
+public sealed record CaracteristicasEstrategia(bool UsaMartingala);
 
 public static class EjecutorProtocolo
 {
@@ -86,7 +101,7 @@ public static class EjecutorProtocolo
             ClasificadorRegimenV1.Version, VersionProtocolo,
             entrada.Instrumento, entrada.Costes, entrada.Sizing);
 
-        return new ResultadoProtocolo(entrada.Estrategia, identidad, corridas, multiTimeframe);
+        return new ResultadoProtocolo(entrada.Estrategia, identidad, corridas, multiTimeframe, entrada.Caracteristicas);
     }
 
     private static ResultadoCorridaTimeframe EjecutarUnTimeframe(EntradaProtocolo entrada, string tf)
