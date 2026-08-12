@@ -22,6 +22,8 @@ public static class AplicadorFill
             portfolio.LotesVivos.Add(lote);
             portfolio.Cash -= lote.Margin;
             portfolio.Margin += lote.Margin;
+            // spec: Caso 2 D-065 — coste aplicado por tramo realmente ejecutado (apertura/aumento).
+            portfolio.Cash -= fill.CostoFriccionReal;
             return new ResultadoAplicacionFill(TradeCerrado: null, RealizedPnLReconocido: 0m, MarginLiberado: 0m);
         }
 
@@ -54,6 +56,8 @@ public static class AplicadorFill
 
             portfolio.Margin -= consumo.MarginLiberado;
             portfolio.Cash += consumo.MarginLiberado + consumo.RealizedPnL;
+            // spec: Caso 2 D-065 — coste aplicado por tramo realmente ejecutado (reduccion FIFO).
+            portfolio.Cash -= fill.CostoFriccionReal;
 
             Trade? tradeCerrado = null;
             if (magnitudFill == magnitudPosicion)
@@ -71,15 +75,23 @@ public static class AplicadorFill
 
             var resultado = ResolutorCrossZero.Resolver(posicionViejaAgregada, magnitudFill, fill.PrecioFill, tasaMargen, posicionEraLarga);
 
+            // spec: Caso 2 D-065 — Cross-Zero cierra un tramo (posicion vieja) y abre otro (posicion
+            // nueva) con un unico Fill; el coste total se prorratea entre ambos tramos segun la
+            // cantidad que cada uno ejecuta, evitando aplicar un coste artificial unico al evento.
+            var costoTramoCierre = fill.CostoFriccionReal * (magnitudPosicion / magnitudFill);
+            var costoTramoApertura = fill.CostoFriccionReal - costoTramoCierre;
+
             portfolio.LotesVivos.Clear();
             portfolio.Margin -= resultado.MarginLiberadoPosicionVieja;
             portfolio.Cash += resultado.MarginLiberadoPosicionVieja + resultado.RealizedPnL;
+            portfolio.Cash -= costoTramoCierre;
 
             var cantidadNuevaConSigno = posicionEraLarga ? -resultado.CantidadPosicionNueva : resultado.CantidadPosicionNueva;
             var loteNuevo = CalculadoraLotes.AbrirLote(resultado.CantidadPosicionNueva, fill.PrecioFill, tasaMargen) with { Cantidad = cantidadNuevaConSigno };
             portfolio.LotesVivos.Add(loteNuevo);
             portfolio.Cash -= loteNuevo.Margin;
             portfolio.Margin += loteNuevo.Margin;
+            portfolio.Cash -= costoTramoApertura;
 
             var tradeCerrado = new Trade(magnitudPosicion, precioEntradaPromedio, fill.PrecioFill, resultado.RealizedPnL);
             return new ResultadoAplicacionFill(tradeCerrado, resultado.RealizedPnL, resultado.MarginLiberadoPosicionVieja);

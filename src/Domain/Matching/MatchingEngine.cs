@@ -6,13 +6,15 @@ namespace TD_Project.Domain.Matching;
 // de manera determinista, resolviendo una unica trayectoria por invocacion.
 public static class MatchingEngine
 {
-    public static Fill? Resolver(Order orden, Candle vela, Trayectoria trayectoria)
+    // spec: Caso 2 D-063/D-064/D-065 — costes son opcionales (default = coste cero, preserva
+    // baseline de Caso 1). Slippage solo aplica a Market (ver CalcularCostoFriccion).
+    public static Fill? Resolver(Order orden, Candle vela, Trayectoria trayectoria, ConfiguracionCostes? costes = null)
     {
         if (orden.Status != OrderStatus.Pending)
             return null;
 
         if (orden.Type == OrderType.StopLimit)
-            return ResolverStopLimit(orden, vela, trayectoria);
+            return ResolverStopLimit(orden, vela, trayectoria, costes);
 
         var precioFill = orden.Type switch
         {
@@ -27,12 +29,13 @@ public static class MatchingEngine
 
         // spec: RN-02 — todo Fill satisface el 100% de la cantidad, cero Partial Fills
         OrdenTransiciones.Ejecutar(orden);
-        return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, CostoFriccionReal: 0m, vela.Timestamp, orden.Type);
+        var costoFriccion = CalcularCostoFriccion(orden, precioFill.Value, aplicaSlippage: orden.Type == OrderType.Market, costes);
+        return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, costoFriccion, vela.Timestamp, orden.Type);
     }
 
     // spec: RN-06, RN-11 — Stop se dispara y, en el recorrido temporal simulado que queda desde el
     // punto de disparo hasta el Close (segun la trayectoria A u B), si el Limit es cruzado, hace Fill.
-    private static Fill? ResolverStopLimit(Order orden, Candle vela, Trayectoria trayectoria)
+    private static Fill? ResolverStopLimit(Order orden, Candle vela, Trayectoria trayectoria, ConfiguracionCostes? costes)
     {
         var precioStop = orden.PrecioStop!.Value;
         var recorrido = RecorridoVela.Para(vela, trayectoria);
@@ -48,7 +51,23 @@ public static class MatchingEngine
             return null;
 
         OrdenTransiciones.Ejecutar(orden);
-        return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, CostoFriccionReal: 0m, vela.Timestamp, tipoOrdenOriginal);
+        // spec: D-063 — StopLimit no es Market: sin slippage (precio pactado = precio ejecucion).
+        var costoFriccion = CalcularCostoFriccion(orden, precioFill.Value, aplicaSlippage: false, costes);
+        return new Fill(orden.SecuenciaCausal, orden.Side, orden.Cantidad, precioFill.Value, costoFriccion, vela.Timestamp, tipoOrdenOriginal);
+    }
+
+    // spec: D-063 — CostoTotal = Comision + Slippage. Comision = Cantidad * PrecioFill * TasaComision
+    // (todo tipo de orden). Slippage solo para Market: el motor no tiene un segundo precio de
+    // referencia distinto de PrecioFill (Market ya ejecuta al Open, sin libro de ordenes) — se
+    // modela como Cantidad * PrecioFill * TasaSlippage, igual patron que Comision pero con su
+    // propia tasa. Limit/Stop/StopLimit ejecutan exactamente al precio pactado (RN-03), sin
+    // divergencia que modelar (aplicaSlippage=false desactiva el termino).
+    private static decimal CalcularCostoFriccion(Order orden, decimal precioFill, bool aplicaSlippage, ConfiguracionCostes? costes)
+    {
+        var config = costes ?? ConfiguracionCostes.Default;
+        var comision = orden.Cantidad * precioFill * config.TasaComision;
+        var slippage = aplicaSlippage ? orden.Cantidad * precioFill * config.TasaSlippage : 0m;
+        return comision + slippage;
     }
 
     // spec: RN-11 — recorre Open->Primero->Segundo->Close buscando el primer tramo donde el Stop

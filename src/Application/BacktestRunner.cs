@@ -21,9 +21,12 @@ public static class BacktestRunner
         if (config.Velas.Count <= config.Warmup)
             return Vacio(EstadoBacktest.NotEvaluable);
 
+        var instrumento = config.InstrumentoEfectivo;
+        var costes = config.CostesEfectivos;
         var portfolio = new PortfolioState { Cash = config.CapitalInicial };
         var registrador = new RegistradorOrdenes();
         var ordenesPending = new List<Order>();
+        var incapacidades = new List<RegistroIncapacidad>();
         // Mantenida en paralelo a ordenesPending (el registro completo, para el resultado final)
         // para evitar el filtro O(n) por vela que reconstruia "las Pending" en cada iteracion —
         // ver docs/PENDIENTES.md, hallazgo de rendimiento O(n^2) descubierto con datos reales.
@@ -42,6 +45,11 @@ public static class BacktestRunner
             {
                 var dataSlice = new DataSlice(new VentanaDeVelas(config.Velas, n + 1));
                 var requests = strategy.Observar(dataSlice);
+                // spec: Caso 2 D-066/D-068/D-071 — GestorCapital transforma Cantidad antes de
+                // ValidadorBolsaRequests/ValidadorCapacidad, para que la reserva de capacidad se
+                // calcule sobre la cantidad ya ajustada (CalculadoraReservaPreventiva usa
+                // request.Cantidad). config.Sizing=null -> requests sin cambios (D-061/D-069).
+                requests = GestorCapital.Ajustar(requests, portfolio, config.Sizing);
 
                 if (requests.Count > 0)
                 {
@@ -49,8 +57,17 @@ public static class BacktestRunner
                     var evaluacion = ValidadorBolsaRequests.Evaluar(requests);
                     if (evaluacion.Aprobada)
                     {
+                        var closeSiguiente = config.Velas[n + 1].Close;
                         foreach (var request in requests)
                         {
+                            // spec: Caso 2 D-059/D-060 — evalua capacidad sobre el OrderRequest,
+                            // antes del Fill; solo registra, nunca bloquea (Caso 1 no se altera).
+                            if (!ValidadorCapacidad.Validar(portfolio, request, closeSiguiente, instrumento.TasaMargen, portfolio.Margin))
+                            {
+                                var reserva = CalculadoraReservaPreventiva.Calcular(request, closeSiguiente, instrumento.TasaMargen);
+                                incapacidades.Add(new RegistroIncapacidad(config.Velas[n + 1].Timestamp, request, reserva, portfolio.Cash - portfolio.Margin));
+                            }
+
                             var orden = registrador.Registrar(request);
                             ordenesPending.Add(orden);
                             ordenesActivas.Add(orden);
@@ -59,7 +76,7 @@ public static class BacktestRunner
                 }
 
                 var velaSiguiente = config.Velas[n + 1];
-                var resolucion = ResolutorVela.Resolver(ordenesActivas, velaSiguiente, portfolio);
+                var resolucion = ResolutorVela.Resolver(ordenesActivas, velaSiguiente, portfolio, instrumento.TasaMargen, costes);
 
                 equityCurve.Add(new EquityPoint(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.UnrealizedPnLFinal, resolucion.EquityFinal));
                 portfolioSnapshots.Add(new PortfolioSnapshot(velaSiguiente.Timestamp, resolucion.CashFinal, resolucion.MarginFinal, resolucion.LotesVivosFinal));
@@ -75,7 +92,7 @@ public static class BacktestRunner
                 {
                     fills.Add(fill);
                     acumuladorTradeActivo.AntesDeAplicar(PosicionActual.De(portfolio), fill.PrecioFill);
-                    var resultadoFill = AplicadorFill.Aplicar(portfolio, fill);
+                    var resultadoFill = AplicadorFill.Aplicar(portfolio, fill, instrumento.TasaMargen);
                     acumuladorTradeActivo.Registrar(resultadoFill);
                     if (resultadoFill.TradeCerrado is not null)
                         trades.Add(acumuladorTradeActivo.CerrarYExtraer(resultadoFill.TradeCerrado));
@@ -90,7 +107,7 @@ public static class BacktestRunner
             foreach (var orden in ordenesActivas)
                 OrdenTransiciones.Cancelar(orden);
 
-            return new ResultadoBacktest(EstadoBacktest.Success, fills, portfolio.Cash, trades, ordenesPending, equityCurve, portfolioSnapshots, branchResolutions);
+            return new ResultadoBacktest(EstadoBacktest.Success, fills, portfolio.Cash, trades, ordenesPending, equityCurve, portfolioSnapshots, branchResolutions, incapacidades);
         }
         catch (ArgumentOutOfRangeException)
         {

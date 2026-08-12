@@ -8,10 +8,14 @@ namespace TD_Project.Domain.VelaResolution;
 // sin contaminacion cruzada, y selecciona la oficial por Equity minimo (desempate: A).
 public static class ResolutorVela
 {
-    public static ResultadoResolucionVela Resolver(IReadOnlyList<Order> ordenesPending, Candle vela, PortfolioState portfolio)
+    // spec: Caso 2 D-062 — tasaMargen se propaga desde el Instrumento del experimento; el default
+    // preserva el comportamiento historico para call sites que no lo especifican (D-061).
+    // spec: Caso 2 D-063/D-064/D-065 — costes se propagan desde la configuracion economica del
+    // experimento (no del Instrumento); default null = coste cero (preserva baseline Caso 1).
+    public static ResultadoResolucionVela Resolver(IReadOnlyList<Order> ordenesPending, Candle vela, PortfolioState portfolio, decimal tasaMargen = 0.1m, ConfiguracionCostes? costes = null)
     {
-        var (fillsA, portfolioA) = ResolverRama(ordenesPending, vela, Trayectoria.A, portfolio);
-        var (fillsB, portfolioB) = ResolverRama(ordenesPending, vela, Trayectoria.B, portfolio);
+        var (fillsA, portfolioA) = ResolverRama(ordenesPending, vela, Trayectoria.A, portfolio, tasaMargen, costes);
+        var (fillsB, portfolioB) = ResolverRama(ordenesPending, vela, Trayectoria.B, portfolio, tasaMargen, costes);
 
         var equityA = CalcularEquity(portfolioA, vela);
         var equityB = CalcularEquity(portfolioB, vela);
@@ -36,10 +40,10 @@ public static class ResolutorVela
             LotesVivosFinal: portfolioOficial.LotesVivos.ToList());
     }
 
-    public static ResultadoResolucionVela ResolverOco(OcoGroup grupo, Candle vela, PortfolioState portfolio)
+    public static ResultadoResolucionVela ResolverOco(OcoGroup grupo, Candle vela, PortfolioState portfolio, decimal tasaMargen = 0.1m, ConfiguracionCostes? costes = null)
     {
-        var (canceladasA, fillsA, portfolioA) = ResolverRamaOco(grupo, vela, Trayectoria.A, portfolio);
-        var (canceladasB, fillsB, portfolioB) = ResolverRamaOco(grupo, vela, Trayectoria.B, portfolio);
+        var (canceladasA, fillsA, portfolioA) = ResolverRamaOco(grupo, vela, Trayectoria.A, portfolio, tasaMargen, costes);
+        var (canceladasB, fillsB, portfolioB) = ResolverRamaOco(grupo, vela, Trayectoria.B, portfolio, tasaMargen, costes);
 
         var equityA = CalcularEquity(portfolioA, vela);
         var equityB = CalcularEquity(portfolioB, vela);
@@ -63,7 +67,7 @@ public static class ResolutorVela
     }
 
     private static (List<Fill> Fills, PortfolioState Portfolio) ResolverRama(
-        IReadOnlyList<Order> ordenesPending, Candle vela, Trayectoria trayectoria, PortfolioState portfolioOriginal)
+        IReadOnlyList<Order> ordenesPending, Candle vela, Trayectoria trayectoria, PortfolioState portfolioOriginal, decimal tasaMargen, ConfiguracionCostes? costes)
     {
         var portfolioRama = portfolioOriginal.Clonar();
         var fills = new List<Fill>();
@@ -71,11 +75,11 @@ public static class ResolutorVela
         foreach (var ordenOriginal in ordenesPending)
         {
             var ordenClonada = ordenOriginal.Clonar();
-            var fill = MatchingEngine.Resolver(ordenClonada, vela, trayectoria);
+            var fill = MatchingEngine.Resolver(ordenClonada, vela, trayectoria, costes);
             if (fill is not null)
             {
                 fills.Add(fill);
-                AplicadorFill.Aplicar(portfolioRama, fill);
+                AplicadorFill.Aplicar(portfolioRama, fill, tasaMargen);
             }
         }
 
@@ -83,7 +87,7 @@ public static class ResolutorVela
     }
 
     private static (List<Order> Canceladas, List<Fill> Fills, PortfolioState Portfolio) ResolverRamaOco(
-        OcoGroup grupo, Candle vela, Trayectoria trayectoria, PortfolioState portfolioOriginal)
+        OcoGroup grupo, Candle vela, Trayectoria trayectoria, PortfolioState portfolioOriginal, decimal tasaMargen, ConfiguracionCostes? costes)
     {
         var portfolioRama = portfolioOriginal.Clonar();
         var ramasClonadas = grupo.Ramas.Select(r => r.Clonar()).OrderBy(r => r.SecuenciaCausal).ToList();
@@ -92,11 +96,11 @@ public static class ResolutorVela
 
         foreach (var rama in ramasClonadas)
         {
-            var fill = MatchingEngine.Resolver(rama, vela, trayectoria);
+            var fill = MatchingEngine.Resolver(rama, vela, trayectoria, costes);
             if (fill is not null)
             {
                 fills.Add(fill);
-                AplicadorFill.Aplicar(portfolioRama, fill);
+                AplicadorFill.Aplicar(portfolioRama, fill, tasaMargen);
                 foreach (var hermana in ramasClonadas.Where(h => h != rama && h.Status == OrderStatus.Pending))
                 {
                     OrdenTransiciones.Cancelar(hermana);
