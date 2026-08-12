@@ -1,11 +1,12 @@
-# Índice Global de Decisiones — D-001 a D-090
+# Índice Global de Decisiones — D-001 a D-098
 
-Estado: **documento de referencia — actualizado al cierre de Caso 3A**. Consolida en un único
+Estado: **documento de referencia — actualizado al cierre de Caso 4**. Consolida en un único
 lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
-(`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`) y Caso 3A (`DECISIONES_CASO3_V1.md`),
-evitando que abrir una fase nueva requiera rastrear tres documentos distintos para saber si un tema
-ya fue decidido. No redefine ni reinterpreta ninguna decisión — cada fila remite al documento de
-origen, que sigue siendo la fuente autoritativa.
+(`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`) y
+Caso 4 (`DECISIONES_CASO4_V1.md`, `DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`,
+`DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`), evitando que abrir una fase nueva requiera rastrear
+varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
+ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -151,17 +152,19 @@ Congelado como **V1 Experimental** (tag `caso2-v1-experimental`). Fuente complet
 | D-081 | Programa dedicado para el baseline financiero, sin tocar `protocolo/Program.cs` | 🟢 Congelada |
 | D-082 | Identidad experimental: `HashCompuesto` + `HashConfiguracionEconomica` separados | 🟢 Congelada |
 | D-083 | Calibración dimensional de `PorcentajeRiesgo` (no es valor recomendado) | 🟢 Congelada |
-| D-084 | `GestorCapital` no distingue apertura/cierre de posición | 🔴 Deuda técnica — ver abajo |
-| D-085 | Escala económica histórica: `Cantidad=1` sin relación dimensional con `CapitalInicial` | 🟡 Deuda técnica — ver abajo |
+| D-084 | `GestorCapital` no distingue apertura/cierre de posición | ✅ Resuelta en Caso 4 (4.2) |
+| D-085 | Escala económica histórica: `Cantidad=1` sin relación dimensional con `CapitalInicial` | ✅ Resuelta en Caso 4 (4.3) |
 
 ### Pendientes de Caso 2 (deuda técnica, no bloqueante salvo excepción)
 
 | D-N | Qué queda pendiente | Impacto | ¿Bloquea Caso 3? |
 |---|---|---|---|
 | D-074 | Duración del drawdown | 🟢 Bajo | No — postergar |
-| D-084 | `GestorCapital` no transporta intención apertura/cierre — residuos de lotes en sizing activo | 🔴 Alto | Solo si Caso 3 es financiero (gestión de capital avanzada, optimización, riesgo real) |
-| D-085 | `Cantidad=1` histórica sin relación dimensional con `CapitalInicial=1000` | 🟡 Medio | No — Caso 1 ya congelado, cambiarlo rompe comparabilidad |
 | — | Spread/funding, sizing alternativo (Equity, Masaniello) | 🟢 Bajo | No — explícitamente excluidos de V1 |
+
+D-084 y D-085 dejaron de ser deuda técnica de Caso 2 — resueltas de punta a punta en Caso 4 (ver
+abajo). Se mantienen en la tabla de Caso 2 por ser su documento de origen; su estado final vive en
+la sección de Caso 4.
 
 ---
 
@@ -185,26 +188,68 @@ Congelado como **V1 Experimental** (tag `caso3a-v1-experimental`). Fuente comple
 |---|---|---|---|
 | D-055 | Catálogo de métricas de martingala sin rediseño completo (presentación "no aplica" sí implementada) | 🟡 Medio | No — postergar a una fase que rediseñe el catálogo si se justifica |
 | D-044 | No activada — ninguna familia de Caso 3A estudia interacción estrategia/régimen | 🟢 Bajo | No — candidato de fase futura si se estudia esa interacción |
-| D-084 | No activada — `GestorCapital`/sizing dinámico no interviene en Caso 3A | 🔴 Alto | Solo si una fase futura es financiera (sizing avanzado, riesgo, optimización) |
+| D-084 | No activada dentro de Caso 3A — resuelta como corrección de motor en Caso 4 | — | Ver sección Caso 4 |
 
 ---
 
-## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A como referencia estable?
+## Caso 4 — Evolución financiera (D-091 a D-098, resuelve D-084/D-085)
+
+Congelado como **V1 Experimental** (tag `caso4-v1-experimental`). Fuente completa:
+`DECISIONES_CASO4_V1.md`, `DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`,
+`DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`, auditoría en `AUDITORIA_CASO4_3_UNIDADES_
+EXPOSICION_V1.md` y `AUDITORIA_CASO4_V1.md`, congelamiento en `caso4/VERSION_EXPERIMENTAL_
+CASO4_V1.md`.
+
+### Arquitectura y clasificación de intención — Caso 4.1/4.2 (D-091/D-092, resuelve D-084)
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-091 | Corrección en `src/` con activación experimental explícita, default histórico preservado (Opción C) | 🟢 Congelada |
+| D-092 | Componente clasificador de intención separado, previo a `GestorCapital`, fuente = `PortfolioState`/`LotesVivos` (Opción 2) | 🟢 Congelada |
+
+### Unidades, exposición y normalización — Caso 4.3 (D-093 a D-095, resuelve D-085)
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-093 | `PorcentajeRiesgo` = fracción sobre margen requerido, no exposición nominal (Opción A) | 🟢 Congelada |
+| D-094 | Precio de referencia para sizing = `Close` de la vela siguiente | 🟢 Congelada |
+| D-095 | Intención de reducción/cierre prevalece sobre cantidad nominal — normalización previa a Cross-Zero | 🟢 Congelada |
+
+### Observabilidad de incapacidades — Caso 4.4 (D-096 a D-098)
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-096 | Exposición de incapacidades como observación/reporte, sin bloqueo (Opción A) | 🟢 Congelada |
+| D-097 | Incapacidad = restricción económica observable, no error de orden ni orden inválida | 🟢 Congelada |
+| D-098 | Aislamiento estructural: módulo satélite `caso4/Caso4.csproj` | 🟢 Congelada |
+
+### Pendientes de Caso 4 (deuda técnica, no bloqueante)
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| — | Modo estricto de `ValidadorCapacidad` (bloqueo/rechazo por incapacidad) | 🟢 Bajo | No — deferred explícitamente en D-096, candidato de fase futura si se justifica |
+| — | Calibración de `PorcentajeRiesgo`/`CapitalInicial` "razonables" por estrategia | 🟢 Bajo | No — fuera del objetivo de Caso 4 (corrección dimensional, no calibración) |
+| — | Referencia obsoleta a D-085 en `ReporteFinancieroGenerador.cs` §6 ("no resuelta en Caso 2 V1") | 🟢 Bajo | No — deuda documental histórica, pendiente de mecanismo de errata, no de reapertura de Caso 2 |
+
+---
+
+## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 4 como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
-congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`. La única
-deuda de impacto alto (D-084) es condicional: bloquea únicamente una futura fase de gestión de
-capital/riesgo financiero avanzado, no el uso del laboratorio como plataforma experimental ni el
-modelo económico base.
+congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
+`caso4-v1-experimental`. La deuda de impacto alto que existía (D-084) fue resuelta de punta a
+punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abierta.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
   martingala.
 - D-044 — si una fase futura estudia interacción estrategia/régimen.
-- D-084 — si una fase futura es financiera (sizing avanzado, riesgo, optimización).
+- Modo estricto de `ValidadorCapacidad` — si una fase futura introduce políticas de riesgo o
+  bloqueo automático.
 
 **Deuda que permanece como límite conocido del modelo, sin fecha de resolución**:
-D-011, D-012, D-013, D-018, D-019, D-020, D-074, D-085, spread/funding, sizing alternativo.
+D-011, D-012, D-013, D-018, D-019, D-020, D-074, spread/funding, sizing alternativo, referencia
+documental obsoleta de D-085 en el reporte financiero.
 
 ---
 
@@ -215,10 +260,11 @@ D-011, D-012, D-013, D-018, D-019, D-020, D-074, D-085, spread/funding, sizing a
 | `caso1-v1-experimental` | `eaaddb5` | Laboratorio de estrategias, D-001 a D-056 |
 | `caso2-v1-experimental` | `1f0f967` | Modelo financiero, D-057 a D-085 |
 | `caso3a-v1-experimental` | `43852ab` | Generalización experimental, D-086 a D-090 |
+| `caso4-v1-experimental` | _(pendiente)_ | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
 
 ---
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 3A cerrado. Próxima fase (Caso 3B / Caso 4 / Caso 5) pendiente de
-decisión del auditor.
+Ninguno abierto todavía — Caso 4 cerrado, pendiente de commit/tag. Próxima fase (Caso 3B / Caso 5)
+pendiente de decisión del auditor.

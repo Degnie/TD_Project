@@ -1,6 +1,7 @@
 using TD_Project.AnalisisEscenariosMercado;
 using TD_Project.AnalisisMultiTimeframe;
 using TD_Project.Application;
+using TD_Project.Domain.Broker;
 using TD_Project.Domain.Shared;
 using TD_Project.Domain.Strategy;
 using TD_Project.EvaluacionMultiTf;
@@ -24,13 +25,18 @@ public enum EstadoCorridaTimeframe { Success, Failed, Incomplete }
 // la evaluacion de los demas. Cada timeframe produce su propio resultado, con su propio estado.
 // spec: Caso 2 D-072/D-073/D-075/D-077/D-078 — MetricasFinancieras opcional, poblada solo en la
 // rama Success (mismo criterio D-061/D-069: no rompe call sites existentes de TestsEjecutorProtocolo).
+// spec: Caso 4 D-096/D-097 — Incapacidades expone RegistroIncapacidad (ya calculado por el motor
+// desde Caso 2, D-059, pero descartado hasta ahora) sin modificar src/ ni ValidadorCapacidad.
+// Restriccion economica observable, no error (D-097) — mismo patron de campo opcional poblado
+// solo en Success que MetricasFinancieras.
 public sealed record ResultadoCorridaTimeframe(
     string Timeframe,
     EstadoCorridaTimeframe Estado,
     string? MotivoFallo,
     PerfilMultiTf? Perfil,
     string? Anexo,
-    MetricasFinancieras? MetricasFinancieras = null);
+    MetricasFinancieras? MetricasFinancieras = null,
+    IReadOnlyList<RegistroIncapacidad>? Incapacidades = null);
 
 // spec: Caso 3 D-090 — Caracteristicas es propiedad de la Estrategia, no de una corrida por
 // timeframe (una sola declaracion vale para todos los timeframes de ResultadoProtocolo).
@@ -157,7 +163,7 @@ public static class EjecutorProtocolo
         // estan disponibles en este scope, fuente oficial unica (sin recalculo paralelo).
         var metricasFinancieras = CalculadoraMetricasFinancieras.Calcular(resultado1, entrada.CapitalInicial);
 
-        return new ResultadoCorridaTimeframe(tf, EstadoCorridaTimeframe.Success, null, perfil, anexo, metricasFinancieras);
+        return new ResultadoCorridaTimeframe(tf, EstadoCorridaTimeframe.Success, null, perfil, anexo, metricasFinancieras, resultado1.IncapacidadesEfectivas);
     }
 
     private static string? VerificarDeterminismo(

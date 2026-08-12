@@ -49,7 +49,12 @@ public static class BacktestRunner
                 // ValidadorBolsaRequests/ValidadorCapacidad, para que la reserva de capacidad se
                 // calcule sobre la cantidad ya ajustada (CalculadoraReservaPreventiva usa
                 // request.Cantidad). config.Sizing=null -> requests sin cambios (D-061/D-069).
-                requests = GestorCapital.Ajustar(requests, portfolio, config.Sizing);
+                // spec: Caso 4 D-094 — precioReferencia = Close de la vela siguiente, misma
+                // referencia que ValidadorCapacidad/CalculadoraReservaPreventiva usan mas abajo
+                // (closeSiguiente) para el mismo proposito conceptual de estimar magnitud
+                // economica antes del Fill real (ESPECIFICACION_IMPLEMENTACION_SIZING_
+                // CORREGIDO_V1.md S2).
+                requests = GestorCapital.Ajustar(requests, portfolio, config.Sizing, config.Velas[n + 1].Close, instrumento.TasaMargen);
 
                 if (requests.Count > 0)
                 {

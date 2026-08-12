@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using TD_Project.Protocolo;
 
@@ -56,14 +57,42 @@ public static class ReporteFinancieroGenerador
         }
         sb.AppendLine();
 
-        sb.AppendLine("4. Límites (D-076/D-058)");
+        sb.AppendLine("4. Restricciones de capacidad observadas (D-096/D-097)");
+        sb.AppendLine("   Una \"incapacidad\" registra que una orden operativamente válida habría requerido más");
+        sb.AppendLine("   capacidad económica disponible de la que el modelo permitía en ese momento — no indica");
+        sb.AppendLine("   que la estrategia falló, que el resultado es inválido, ni que la corrida debe");
+        sb.AppendLine("   descartarse (D-097). El motor no bloquea ni modifica ninguna orden por esta razón");
+        sb.AppendLine("   (D-059/D-060, vigentes).");
+        foreach (var c in resultado.Corridas)
+        {
+            if (c.Estado != EstadoCorridaTimeframe.Success)
+                continue;
+
+            var incapacidades = c.Incapacidades ?? Array.Empty<Domain.Broker.RegistroIncapacidad>();
+            sb.AppendLine($"   {c.Timeframe}");
+            if (incapacidades.Count == 0)
+            {
+                sb.AppendLine("     Ninguna restricción de capacidad observada.");
+                continue;
+            }
+
+            var buy = incapacidades.Count(i => i.Request.Side == Domain.Shared.Side.Buy);
+            var sell = incapacidades.Count(i => i.Request.Side == Domain.Shared.Side.Sell);
+            sb.AppendLine($"     Total de incapacidades: {incapacidades.Count}");
+            sb.AppendLine($"     Por lado: Buy={buy}, Sell={sell}");
+            sb.AppendLine($"     Reserva requerida promedio: {incapacidades.Average(i => i.ReservaRequerida):F2}");
+            sb.AppendLine($"     Reserva requerida máxima:   {incapacidades.Max(i => i.ReservaRequerida):F2}");
+        }
+        sb.AppendLine();
+
+        sb.AppendLine("5. Límites (D-076/D-058)");
         sb.AppendLine("   Ninguna cifra de esta sección representa dinero real ni retorno financiero real —");
         sb.AppendLine("   unidad monetaria experimental (D-058). Sin ranking ni comparación de superioridad entre");
         sb.AppendLine("   timeframes o estrategias (D-076). El porcentaje de sizing, si está activo, es un parámetro");
         sb.AppendLine("   experimental fijo, no una optimización.");
         sb.AppendLine();
 
-        sb.AppendLine("5. Advertencia — escala económica histórica (D-085)");
+        sb.AppendLine("6. Advertencia — escala económica histórica (D-085)");
         sb.AppendLine("   Las métricas financieras absolutas representan la ejecución del modelo económico");
         sb.AppendLine("   experimental bajo la configuración histórica de tamaño de posición. No constituyen una");
         sb.AppendLine("   simulación de capital real ni una recomendación de dimensionamiento. La estrategia usa");
