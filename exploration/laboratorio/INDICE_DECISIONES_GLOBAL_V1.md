@@ -214,7 +214,7 @@ D-011, D-012, D-013, D-018, D-019, D-020, D-074, D-085, spread/funding, sizing a
 |---|---|---|
 | `caso1-v1-experimental` | `eaaddb5` | Laboratorio de estrategias, D-001 a D-056 |
 | `caso2-v1-experimental` | `1f0f967` | Modelo financiero, D-057 a D-085 |
-| `caso3a-v1-experimental` | *(pendiente de commit)* | Generalización experimental, D-086 a D-090 |
+| `caso3a-v1-experimental` | `43852ab` | Generalización experimental, D-086 a D-090 |
 
 ---
 
