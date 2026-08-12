@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="campana_corpus\**\*.cs" />
     <Compile Include="..\..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
     <Compile Include="..\..\EstrategiaEmaCross.cs" Link="Fixtures\EstrategiaEmaCross.cs" />
     <Compile Include="..\analisis_operacional\AnalizadorOperacional.cs" Link="Fixtures\AnalizadorOperacional.cs" />
