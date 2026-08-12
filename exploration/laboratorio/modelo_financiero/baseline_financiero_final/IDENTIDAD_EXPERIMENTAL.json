@@ -1,0 +1,13 @@
+{
+  "estrategia": "Tres Mosqueteros",
+  "versionEstrategia": "1.0",
+  "parametros": ["maxMartingalas=2"],
+  "datasetSourceSha256": "f1a9dcbe72bdbca65c5a7de55c776c209a63f8b3ecd93c59a5fca958e4ebded4",
+  "clasificadorRegimenVersion": "V1",
+  "versionProtocolo": "V1",
+  "hashCompuesto": "A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E",
+  "hashConfiguracionEconomica": "FEBD8B24F4DDBD3F5AC78BFD8354E824731C6EF35A0D4A9A229CD9EDF74EF3A3",
+  "instrumento": { "simbolo": "BTCUSDT", "tasaMargen": 0.1 },
+  "costes": { "tasaComision": 0.001, "tasaSlippage": 0.001 },
+  "sizing": null
+}

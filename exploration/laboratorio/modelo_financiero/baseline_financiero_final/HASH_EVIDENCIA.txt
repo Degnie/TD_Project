@@ -1,0 +1,56 @@
+BASELINE FINANCIERO — Caso 2 / D-081
+Estrategia: Tres Mosqueteros | Timeframes: 1m + 1D | Dataset: BTCUSDT_2024-01-02_2025-01-02
+
+Identidad experimental (dos hashes separados, D-082):
+  HashCompuesto (estrategia/dataset/protocolo):
+    A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E
+  HashConfiguracionEconomica (Instrumento/Costes/Sizing efectivos):
+    FEBD8B24F4DDBD3F5AC78BFD8354E824731C6EF35A0D4A9A229CD9EDF74EF3A3
+
+Configuración económica activa:
+  Instrumento: Simbolo=BTCUSDT, TasaMargen=0.1
+  Costes: TasaComision=0.001, TasaSlippage=0.001
+  Sizing: inactivo (null) — D-084, GestorCapital no activo en el baseline congelado
+
+Origen de la evidencia: ejecución vía ProgramBaselineFinanciero.cs (modelo_financiero/
+baseline_financiero/), no manualmente. Verificada mediante 2 corridas independientes dentro del
+mismo proceso (corrida A / corrida B) — mismo HashCompuesto y mismo HashConfiguracionEconomica.
+
+Checksums SHA256 de los archivos de evidencia contenidos en esta carpeta:
+
+87540F2886C0DDFB35CCA4B2973675021EE77AD649C580394131EE65598E3A03  IDENTIDAD_EXPERIMENTAL.json
+77672446900727E744E0C33EFA51C3FAD643475136D08CDF4815C33C0448D42E  REPORTE_FINANCIERO_V1.md
+7929738CA37382CF4830231946D7AE85FB79D24624EFEDD805D4C93A2D3DE4F6  ANEXOS/REPORTE_FINANCIERO_V1_ANEXO_1m.md
+86E53E0ED0489476CE9081DB439CCB8BC61FEB307E3C88925935D1F41AEBFFF3  ANEXOS/REPORTE_FINANCIERO_V1_ANEXO_1D.md
+
+Verificación de repetición (mismo criterio que baseline_final/, Caso 1):
+  Corrida A: HashCompuesto=A48CCC57... HashConfiguracionEconomica=FEBD8B24...
+  Corrida B: HashCompuesto=A48CCC57... HashConfiguracionEconomica=FEBD8B24...
+  Resultado: IDÉNTICO — hash A == hash B, en ambos campos.
+
+Verificación de coincidencia histórica (D-082, condición 1):
+  HashCompuesto de esta corrida == HashCompuesto congelado de baseline_final/ (Caso 1):
+  A48CCC57DA1919F533F4D532FDC0F945705681DCDA813B385BBFE7F44F40998E — IDÉNTICO.
+  Confirma que la configuración económica (Instrumento/Costes activos, Sizing inactivo) no altera
+  la identidad estratégica — mismos anexos por escenario (checksums idénticos a baseline_final/).
+
+Verificación de sensibilidad económica (D-082, condición 2/3):
+  Una configuración económica distinta de Instrumento/Costes/Sizing produce un
+  HashConfiguracionEconomica distinto de "default" (instrumento:N/A:0.1 costes:0:0 sin-sizing) —
+  verificado por diseño en IdentidadExperimentoCompleta.CalcularHashConfiguracionEconomica.
+
+Identidad congelada — ¿qué experimento exacto produjo esta evidencia? (ver
+IDENTIDAD_EXPERIMENTAL.json):
+  Estrategia: Tres Mosqueteros, versión 1.0
+  Parámetros: maxMartingalas=2
+  Dataset: BTCUSDT_2024-01-02_2025-01-02
+  Clasificador de régimen: ClasificadorRegimenV1 (V1, D-052)
+  Versión de protocolo: V1
+  Instrumento: BTCUSDT, TasaMargen=0.1
+  Costes: TasaComision=0.001, TasaSlippage=0.001
+  Sizing: inactivo (D-084 — deuda técnica, GestorCapital no activo en esta versión congelada)
+
+Advertencia obligatoria (D-085, ver REPORTE_FINANCIERO_V1.md §5):
+  Las métricas financieras absolutas (Cash final, Equity final) reflejan un desajuste dimensional
+  preexistente desde Caso 1 entre la Cantidad nominal fija de la estrategia (=1) y CapitalInicial
+  (=1000) — no una simulación de capital real. Deuda técnica registrada, no resuelta en V1.
