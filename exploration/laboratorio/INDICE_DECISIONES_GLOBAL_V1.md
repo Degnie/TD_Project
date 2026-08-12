@@ -1,13 +1,14 @@
-# Índice Global de Decisiones — D-001 a D-111
+# Índice Global de Decisiones — D-001 a D-115
 
-Estado: **documento de referencia — actualizado al cierre de Caso 5A**. Consolida en un único
+Estado: **documento de referencia — actualizado al cierre de Caso 5B**. Consolida en un único
 lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
 (`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`),
 Caso 3B (`DECISIONES_CASO3B_V1.md`), Caso 4 (`DECISIONES_CASO4_V1.md`,
-`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`) y
-Caso 5A (`caso5/DECISIONES_CASO5_V1.md`), evitando que abrir una fase nueva requiera rastrear
-varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
-ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
+`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`),
+Caso 5A (`caso5/DECISIONES_CASO5_V1.md`) y Caso 5B (`caso5/DECISIONES_CASO5B_V1.md`), evitando que
+abrir una fase nueva requiera rastrear varios documentos distintos para saber si un tema ya fue
+decidido. No redefine ni reinterpreta ninguna decisión — cada fila remite al documento de origen,
+que sigue siendo la fuente autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -269,7 +270,7 @@ CASO4_V1.md`.
 
 ## Caso 5A — Evaluación comparativa de gestores de riesgo (D-108 a D-111)
 
-Congelado como **V1 Experimental** (tag `caso5a-v1-experimental`, pendiente de commit). Primera
+Congelado como **V1 Experimental** (tag `caso5a-v1-experimental`, commit `d923002`). Primera
 fase que modifica `src/` desde Caso 4 — capacidad transversal de gestión de capital intercambiable,
 no una nueva familia de estrategias. Fuente completa: `caso5/DECISIONES_CASO5_V1.md`, especificación
 en `caso5/ESPECIFICACION_IMPLEMENTACION_GESTORES_RIESGO_V1.md`, auditoría en
@@ -299,13 +300,44 @@ ese framing queda diferido a una fase posterior distinta (ver exclusiones en
 
 ---
 
-## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A como referencia estable?
+## Caso 5B — Capa comparativa de gestores de riesgo (D-112 a D-115)
+
+Congelado como **V1 Experimental** (tag `caso5b-v1-experimental`, pendiente de commit).
+Dependiente de `caso5a-v1-experimental` — consume exclusivamente su infraestructura
+(`IGestorRiesgo`/`IIdentidadGestorRiesgo`/gestores concretos/identidad económica), sin modificar
+ninguno de sus archivos. A diferencia de Caso 5A, **no toca `src/`** — toda la implementación vive
+en `exploration/laboratorio/caso5/`. Fuente completa: `caso5/DECISIONES_CASO5B_V1.md`,
+especificación en `caso5/ESPECIFICACION_IMPLEMENTACION_COMPARADOR_GESTORES_V1.md`, auditoría en
+`caso5/AUDITORIA_CASO5B_V1.md`, congelamiento en `caso5/VERSION_EXPERIMENTAL_CASO5B_V1.md`.
+
+Origen: `caso5/AUDITORIA_CAPACIDAD_COMPARATIVA_V1.md` — verificó contra código que no existía
+ningún componente que comparara múltiples gestores de riesgo bajo una misma estrategia/dataset
+antes de abrir esta fase.
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-112 | Ubicación arquitectónica: `ComparadorGestores`, componente nuevo de laboratorio — mismo patrón conceptual que `ComparadorMultiTimeframe`, sin dependencia de código; no toca `EjecutorProtocolo`/`EntradaProtocolo` | 🟢 Congelada |
+| D-113 | Control experimental por construcción: `Comparar(entradaBase, gestores)` garantiza que el único eje que varía entre corridas es el gestor, vía `entradaBase with { Sizing = ... }` | 🟢 Congelada |
+| D-114 | Fuente de datos: `MetricasFinancieras` exclusivamente — `ReporteOperacional` excluido explícitamente por su acoplamiento a martingala (D-055) | 🟢 Congelada |
+| D-115 | Salida estructurada (`ResultadoComparativoGestores`) + render derivado (`RenderizadorComparacionGestores`), sin ranking ni "mejor gestor" — diferencia deliberada del precedente | 🟢 Congelada |
+
+### Pendientes de Caso 5B (deuda técnica, no bloqueante)
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| — | Sistema recomendador de gestores ("Caso 5C" o equivalente) | — | No bloquea Caso 5B — condicionado a que exista evidencia comparativa acumulada suficiente antes de proponerse |
+| — | Comparación multi-timeframe/multi-estrategia — `Comparar` exige exactamente 1 timeframe en `entradaBase` | 🟢 Bajo | No — alcance futuro explícito, no resuelto en esta fase |
+| D-110 | Kelly fraccionado/Masaniello — heredado sin cambios desde Caso 5A, no reabierto por Caso 5B | 🟡 Medio | Igual que en Caso 5A — requiere resolver primero la fuente de probabilidad-de-acierto |
+
+---
+
+## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A/Caso 5B como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
 congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
-`caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`. La deuda de impacto alto
-que existía (D-084) fue resuelta de punta a punta en Caso 4, junto con D-085 — ninguna deuda de
-impacto alto permanece abierta.
+`caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`/`caso5b-v1-experimental`.
+La deuda de impacto alto que existía (D-084) fue resuelta de punta a punta en Caso 4, junto con
+D-085 — ninguna deuda de impacto alto permanece abierta.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
@@ -319,6 +351,10 @@ impacto alto permanece abierta.
   valor fijo declarado.
 - D-111 (`RachaPositivaMaxima`/duración de drawdown/riesgo de ruina) — si una fase futura amplía
   `PerfilMultiTf.cs` o define formalmente "ruina"/duración de drawdown.
+- Comparación multi-timeframe/multi-estrategia (Caso 5B) — si una fase futura extiende
+  `ComparadorGestores` a más de un eje simultáneo.
+- Sistema recomendador de gestores — si una fase futura ("Caso 5C" o equivalente) decide construir
+  sobre la evidencia que Caso 5B produce.
 
 **Deuda que permanece como límite conocido del modelo, sin fecha de resolución**:
 D-011, D-012, D-013, D-018, D-019, D-020, D-074, spread/funding, sizing alternativo, referencia
@@ -335,11 +371,12 @@ documental obsoleta de D-085 en el reporte financiero.
 | `caso3a-v1-experimental` | `43852ab` | Generalización experimental, D-086 a D-090 |
 | `caso4-v1-experimental` | `6594c9e` | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
 | `caso3b-v1-experimental` | `282e307` | Composición jerárquica de condiciones, D-099 a D-107 |
-| `caso5a-v1-experimental` | _(pendiente)_ | Gestores de riesgo intercambiables, D-108 a D-111 |
+| `caso5a-v1-experimental` | `d923002` | Gestores de riesgo intercambiables, D-108 a D-111 |
+| `caso5b-v1-experimental` | _(pendiente)_ | Capa comparativa de gestores de riesgo, D-112 a D-115 |
 
 ---
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 5A cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5B
-/ gestión avanzada de exposición) pendiente de decisión del auditor.
+Ninguno abierto todavía — Caso 5B cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5C
+— recomendador de gestores / gestión avanzada de exposición) pendiente de decisión del auditor.
