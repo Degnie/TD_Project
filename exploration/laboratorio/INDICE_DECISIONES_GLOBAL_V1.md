@@ -1,14 +1,14 @@
-# Índice Global de Decisiones — D-001 a D-115
+# Índice Global de Decisiones — D-001 a D-120
 
-Estado: **documento de referencia — actualizado al cierre de Caso 5B**. Consolida en un único
-lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
+Estado: **documento de referencia — actualizado al cierre de Caso 5C Capa 1**. Consolida en un
+único lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
 (`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`),
 Caso 3B (`DECISIONES_CASO3B_V1.md`), Caso 4 (`DECISIONES_CASO4_V1.md`,
 `DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`),
-Caso 5A (`caso5/DECISIONES_CASO5_V1.md`) y Caso 5B (`caso5/DECISIONES_CASO5B_V1.md`), evitando que
-abrir una fase nueva requiera rastrear varios documentos distintos para saber si un tema ya fue
-decidido. No redefine ni reinterpreta ninguna decisión — cada fila remite al documento de origen,
-que sigue siendo la fuente autoritativa.
+Caso 5A (`caso5/DECISIONES_CASO5_V1.md`), Caso 5B (`caso5/DECISIONES_CASO5B_V1.md`) y Caso 5C
+Capa 1 (`caso5/DECISIONES_CASO5C_V1.md`), evitando que abrir una fase nueva requiera rastrear
+varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
+ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -302,7 +302,7 @@ ese framing queda diferido a una fase posterior distinta (ver exclusiones en
 
 ## Caso 5B — Capa comparativa de gestores de riesgo (D-112 a D-115)
 
-Congelado como **V1 Experimental** (tag `caso5b-v1-experimental`, pendiente de commit).
+Congelado como **V1 Experimental** (tag `caso5b-v1-experimental`, commit `633fea7`).
 Dependiente de `caso5a-v1-experimental` — consume exclusivamente su infraestructura
 (`IGestorRiesgo`/`IIdentidadGestorRiesgo`/gestores concretos/identidad económica), sin modificar
 ninguno de sus archivos. A diferencia de Caso 5A, **no toca `src/`** — toda la implementación vive
@@ -331,13 +331,51 @@ antes de abrir esta fase.
 
 ---
 
-## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A/Caso 5B como referencia estable?
+## Caso 5C Capa 1 — Persistencia de evidencia comparativa (D-116, D-117; D-118 a D-120 a nivel de principio)
+
+Congelado como **V1 Experimental** (tag `caso5c-capa1-v1-experimental`, pendiente de commit).
+Dependiente de `caso5b-v1-experimental` — envuelve exclusivamente su salida
+(`ComparadorGestores.Comparar`/`RenderizadorComparacionGestores.Generar`), sin modificar ninguno de
+sus archivos. Igual que Caso 5B, **no toca `src/`** — toda la implementación vive en
+`exploration/laboratorio/caso5/`. Fuente completa: `caso5/PROPUESTA_CASO5C_V1.md`,
+`caso5/DECISIONES_CASO5C_V1.md`, especificación en
+`caso5/ESPECIFICACION_IMPLEMENTACION_PERSISTENCIA_EVIDENCIA_V1.md`, auditoría en
+`caso5/AUDITORIA_CASO5C_CAPA1_V1.md`, congelamiento en
+`caso5/VERSION_EXPERIMENTAL_CASO5C_CAPA1_V1.md`.
+
+Origen: `PROPUESTA_CASO5C_V1.md` §0 — verificó contra código que no existía ningún corpus
+acumulado de comparaciones antes de abrir esta fase; `ComparadorGestores`/
+`RenderizadorComparacionGestores` (Caso 5B) nunca escriben a disco.
+
+**Capa 1 y Capa 2 se resolvieron en la misma ronda de decisiones (D-116 a D-120), pero solo Capa 1
+se implementó y congela en esta versión** — separación justificada por el principio D-030 (nunca
+introducir reglas/umbrales calibrados sin evidencia experimental sobre la que calibrarlos).
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-116 | Persistencia separada: `PersistidorComparaciones` envuelve `ComparadorGestores` sin modificarlo — extensión directa del patrón `protocolo/resultados/` | 🟢 Congelada, implementada |
+| D-117 | Insumo válido para análisis futuro: campos ya presentes en identidad/`MetricasFinancieras`; régimen de mercado y datos externos excluidos | 🟢 Congelada, implementada (define el insumo; ningún análisis lo consume todavía) |
+| D-118 | Semántica de "recomendar": selección automática excluida por rol del sistema; sugerencia/orden explícito quedan vivas para Capa 2 | 🟡 Congelada a nivel de principio — sin implementar |
+| D-119 | Umbral de suficiencia de evidencia: "sin evidencia suficiente → no recomendar", sin valores numéricos fijados | 🟡 Congelada a nivel de principio — sin implementar |
+| D-120 | Formato de `RecomendacionExperimental` (`Contenido`/`CriterioUsado`/`EvidenciaUsada`/`Limitaciones` obligatorios) | 🟡 Congelada a nivel de principio — sin implementar |
+
+### Pendientes de Caso 5C Capa 1 (deuda técnica, no bloqueante)
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| D-118/D-119/D-120 | Capa 2 completa (análisis/recomendación) — sin implementar | — | No bloquea el uso de Capa 1 — condicionada a que exista corpus real acumulado antes de proponerse |
+| — | Índice o explorador del corpus persistido — cada `Persistir` es independiente, sin conocimiento de ejecuciones anteriores | 🟢 Bajo | No — candidato natural de Capa 2 o de una utilidad intermedia, no decidido aquí |
+| D-110 | Kelly fraccionado/Masaniello — heredado sin cambios desde Caso 5A/5B | 🟡 Medio | Igual que en fases anteriores — requiere resolver primero la fuente de probabilidad-de-acierto |
+
+---
+
+## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A/Caso 5B/Caso 5C Capa 1 como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
 congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
-`caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`/`caso5b-v1-experimental`.
-La deuda de impacto alto que existía (D-084) fue resuelta de punta a punta en Caso 4, junto con
-D-085 — ninguna deuda de impacto alto permanece abierta.
+`caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`/`caso5b-v1-experimental`/
+`caso5c-capa1-v1-experimental`. La deuda de impacto alto que existía (D-084) fue resuelta de punta
+a punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abierta.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
@@ -353,8 +391,8 @@ D-085 — ninguna deuda de impacto alto permanece abierta.
   `PerfilMultiTf.cs` o define formalmente "ruina"/duración de drawdown.
 - Comparación multi-timeframe/multi-estrategia (Caso 5B) — si una fase futura extiende
   `ComparadorGestores` a más de un eje simultáneo.
-- Sistema recomendador de gestores — si una fase futura ("Caso 5C" o equivalente) decide construir
-  sobre la evidencia que Caso 5B produce.
+- D-118/D-119/D-120 (Capa 2 de Caso 5C) — si el corpus generado por Capa 1 se evalúa suficiente
+  para diseñar análisis/recomendación.
 
 **Deuda que permanece como límite conocido del modelo, sin fecha de resolución**:
 D-011, D-012, D-013, D-018, D-019, D-020, D-074, spread/funding, sizing alternativo, referencia
@@ -372,11 +410,14 @@ documental obsoleta de D-085 en el reporte financiero.
 | `caso4-v1-experimental` | `6594c9e` | Evolución financiera, D-091 a D-098 (resuelve D-084/D-085) |
 | `caso3b-v1-experimental` | `282e307` | Composición jerárquica de condiciones, D-099 a D-107 |
 | `caso5a-v1-experimental` | `d923002` | Gestores de riesgo intercambiables, D-108 a D-111 |
-| `caso5b-v1-experimental` | _(pendiente)_ | Capa comparativa de gestores de riesgo, D-112 a D-115 |
+| `caso5b-v1-experimental` | `633fea7` | Capa comparativa de gestores de riesgo, D-112 a D-115 |
+| `caso5c-capa1-v1-experimental` | _(pendiente)_ | Persistencia de evidencia comparativa, D-116/D-117 (D-118 a D-120 a nivel de principio) |
 
 ---
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 5B cerrado, pendiente de commit/tag. Próxima fase (Caso 3C / Caso 5C
-— recomendador de gestores / gestión avanzada de exposición) pendiente de decisión del auditor.
+Ninguno abierto todavía — Caso 5C Capa 1 cerrada, pendiente de commit/tag. Próxima pregunta a
+evaluar: si el corpus acumulable por Capa 1 justifica abrir Caso 5C Capa 2 (análisis/recomendación)
+— no antes de tener corpus real. Caso 3C / gestión avanzada de exposición siguen como alternativas
+no decididas.

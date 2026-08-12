@@ -3,6 +3,7 @@ obj/
 *.user
 .vs/
 exploration/laboratorio/protocolo/resultados/
+exploration/laboratorio/caso5/resultados/
 
 agent-workflow/
 skills/
