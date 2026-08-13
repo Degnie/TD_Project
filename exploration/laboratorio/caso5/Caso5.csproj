@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Remove="campana_corpus\**\*.cs" />
     <Compile Remove="analisis_corpus\**\*.cs" />
+    <Compile Remove="analisis_interpretativo\**\*.cs" />
     <Compile Include="..\..\EstrategiaTresMosqueteros.cs" Link="Fixtures\EstrategiaTresMosqueteros.cs" />
     <Compile Include="..\..\EstrategiaEmaCross.cs" Link="Fixtures\EstrategiaEmaCross.cs" />
     <Compile Include="..\analisis_operacional\AnalizadorOperacional.cs" Link="Fixtures\AnalizadorOperacional.cs" />
