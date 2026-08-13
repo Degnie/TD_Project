@@ -1,14 +1,17 @@
-# Índice Global de Decisiones — D-001 a D-120
+# Índice Global de Decisiones — D-001 a D-122
 
-Estado: **documento de referencia — actualizado al cierre de Caso 5C Capa 1**. Consolida en un
-único lugar todas las decisiones numeradas de Caso 1 (`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2
-(`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`), Caso 3A (`DECISIONES_CASO3_V1.md`),
-Caso 3B (`DECISIONES_CASO3B_V1.md`), Caso 4 (`DECISIONES_CASO4_V1.md`,
-`DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`, `DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`),
-Caso 5A (`caso5/DECISIONES_CASO5_V1.md`), Caso 5B (`caso5/DECISIONES_CASO5B_V1.md`) y Caso 5C
-Capa 1 (`caso5/DECISIONES_CASO5C_V1.md`), evitando que abrir una fase nueva requiera rastrear
-varios documentos distintos para saber si un tema ya fue decidido. No redefine ni reinterpreta
-ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente autoritativa.
+Estado: **documento de referencia — actualizado tras la incorporación del dataset temporal 2022
+(Caso 5C, D-121/D-122)**. Consolida en un único lugar todas las decisiones numeradas de Caso 1
+(`AUDITORIA_FINAL_CASO1_V1.md` §1), Caso 2 (`modelo_financiero/DECISIONES_MODELO_ECONOMICO_V1.md`),
+Caso 3A (`DECISIONES_CASO3_V1.md`), Caso 3B (`DECISIONES_CASO3B_V1.md`), Caso 4
+(`DECISIONES_CASO4_V1.md`, `DECISIONES_UNIDADES_EXPOSICION_CASO4_V1.md`,
+`DECISIONES_VALIDADOR_CAPACIDAD_CASO4_V1.md`), Caso 5A (`caso5/DECISIONES_CASO5_V1.md`), Caso 5B
+(`caso5/DECISIONES_CASO5B_V1.md`), Caso 5C Capa 1 (`caso5/DECISIONES_CASO5C_V1.md`) y la expansión
+de diversidad de evidencia de Caso 5C (`caso5/DECISIONES_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md`,
+`caso5/DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md`), evitando que abrir una fase nueva requiera
+rastrear varios documentos distintos para saber si un tema ya fue decidido. No redefine ni
+reinterpreta ninguna decisión — cada fila remite al documento de origen, que sigue siendo la fuente
+autoritativa.
 
 **Regla vigente en todo el proyecto**: un identificador `D-N` nunca se reasigna a contenido
 distinto del originalmente registrado — confirmado y aplicado dos veces (D-043/D-053 en Caso 1,
@@ -369,13 +372,49 @@ introducir reglas/umbrales calibrados sin evidencia experimental sobre la que ca
 
 ---
 
+## Caso 5C — Diversidad de evidencia (D-121, D-122)
+
+**No es una sub-fase congelada como V1 Experimental** — es una expansión de la evidencia
+disponible para Caso 5C, ejecutada tras `AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V2.md` §5 (concluyó
+que la limitación de dataset único no es resoluble con más campañas sobre el mismo rango). Fuente
+completa: `caso5/PROPUESTA_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md`,
+`caso5/DECISIONES_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md` (D-121),
+`caso5/HALLAZGO_RECHAZO_DATASET_2023_CASO5C_V1.md`,
+`caso5/DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md` (D-122),
+`caso5/ESPECIFICACION_IMPLEMENTACION_EXPLORACION_DISPONIBILIDAD_CASO5C_V1.md`,
+`caso5/ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md`,
+`caso5/HALLAZGO_DATASET_TEMPORAL_2022_CASO5C_V1.md`.
+
+| D-N | Establece | Estado |
+|---|---|---|
+| D-121 | Vía B (tiempo) antes que Vía A (instrumento) — criterio decisivo: capacidad de atribución causal, variar una sola dimensión por expansión (mismo principio que D-113) | 🟢 Congelada |
+| D-122 | Selección de rango alternativo tras rechazo de 2023: exploración de disponibilidad por bloques mensuales (`ExploradorDisponibilidad`, sin escribir a disco) antes de comprometerse a una descarga completa | 🟢 Congelada, implementada |
+
+**Resultado material de esta expansión**: dataset `BTCUSDT 2022-01-01 – 2023-01-01` descargado,
+validado (0 huecos/duplicados/errores, `ValidadorIntegridadDatos`), congelado en
+`datasets/reales/BTCUSDT/1m_2022/` (+ 12 timeframes derivados), commit `77e69d4`. El dataset
+`2024-2025` original permanece intacto — ambos coexisten sin mezcla. **Ninguna campaña ni
+comparación de gestores se ejecutó todavía sobre el dataset 2022** — queda como paso siguiente,
+condicionado a autorización explícita.
+
+### Pendientes de esta expansión
+
+| D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
+|---|---|---|---|
+| — | Sub-campaña D (18 comparaciones sobre el dataset 2022, ya especificada en `ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md` §5) — no ejecutada | — | No bloquea nada — es el siguiente paso natural, pendiente de autorización |
+| — | Vía A (instrumento, D-121) — pospuesta, no descartada; si se abre, debe ejecutarse contra el rango temporal original (2024-2025), no el 2022, para preservar atribución causal | — | No bloquea — condicionada a evaluar primero los resultados de la Vía B |
+
+---
+
 ## Evaluación de bloqueo — ¿alguna deuda impide usar Caso 1/Caso 2/Caso 3A/Caso 3B/Caso 4/Caso 5A/Caso 5B/Caso 5C Capa 1 como referencia estable?
 
 **No.** Ninguna deuda listada invalida la identidad, reproducibilidad o separación de capas ya
 congeladas en `caso1-v1-experimental`/`caso2-v1-experimental`/`caso3a-v1-experimental`/
 `caso3b-v1-experimental`/`caso4-v1-experimental`/`caso5a-v1-experimental`/`caso5b-v1-experimental`/
 `caso5c-capa1-v1-experimental`. La deuda de impacto alto que existía (D-084) fue resuelta de punta
-a punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abierta.
+a punta en Caso 4, junto con D-085 — ninguna deuda de impacto alto permanece abierta. La expansión
+de diversidad de evidencia (D-121/D-122) no introduce deuda nueva — el dataset 2022 está validado y
+congelado, solo falta ejecutar la campaña que lo consume.
 
 **Deuda a resolver solo si una fase futura la toca directamente**:
 - D-055 — si una fase futura rediseña el catálogo de métricas o introduce más familias sin
@@ -417,7 +456,10 @@ documental obsoleta de D-085 en el reporte financiero.
 
 ## Próximo documento
 
-Ninguno abierto todavía — Caso 5C Capa 1 cerrada, pendiente de commit/tag. Próxima pregunta a
-evaluar: si el corpus acumulable por Capa 1 justifica abrir Caso 5C Capa 2 (análisis/recomendación)
-— no antes de tener corpus real. Caso 3C / gestión avanzada de exposición siguen como alternativas
-no decididas.
+Ninguno abierto todavía. Caso 5C Capa 1 congelada (tag `caso5c-capa1-v1-experimental`); dataset
+temporal `BTCUSDT 2022` validado y congelado (commit `77e69d4`, D-121/D-122), sin ejecutar todavía
+la sub-campaña que lo consume. Próximo paso natural: autorizar la Sub-campaña D (18 comparaciones
+sobre 2022, misma matriz ya usada para 2024-2025) y su auditoría posterior — antes de eso, la
+pregunta de si el corpus acumulado justifica abrir Caso 5C Capa 2 (análisis/recomendación) sigue
+sin evaluarse. Caso 3C / gestión avanzada de exposición / Vía A (instrumento, D-121) siguen como
+alternativas no decididas.
