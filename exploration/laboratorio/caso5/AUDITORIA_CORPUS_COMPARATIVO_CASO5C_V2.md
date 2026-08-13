@@ -25,6 +25,22 @@ rango de timestamps `2026-08-12T22:19*`–`22:22*`; las carpetas de la primera e
 adicional válida pero no se cuentan por separado en este análisis para evitar doble conteo de las
 mismas combinaciones.
 
+**Precisión posterior (registrada durante la implementación de Caso 5C Capa 2,
+`ESPECIFICACION_IMPLEMENTACION_CASO5C_CAPA2_V1.md`, D-123)**: el criterio de identificación usado
+arriba (rango de timestamps) resultó insuficiente para separar mecánicamente las 25 comparaciones
+auditadas de las carpetas físicas — el rango `22:19*`–`22:22*` contiene **52 carpetas**, no 25,
+porque ambas ejecuciones de la campaña (la interrumpida y la completa) caen dentro de la misma
+franja de tiempo, entrelazadas cronológicamente por estrategia. Este documento **no cambia su
+resultado ni sus conclusiones** — el corpus de 31 comparaciones (6 V1 + 25 V2) que analizó sigue
+siendo el correcto, y así quedó confirmado por inspección de contenido (no de timestamp) de las 52
+carpetas: 25 con ejecución completa (3 gestores, dataset esperado, última repetición cronológica de
+cada combinación) + 25 de la primera pasada interrumpida + 2 restos de una escritura interrumpida
+(solo 2 de 3 gestores). La clasificación completa, y el criterio de pertenencia basado en contenido
+en vez de timestamp, quedan formalizados en `resultados/MANIFIESTO_CORPUS_CASO5C_V1.json`. Se deja
+esta nota para que una auditoría futura no necesite reconstruir la diferencia entre 49 (corpus
+oficial acumulado tras Sub-campaña D) y el total físico de carpetas en `caso5/resultados/` — el
+manifiesto es la fuente de verdad para esa distinción, no el rango de timestamps documentado aquí.
+
 ---
 
 ## 1. Qué corpus existe

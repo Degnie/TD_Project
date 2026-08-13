@@ -1,0 +1,101 @@
+{
+  "corpus": "caso5c-v1",
+  "descripcion": "Artefacto declarado — define que evidencia fisica en caso5/resultados/ pertenece al corpus oficial de Caso 5C (V1 + V2 + Sub-campana D), separandola de trazas de desarrollo/reintentos. No selecciona resultados favorables — construido antes de cualquier analisis de Capa 2, unicamente a partir de identidad estructural (gestores completos, dataset esperado, ultima ejecucion completa de cada combinacion declarada). Ver AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V2.md (nota de precision) para el criterio de clasificacion completo.",
+  "totalOficial": 49,
+  "comparaciones": [
+    { "carpeta": "TresMosqueteros_15m_20260812T213530Z", "origen": "V1" },
+    { "carpeta": "TresMosqueteros_1h_20260812T213531Z", "origen": "V1" },
+    { "carpeta": "TresMosqueteros_1D_20260812T213531Z", "origen": "V1" },
+    { "carpeta": "EmaCross_15m_20260812T213539Z", "origen": "V1" },
+    { "carpeta": "EmaCross_1h_20260812T213540Z", "origen": "V1" },
+    { "carpeta": "EmaCross_1D_20260812T213540Z", "origen": "V1" },
+
+    { "carpeta": "TresMosqueteros_15m_20260812T222051Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_1h_20260812T222052Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_1D_20260812T222052Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_15m_20260812T222144Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_1h_20260812T222145Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_1D_20260812T222145Z", "origen": "V2" },
+    { "carpeta": "EmaCross_15m_20260812T222100Z", "origen": "V2" },
+    { "carpeta": "EmaCross_1h_20260812T222100Z", "origen": "V2" },
+    { "carpeta": "EmaCross_1D_20260812T222100Z", "origen": "V2" },
+    { "carpeta": "EmaCross_15m_20260812T222152Z", "origen": "V2" },
+    { "carpeta": "EmaCross_1h_20260812T222153Z", "origen": "V2" },
+    { "carpeta": "EmaCross_1D_20260812T222153Z", "origen": "V2" },
+    { "carpeta": "ZScoreReversion_15m_20260812T222108Z", "origen": "V2" },
+    { "carpeta": "ZScoreReversion_1h_20260812T222109Z", "origen": "V2" },
+    { "carpeta": "ZScoreReversion_1D_20260812T222109Z", "origen": "V2" },
+    { "carpeta": "Neutral_15m_20260812T222117Z", "origen": "V2" },
+    { "carpeta": "Neutral_1h_20260812T222117Z", "origen": "V2" },
+    { "carpeta": "Neutral_1D_20260812T222117Z", "origen": "V2" },
+    { "carpeta": "VolumenBreakout_15m_20260812T222125Z", "origen": "V2" },
+    { "carpeta": "VolumenBreakout_1h_20260812T222126Z", "origen": "V2" },
+    { "carpeta": "VolumenBreakout_1D_20260812T222126Z", "origen": "V2" },
+    { "carpeta": "MhiMayoria_15m_20260812T222135Z", "origen": "V2" },
+    { "carpeta": "MhiMayoria_1h_20260812T222136Z", "origen": "V2" },
+    { "carpeta": "MhiMayoria_1D_20260812T222136Z", "origen": "V2" },
+    { "carpeta": "TresMosqueteros_1D_20260812T222153Z", "origen": "V2", "nota": "Sub-campana C — evidencia parcial deliberada (Estado: Incomplete, dataset inexistente). No es una corrida degradada; no debe usarse en calculos numericos, solo en cobertura de estados no exitosos." },
+
+    { "carpeta": "TresMosqueteros_15m_20260813T032413Z", "origen": "SubcampanaD" },
+    { "carpeta": "TresMosqueteros_1h_20260813T032414Z", "origen": "SubcampanaD" },
+    { "carpeta": "TresMosqueteros_1D_20260813T032414Z", "origen": "SubcampanaD" },
+    { "carpeta": "EmaCross_15m_20260813T032422Z", "origen": "SubcampanaD" },
+    { "carpeta": "EmaCross_1h_20260813T032423Z", "origen": "SubcampanaD" },
+    { "carpeta": "EmaCross_1D_20260813T032423Z", "origen": "SubcampanaD" },
+    { "carpeta": "ZScoreReversion_15m_20260813T032432Z", "origen": "SubcampanaD" },
+    { "carpeta": "ZScoreReversion_1h_20260813T032432Z", "origen": "SubcampanaD" },
+    { "carpeta": "ZScoreReversion_1D_20260813T032432Z", "origen": "SubcampanaD" },
+    { "carpeta": "Neutral_15m_20260813T032442Z", "origen": "SubcampanaD" },
+    { "carpeta": "Neutral_1h_20260813T032443Z", "origen": "SubcampanaD" },
+    { "carpeta": "Neutral_1D_20260813T032443Z", "origen": "SubcampanaD" },
+    { "carpeta": "VolumenBreakout_15m_20260813T032451Z", "origen": "SubcampanaD" },
+    { "carpeta": "VolumenBreakout_1h_20260813T032451Z", "origen": "SubcampanaD" },
+    { "carpeta": "VolumenBreakout_1D_20260813T032451Z", "origen": "SubcampanaD" },
+    { "carpeta": "MhiMayoria_15m_20260813T032500Z", "origen": "SubcampanaD" },
+    { "carpeta": "MhiMayoria_1h_20260813T032501Z", "origen": "SubcampanaD" },
+    { "carpeta": "MhiMayoria_1D_20260813T032501Z", "origen": "SubcampanaD" }
+  ],
+  "excluidos": {
+    "descripcion": "Carpetas presentes fisicamente en caso5/resultados/ que NO pertenecen al corpus oficial. No se eliminan del disco — permanecen como evidencia tecnica de desarrollo, fuera del alcance de Capa 2.",
+    "categorias": [
+      {
+        "categoria": "primera-ejecucion-interrumpida-v2",
+        "cantidad": 25,
+        "razon": "Primera pasada de la campana V2, detenida en P5 por un supuesto incorrecto en el codigo de verificacion (asumia Estado: Failed para dataset inexistente; el comportamiento real es Incomplete). Se re-ejecuto la campana completa tras corregir la asercion. Rango de timestamps 2026-08-12T22:19*-22:20*, ver AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V2.md nota de precision."
+      },
+      {
+        "categoria": "escritura-interrumpida",
+        "cantidad": 8,
+        "carpetas": [
+          "TresMosqueteros_1D_20260812T213624Z", "TresMosqueteros_1D_20260812T213625Z",
+          "TresMosqueteros_1D_20260812T222207Z", "TresMosqueteros_1D_20260812T222208Z",
+          "TresMosqueteros_1D_20260813T023345Z", "TresMosqueteros_1D_20260813T032552Z",
+          "TresMosqueteros_1D_20260813T040111Z", "TresMosqueteros_1D_20260813T040356Z"
+        ],
+        "razon": "Solo 2 de 3 gestores persistidos (falta volatility-sizing) en cada una; valores de PnLTotal/DrawdownMaximoPct/etc. identicos entre si y a la fila fixed-fractional/fixed-risk de las comparaciones completas correspondientes (TresMosqueteros_1D_20260812T213531Z en V1, _222145Z en V2, _032353Z en la repeticion verificada) — cortes de escritura durante distintas ejecuciones de desarrollo, nunca una comparacion completa. Las dos ultimas (04:01/04:03) se generaron durante la propia implementacion de Caso 5C Capa 2, al re-ejecutar caso5/Program.cs para verificar regresion tras cada cambio."
+      },
+      {
+        "categoria": "prueba-tecnica-preexistente",
+        "cantidad": 1,
+        "carpetas": ["TresMosqueteros_1D_20260812T204012Z"],
+        "razon": "Generada por TestsPersistidorComparaciones.cs durante el desarrollo de Caso 5C Capa 1 — excluida desde AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V1.md Seccion 0, mismo criterio aqui."
+      },
+      {
+        "categoria": "repeticion-completa-v1-abc-verificada-reproducible",
+        "cantidad": 25,
+        "carpetas": [
+          "TresMosqueteros_15m_20260813T032256Z", "TresMosqueteros_1h_20260813T032257Z", "TresMosqueteros_1D_20260813T032257Z",
+          "EmaCross_15m_20260813T032306Z", "EmaCross_1h_20260813T032306Z", "EmaCross_1D_20260813T032306Z",
+          "ZScoreReversion_15m_20260813T032314Z", "ZScoreReversion_1h_20260813T032315Z", "ZScoreReversion_1D_20260813T032315Z",
+          "Neutral_15m_20260813T032324Z", "Neutral_1h_20260813T032325Z", "Neutral_1D_20260813T032325Z",
+          "VolumenBreakout_15m_20260813T032333Z", "VolumenBreakout_1h_20260813T032333Z", "VolumenBreakout_1D_20260813T032333Z",
+          "MhiMayoria_15m_20260813T032342Z", "MhiMayoria_1h_20260813T032343Z", "MhiMayoria_1D_20260813T032343Z",
+          "TresMosqueteros_15m_20260813T032353Z", "TresMosqueteros_1h_20260813T032353Z", "TresMosqueteros_1D_20260813T032353Z",
+          "EmaCross_15m_20260813T032402Z", "EmaCross_1h_20260813T032403Z", "EmaCross_1D_20260813T032403Z",
+          "TresMosqueteros_1D_20260813T032403Z"
+        ],
+        "razon": "Repeticion completa validada como reproducible, no utilizada para evitar doble conteo. Generada el 2026-08-13T03:22:56Z-03:24:03Z como efecto colateral de la misma ejecucion de ProgramCampanaCorpus.cs que produjo la Sub-campana D (el programa corre V1->A->B->C->D en una sola invocacion; no existe una forma de ejecutar solo D sin regenerar tambien V1/A/B/C). Verificado campo por campo contra las 25 comparaciones oficiales de V2 (categoria 'V2' arriba): identidad (estrategia/timeframe/dataset/gestor/estado) y las 6 metricas numericas con precision decimal completa son identicas en las 25 parejas comparadas — unica diferencia es fechaGeneracionUtc, que por diseno de PersistidorComparaciones no forma parte de la identidad experimental. Confirma con evidencia directa (no solo por diseno del mecanismo) que la misma entrada experimental produce la misma evidencia."
+      }
+    ]
+  }
+}
