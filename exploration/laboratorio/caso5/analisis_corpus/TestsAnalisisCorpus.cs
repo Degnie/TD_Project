@@ -36,6 +36,7 @@ public static class TestsAnalisisCorpus
         Caso("P6 — Ausencia estructural de ordenamiento por valor (orden de insercion)", VerificarP6);
         Caso("P7 — DetectarCasosAtipicos reproduce los hallazgos ya documentados sobre el corpus real", () => VerificarP7(dirResultadosReal, rutaManifiestoReal));
         Caso("P8 — ResumenCorpus.Limitaciones nunca vacio ni ausente (incluye corpus vacio)", VerificarP8);
+        Caso("P8b — Un dataset sin ninguna fila con metrica no cuenta como periodo temporal", VerificarP8b);
         Caso("P9 — Ausencia estructural de llamadas a componentes de ejecucion (textual)", VerificarP9);
 
         return (total, pasaron, detalles);
@@ -337,6 +338,25 @@ public static class TestsAnalisisCorpus
         var conDatos = AnalisisDescriptivo.Resumir(filas, Array.Empty<string>());
         if (string.IsNullOrWhiteSpace(conDatos.Limitaciones) || !conDatos.Limitaciones.Contains("1 filas"))
             throw new Exception($"Limitaciones deberia reflejar '1 filas', fue: {conDatos.Limitaciones}");
+    }
+
+    // spec: hallazgo durante la redaccion de RESULTADO_ANALISIS_CORPUS_CASO5C_CAPA2_V1.md — un
+    // dataset que solo aparece en filas sin metrica (evidencia parcial deliberada, ej. sub-campana
+    // C con DatasetInexistente_ParaCorpusDeFallo) no debe contarse como "periodo temporal" en
+    // Limitaciones — solo cuenta un dataset con al menos una fila con metrica numerica real.
+    private static void VerificarP8b()
+    {
+        var filas = new List<FilaCorpus>
+        {
+            new("Est", "1D", "BTCUSDT_2024-01-02_2025-01-02", "gestorA:v1", "Success", 1m, 0.1m, 1m, 1m, 1m, 1m, "c1"),
+            new("Est", "1D", "DatasetInexistente_ParaCorpusDeFallo", "gestorA:v1", "Incomplete", null, null, null, null, null, null, "c2"),
+            new("Est", "1D", "DatasetInexistente_ParaCorpusDeFallo", "gestorB:v1", "Incomplete", null, null, null, null, null, null, "c2"),
+        };
+        var resumen = AnalisisDescriptivo.Resumir(filas, Array.Empty<string>());
+        if (!resumen.Limitaciones.Contains("1 periodo(s)"))
+            throw new Exception($"Limitaciones deberia reflejar '1 periodo(s)' (el dataset inexistente no cuenta), fue: {resumen.Limitaciones}");
+        if (resumen.Cobertura.ComparacionesPorDataset.Count != 2)
+            throw new Exception("La cobertura cruda (ComparacionesPorDataset) SI debe seguir mostrando ambos datasets — solo Limitaciones filtra por periodo real.");
     }
 
     private static void VerificarP9()

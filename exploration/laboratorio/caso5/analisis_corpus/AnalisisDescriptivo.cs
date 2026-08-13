@@ -151,7 +151,11 @@ public static class AnalisisDescriptivo
     public static ResumenCorpus Resumir(IReadOnlyList<FilaCorpus> filas, IReadOnlyList<string> carpetasIgnoradas)
     {
         var cobertura = CalcularCobertura(filas, carpetasIgnoradas);
-        var datasets = cobertura.ComparacionesPorDataset.Keys.ToList();
+        // "periodo temporal" = dataset con al menos una fila con metrica numerica (Success). Un
+        // dataset que solo aparece en filas sin metrica (ej. DatasetInexistente_ParaCorpusDeFallo,
+        // evidencia parcial deliberada de la sub-campana C) no es un periodo real — es un caso de
+        // fallo, ya reportado aparte en CasosAtipicos/ComparacionesPorDataset (cobertura cruda).
+        var datasets = filas.Where(f => f.PnLTotal.HasValue).Select(f => f.NombreDataset).Distinct().ToList();
         var gestores = cobertura.ComparacionesPorGestor.Keys.ToList();
 
         var distribuciones = new List<DistribucionMetrica>();
