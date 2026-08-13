@@ -1,0 +1,12 @@
+{
+  "sourceDataset": "BTCUSDT_2022-01-01_2023-01-01_1m.csv",
+  "sourceSha256": "f53d7416c87ac389c9a82f0e3ec386c4b23b6637b0f71b826f65c77973f7524f",
+  "sourceTimeframe": "1m",
+  "targetTimeframe": "1W",
+  "aggregationVersion": "1.0",
+  "generatedUtc": "2026-08-13T02:32:51.7387921Z",
+  "velaCount": 53,
+  "velasCompletas": 51,
+  "velasParciales": 2,
+  "sha256": "001504c9e5f7536d04facb5737e8824dc6bb11121223d861bf4a281ded95a5de"
+}

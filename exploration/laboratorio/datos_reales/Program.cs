@@ -3,20 +3,54 @@ using TD_Project.DatosReales;
 // Etapa 1 (fixtures, sin red): siempre corre primero — es la puerta de entrada antes de
 // cualquier llamada real a Binance.
 var (total, pasaron, detalles) = FixturesValidador.EjecutarTodos();
+var (totalExploracion, pasaronExploracion, detallesExploracion) = FixturesExploradorDisponibilidad.EjecutarTodos();
 
 Console.WriteLine("=== Fase 2A — Fixtures del validador de integridad (sin red) ===");
 foreach (var detalle in detalles)
     Console.WriteLine($"  {detalle}");
 Console.WriteLine($"\n=== Resumen fixtures: {pasaron}/{total} OK ===");
 
-if (pasaron != total)
+Console.WriteLine("\n=== Caso 5C D-122 — Fixtures del explorador de disponibilidad (sin red) ===");
+foreach (var detalle in detallesExploracion)
+    Console.WriteLine($"  {detalle}");
+Console.WriteLine($"\n=== Resumen fixtures exploracion: {pasaronExploracion}/{totalExploracion} OK ===");
+
+if (pasaron != total || pasaronExploracion != totalExploracion)
 {
-    Console.WriteLine("Fixtures del validador fallando — no se procede a descargar de Binance.");
+    Console.WriteLine("Fixtures fallando — no se procede con ninguna operacion de red.");
     Environment.Exit(1);
 }
 
-// Etapa 2 (red real): opt-in explicito via variable de entorno, para que "dotnet run" sin mas
-// nunca dispare una descarga contra Binance por accidente.
+const string symbol = "BTCUSDT";
+const string interval = "1m";
+
+// Etapa 3 (exploracion, red real, opt-in separado de DESCARGAR_BINANCE): antes de una descarga
+// completa de anio, permite verificar continuidad por mes de un candidato. Nunca se combina con
+// DESCARGAR_BINANCE en la misma invocacion — evita confundir exploracion con descarga real.
+// spec: Caso 5C D-122 (DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md, Opcion B).
+var explorarAnio = Environment.GetEnvironmentVariable("EXPLORAR_DISPONIBILIDAD_ANIO");
+if (explorarAnio is not null)
+{
+    if (!int.TryParse(explorarAnio, out var anio))
+    {
+        Console.WriteLine($"\nEXPLORAR_DISPONIBILIDAD_ANIO='{explorarAnio}' no es un anio valido.");
+        Environment.Exit(1);
+        return;
+    }
+
+    var inicioAnio = new DateTimeOffset(anio, 1, 1, 0, 0, 0, TimeSpan.Zero);
+    var finAnioExploracion = inicioAnio.AddYears(1);
+    var resultadoExploracion = await ExploradorDisponibilidad.ExplorarAsync(new BinanceClient(), symbol, interval, inicioAnio, finAnioExploracion);
+
+    Console.WriteLine($"\n=== Exploracion de disponibilidad: {symbol} {interval} {anio} ===");
+    foreach (var b in resultadoExploracion.Bloques)
+        Console.WriteLine($"  {b.InicioUtc:yyyy-MM} .. {b.FinUtc:yyyy-MM}: {(b.Continuo ? "OK" : $"HUECO ({b.Huecos} huecos, {b.MinutosFaltantes} min)")}");
+    Console.WriteLine($"\nCandidato {anio}: {(resultadoExploracion.TodosContinuos ? "VIABLE — continuidad OK en los 12 meses" : "DESCARTADO — al menos 1 mes con discontinuidad")}");
+    return;
+}
+
+// Etapa 4 (red real, descarga completa): opt-in explicito via variable de entorno, para que
+// "dotnet run" sin mas nunca dispare una descarga contra Binance por accidente.
 var descargar = Environment.GetEnvironmentVariable("DESCARGAR_BINANCE");
 if (descargar is not ("DIA" or "ANIO"))
 {
@@ -31,14 +65,19 @@ var dirMetadata = Path.Combine(directorioDatosReales, "metadata");
 Directory.CreateDirectory(dirRaw);
 Directory.CreateDirectory(dirMetadata);
 
-const string symbol = "BTCUSDT";
-const string interval = "1m";
-var finUtc = new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero); // dia de prueba fijo, determinista
+// spec: DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md (D-122) — rango 2023-01-02..2024-01-02 fue
+// rechazado por ValidadorIntegridadDatos (hueco real de 80 min, ver
+// HALLAZGO_RECHAZO_DATASET_2023_CASO5C_V1.md). Candidato 2022 confirmado VIABLE por
+// ExploradorDisponibilidad (12/12 meses continuos) — se descarga completo para validacion real.
+var finUtc = new DateTimeOffset(2023, 1, 1, 0, 0, 0, TimeSpan.Zero); // dia de prueba fijo, determinista
 var inicioUtc = descargar == "DIA"
     ? finUtc.AddDays(-1)
     : finUtc.AddYears(-1);
 
-var sufijo = descargar == "DIA" ? "1dia_prueba" : "1anio";
+// sufijo incluye el anio de fin para no colisionar con el crudo 2024-2025 ya usado para congelar
+// el dataset actual (datos_reales/raw/ es solo registro de la descarga, pero se preserva por
+// trazabilidad).
+var sufijo = descargar == "DIA" ? "1dia_prueba" : $"1anio_{finUtc.Year}";
 var rutaCsv = Path.Combine(dirRaw, $"{symbol}_{interval}_{sufijo}.csv");
 var rutaMetadata = Path.Combine(dirMetadata, $"{symbol}_{interval}_{sufijo}.json");
 

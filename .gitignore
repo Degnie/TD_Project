@@ -4,6 +4,8 @@ obj/
 .vs/
 exploration/laboratorio/protocolo/resultados/
 exploration/laboratorio/caso5/resultados/
+exploration/laboratorio/datos_reales/raw/
+exploration/laboratorio/datos_reales/metadata/
 
 agent-workflow/
 skills/

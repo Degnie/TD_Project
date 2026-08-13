@@ -18,10 +18,18 @@ if (pasaronFixtures != resultados.Count)
     Environment.Exit(1);
 }
 
+// spec: ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md §2 — Via B de D-121.
+// rangoDataset generalizado a variable (antes hardcodeado 3 veces en este archivo) para poder
+// reutilizar el mismo pipeline con un segundo periodo, sin convertir esto en un parametro de CLI
+// de proposito general. Carpeta de origen ("1m" o "1m_2023") y sufijo de carpeta destino
+// ("" o "_2023") derivan de la misma variable para no duplicar el punto de configuracion.
+var rangoDataset = Environment.GetEnvironmentVariable("RANGO_DATASET") ?? "2024-01-02_2025-01-02";
+var sufijoCarpeta = rangoDataset == "2024-01-02_2025-01-02" ? "" : "_" + rangoDataset[..4];
+
 var raiz = AppContext.BaseDirectory;
 var dirLaboratorio = Path.GetFullPath(Path.Combine(raiz, "..", "..", "..", ".."));
-var dirBase1m = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", "1m");
-var rutaCsv1m = Path.Combine(dirBase1m, "BTCUSDT_2024-01-02_2025-01-02_1m.csv");
+var dirBase1m = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", "1m" + sufijoCarpeta);
+var rutaCsv1m = Path.Combine(dirBase1m, $"BTCUSDT_{rangoDataset}_1m.csv");
 var rutaMetadata1m = Path.Combine(dirBase1m, "metadata.json");
 
 if (!File.Exists(rutaCsv1m))
@@ -56,9 +64,9 @@ if (!conteoOk)
     Environment.Exit(1);
 }
 
-var dirDerivado5m = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", "5m");
+var dirDerivado5m = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", "5m" + sufijoCarpeta);
 Directory.CreateDirectory(dirDerivado5m);
-var rutaCsv5m = Path.Combine(dirDerivado5m, "BTCUSDT_2024-01-02_2025-01-02_5m.csv");
+var rutaCsv5m = Path.Combine(dirDerivado5m, $"BTCUSDT_{rangoDataset}_5m.csv");
 var rutaMetadata5m = Path.Combine(dirDerivado5m, "metadata.json");
 
 var sha5m = EscritorDerivado.EscribirCsv(rutaCsv5m, derivado5m);
@@ -80,9 +88,9 @@ foreach (var tf in Enum.GetValues<Timeframe>())
 {
     var derivado = tf == Timeframe.M5 ? derivado5m : AgregadorMultiTimeframe.Agregar(velas1m, tf);
     var etiqueta = tf.Etiqueta();
-    var dirDerivado = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", etiqueta);
+    var dirDerivado = Path.Combine(dirLaboratorio, "datasets", "reales", "BTCUSDT", etiqueta + sufijoCarpeta);
     Directory.CreateDirectory(dirDerivado);
-    var rutaCsv = Path.Combine(dirDerivado, $"BTCUSDT_2024-01-02_2025-01-02_{etiqueta}.csv");
+    var rutaCsv = Path.Combine(dirDerivado, $"BTCUSDT_{rangoDataset}_{etiqueta}.csv");
     var rutaMetadata = Path.Combine(dirDerivado, "metadata.json");
 
     var sha = EscritorDerivado.EscribirCsv(rutaCsv, derivado);
