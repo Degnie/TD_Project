@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Reutiliza Capa 2 por referencia de compilacion — una sola fuente de corpus/manifiesto/
+         trazabilidad (D-124, mismo patron ya usado por analisis_interpretativo). Nunca copia
+         FilaCorpus/LectorCorpus/AnalisisDescriptivo. -->
+    <Compile Include="..\..\caso5\analisis_corpus\LectorCorpus.cs" Link="Fixtures\LectorCorpus.cs" />
+    <Compile Include="..\..\caso5\analisis_corpus\AnalisisDescriptivo.cs" Link="Fixtures\AnalisisDescriptivo.cs" />
+  </ItemGroup>
+</Project>
