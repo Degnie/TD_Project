@@ -51,6 +51,15 @@ var dirResultados = Path.GetFullPath(Path.Combine(raiz, "..", "..", "..", "..", 
 var instrumento = new Instrumento("BTCUSDT", 0.1m);
 var costes = new ConfiguracionCostes(0.001m, 0.001m);
 
+// spec: DECISIONES_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md (D-121, Via B), ESPECIFICACION_
+// IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md §5 — Sub-campana D. EjecutorProtocolo (Caso 1,
+// congelado) usa el mismo token de timeframe para la subcarpeta y el sufijo del archivo; las
+// carpetas congeladas del dataset 2022 llevan sufijo "_2022" en el nombre de carpeta pero no en el
+// archivo, asi que se usa una vista de compatibilidad sin sufijo (copia verificada por SHA-256
+// contra el artefacto congelado, no un segundo dataset) en datasets/reales/BTCUSDT_2022/{tf}/.
+var dirDatasets2022 = Path.GetFullPath(Path.Combine(raiz, "..", "..", "..", "..", "..", "datasets", "reales", "BTCUSDT_2022"));
+var nombreDataset2022 = "BTCUSDT_2022-01-01_2023-01-01";
+
 // P1/P2/P3 — verificacion estructural previa. Si falla, la campana no ejecuta ninguna corrida real.
 var (totalPrevio, pasaronPrevio, detallesPrevio) = TestsCampanaCorpus.VerificarEstructura(
     estrategiasV1.Length, estrategiasNuevas.Length, timeframes.Length, Gestores().Count);
@@ -64,7 +73,9 @@ if (pasaronPrevio != totalPrevio)
 }
 Console.WriteLine();
 
-List<string> EjecutarMatriz((string Nombre, string[] Parametros, Func<Action<InfoOperacionResuelta>?, IStrategy> Crear)[] estrategias)
+List<string> EjecutarMatriz(
+    (string Nombre, string[] Parametros, Func<Action<InfoOperacionResuelta>?, IStrategy> Crear)[] estrategias,
+    string dirDatasetsUsado, string nombreDatasetUsado)
 {
     var carpetas = new List<string>();
     foreach (var estrategia in estrategias)
@@ -77,8 +88,8 @@ List<string> EjecutarMatriz((string Nombre, string[] Parametros, Func<Action<Inf
                 Parametros: estrategia.Parametros,
                 CrearEstrategia: estrategia.Crear,
                 Timeframes: new[] { timeframe },
-                DirDatasets: dirDatasets,
-                NombreDataset: "BTCUSDT_2024-01-02_2025-01-02",
+                DirDatasets: dirDatasetsUsado,
+                NombreDataset: nombreDatasetUsado,
                 CapitalInicial: 1000m,
                 Instrumento: instrumento,
                 Costes: costes);
@@ -92,16 +103,18 @@ List<string> EjecutarMatriz((string Nombre, string[] Parametros, Func<Action<Inf
     return carpetas;
 }
 
+const string nombreDataset2024 = "BTCUSDT_2024-01-02_2025-01-02";
+
 Console.WriteLine("=== Sub-campana V1 — matriz original (2 estrategias x 3 timeframes) ===");
-var carpetasV1 = EjecutarMatriz(estrategiasV1);
+var carpetasV1 = EjecutarMatriz(estrategiasV1, dirDatasets, nombreDataset2024);
 
 Console.WriteLine();
 Console.WriteLine("=== Sub-campana A — cobertura de estrategias (4 estrategias x 3 timeframes) ===");
-var carpetasA = EjecutarMatriz(estrategiasNuevas);
+var carpetasA = EjecutarMatriz(estrategiasNuevas, dirDatasets, nombreDataset2024);
 
 Console.WriteLine();
 Console.WriteLine("=== Sub-campana B — repeticion exacta de la matriz V1 ===");
-var carpetasB = EjecutarMatriz(estrategiasV1);
+var carpetasB = EjecutarMatriz(estrategiasV1, dirDatasets, nombreDataset2024);
 
 Console.WriteLine();
 Console.WriteLine("=== Sub-campana C — evidencia parcial (dataset inexistente, produce estado no-Success) ===");
@@ -147,3 +160,54 @@ if (resultadoFallo.Filas.Count != 3
     Environment.Exit(1);
 }
 Console.WriteLine($"P5 — evidencia parcial verificada: sub-campana C persistio Estado={resultadoFallo.Filas[0].Estado} en las 3 filas, sin metricas.");
+
+// spec: ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md §5 — Sub-campana D.
+// Autorizacion explicita: BTCUSDT 2024-2025 vs BTCUSDT 2022-2023, misma matriz completa (6
+// estrategias x 3 timeframes x 3 gestores = 18 comparaciones). No analiza, no recomienda, no
+// descarta, no rankea — genera y persiste evidencia via ComparadorGestores/PersistidorComparaciones
+// sin modificar ninguno de los dos (mismo principio que V1/V2).
+Console.WriteLine();
+Console.WriteLine("=== Sub-campana D — diversidad temporal, dataset 2022-2023 (6 estrategias x 3 timeframes) ===");
+var estrategiasTodas = estrategiasV1.Concat(estrategiasNuevas).ToArray();
+var carpetasD = EjecutarMatriz(estrategiasTodas, dirDatasets2022, nombreDataset2022);
+
+// P6 — verificacion de identidad experimental y reproducibilidad (requisito explicito del usuario:
+// "si verificar identidad experimental; si confirmar reproducibilidad"). Ejecuta EjecutorProtocolo
+// directamente (fuera de ComparadorGestores, sin modificarlo) para la primera combinacion de la
+// matriz D, una vez por dataset, y compara IdentidadExperimentoCompleta: el dataset debe ser el
+// unico eje que cambia el HashCompuesto (mismo criterio D-113 aplicado a nivel de campana), y dos
+// ejecuciones identicas sobre el mismo dataset deben producir el mismo HashCompuesto (reproducibilidad).
+var entrada2024 = new EntradaProtocolo(
+    Estrategia: estrategiasV1[0].Nombre, VersionEstrategia: "1.0", Parametros: estrategiasV1[0].Parametros,
+    CrearEstrategia: estrategiasV1[0].Crear, Timeframes: new[] { timeframes[0] },
+    DirDatasets: dirDatasets, NombreDataset: nombreDataset2024,
+    CapitalInicial: 1000m, Instrumento: instrumento, Costes: costes);
+var entrada2022 = entrada2024 with { DirDatasets = dirDatasets2022, NombreDataset = nombreDataset2022 };
+
+var resProtocolo2024 = TD_Project.Protocolo.EjecutorProtocolo.Ejecutar(entrada2024);
+var resProtocolo2022 = TD_Project.Protocolo.EjecutorProtocolo.Ejecutar(entrada2022);
+var resProtocolo2022Repetido = TD_Project.Protocolo.EjecutorProtocolo.Ejecutar(entrada2022);
+
+if (resProtocolo2024.Identidad.HashCompuesto == resProtocolo2022.Identidad.HashCompuesto)
+{
+    Console.WriteLine("P6 FALLA — HashCompuesto identico entre datasets distintos (2024-2025 vs 2022-2023); el dataset deberia ser un eje que cambia el hash.");
+    Environment.Exit(1);
+}
+if (resProtocolo2024.Identidad.HashConfiguracionEconomica != resProtocolo2022.Identidad.HashConfiguracionEconomica)
+{
+    Console.WriteLine("P6 FALLA — HashConfiguracionEconomica distinto entre datasets; la configuracion economica no deberia depender del periodo temporal.");
+    Environment.Exit(1);
+}
+if (resProtocolo2022.Identidad.HashCompuesto != resProtocolo2022Repetido.Identidad.HashCompuesto)
+{
+    Console.WriteLine("P6 FALLA — dos ejecuciones identicas sobre el dataset 2022-2023 no produjeron el mismo HashCompuesto (reproducibilidad rota).");
+    Environment.Exit(1);
+}
+Console.WriteLine("P6 — identidad experimental verificada: HashCompuesto distingue el dataset, HashConfiguracionEconomica no depende del periodo, y el dataset 2022-2023 es reproducible entre corridas.");
+
+if (carpetasD.Count != estrategiasTodas.Length * timeframes.Length || carpetasD.Any(c => !Directory.Exists(c)) || carpetasD.Distinct().Count() != carpetasD.Count)
+{
+    Console.WriteLine("P7 FALLA — Sub-campana D no persistio la cantidad esperada de comparaciones (18) o alguna carpeta no existe/esta duplicada.");
+    Environment.Exit(1);
+}
+Console.WriteLine($"P7 — Sub-campana D verificada: {carpetasD.Count} comparaciones persistidas (esperado: {estrategiasTodas.Length * timeframes.Length}).");

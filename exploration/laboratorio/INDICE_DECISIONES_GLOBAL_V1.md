@@ -383,7 +383,8 @@ completa: `caso5/PROPUESTA_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md`,
 `caso5/DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md` (D-122),
 `caso5/ESPECIFICACION_IMPLEMENTACION_EXPLORACION_DISPONIBILIDAD_CASO5C_V1.md`,
 `caso5/ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md`,
-`caso5/HALLAZGO_DATASET_TEMPORAL_2022_CASO5C_V1.md`.
+`caso5/HALLAZGO_DATASET_TEMPORAL_2022_CASO5C_V1.md`,
+`caso5/AUDITORIA_DIVERSIDAD_TEMPORAL_CASO5C_V1.md`.
 
 | D-N | Establece | Estado |
 |---|---|---|
@@ -393,16 +394,24 @@ completa: `caso5/PROPUESTA_DIVERSIDAD_EVIDENCIA_CASO5C_V1.md`,
 **Resultado material de esta expansión**: dataset `BTCUSDT 2022-01-01 – 2023-01-01` descargado,
 validado (0 huecos/duplicados/errores, `ValidadorIntegridadDatos`), congelado en
 `datasets/reales/BTCUSDT/1m_2022/` (+ 12 timeframes derivados), commit `77e69d4`. El dataset
-`2024-2025` original permanece intacto — ambos coexisten sin mezcla. **Ninguna campaña ni
-comparación de gestores se ejecutó todavía sobre el dataset 2022** — queda como paso siguiente,
-condicionado a autorización explícita.
+`2024-2025` original permanece intacto — ambos coexisten sin mezcla. **Sub-campaña D ejecutada**:
+18 comparaciones (6 estrategias × 3 timeframes × 3 gestores) contra el dataset 2022-2023, vía una
+vista de compatibilidad (`datasets/reales/BTCUSDT_2022/`, copia verificada SHA-256-idéntica al
+dataset congelado, requerida porque `EjecutorProtocolo` usa el mismo token de timeframe para
+subcarpeta y sufijo de archivo). Identidad experimental verificada por mecanismo (`HashCompuesto`
+distingue el período, `HashConfiguracionEconomica` invariante, reproducibilidad confirmada). Corpus
+acumulado: 49 comparaciones (31 de V1/V2 + 18 de Sub-campaña D). Auditado en
+`caso5/AUDITORIA_DIVERSIDAD_TEMPORAL_CASO5C_V1.md`: la incorporación del segundo período aumenta la
+diversidad temporal y demuestra que la infraestructura compara períodos de forma reproducible, pero
+no resuelve la falta de diversidad de instrumento ni crea base suficiente por sí sola para una
+recomendación.
 
 ### Pendientes de esta expansión
 
 | D-N | Qué queda pendiente | Impacto | ¿Bloquea fase siguiente? |
 |---|---|---|---|
-| — | Sub-campaña D (18 comparaciones sobre el dataset 2022, ya especificada en `ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_TEMPORAL_CASO5C_V1.md` §5) — no ejecutada | — | No bloquea nada — es el siguiente paso natural, pendiente de autorización |
-| — | Vía A (instrumento, D-121) — pospuesta, no descartada; si se abre, debe ejecutarse contra el rango temporal original (2024-2025), no el 2022, para preservar atribución causal | — | No bloquea — condicionada a evaluar primero los resultados de la Vía B |
+| — | Evaluar si el corpus acumulado (49 comparaciones, 2 períodos BTCUSDT, 6 estrategias, 3 gestores) es suficiente para abrir Caso 5C Capa 2, o si falta otra dimensión experimental (p. ej. Vía A/instrumento) | — | No bloquea nada — es el siguiente punto de decisión, pendiente de evaluación explícita |
+| — | Vía A (instrumento, D-121) — pospuesta, no descartada; si se abre, debe ejecutarse contra el rango temporal original (2024-2025), no el 2022, para preservar atribución causal | — | No bloquea — condicionada a la evaluación del corpus completo |
 
 ---
 
@@ -457,9 +466,9 @@ documental obsoleta de D-085 en el reporte financiero.
 ## Próximo documento
 
 Ninguno abierto todavía. Caso 5C Capa 1 congelada (tag `caso5c-capa1-v1-experimental`); dataset
-temporal `BTCUSDT 2022` validado y congelado (commit `77e69d4`, D-121/D-122), sin ejecutar todavía
-la sub-campaña que lo consume. Próximo paso natural: autorizar la Sub-campaña D (18 comparaciones
-sobre 2022, misma matriz ya usada para 2024-2025) y su auditoría posterior — antes de eso, la
-pregunta de si el corpus acumulado justifica abrir Caso 5C Capa 2 (análisis/recomendación) sigue
-sin evaluarse. Caso 3C / gestión avanzada de exposición / Vía A (instrumento, D-121) siguen como
-alternativas no decididas.
+temporal `BTCUSDT 2022` validado, congelado (commit `77e69d4`, D-121/D-122) y consumido por la
+Sub-campaña D (18 comparaciones, auditada en `AUDITORIA_DIVERSIDAD_TEMPORAL_CASO5C_V1.md`). Corpus
+acumulado: 49 comparaciones (2 períodos BTCUSDT, 6 estrategias, 3 gestores). Próximo punto de
+decisión: evaluar si este corpus es suficiente para abrir Caso 5C Capa 2 (análisis/recomendación,
+D-118 a D-120) o si falta otra dimensión experimental (p. ej. Vía A/instrumento, D-121, pospuesta no
+descartada). Caso 3C / gestión avanzada de exposición siguen como alternativas no decididas.
