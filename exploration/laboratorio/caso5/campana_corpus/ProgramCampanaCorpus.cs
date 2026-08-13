@@ -211,3 +211,47 @@ if (carpetasD.Count != estrategiasTodas.Length * timeframes.Length || carpetasD.
     Environment.Exit(1);
 }
 Console.WriteLine($"P7 — Sub-campana D verificada: {carpetasD.Count} comparaciones persistidas (esperado: {estrategiasTodas.Length * timeframes.Length}).");
+
+// spec: ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_INSTRUMENTO_CASO5C_V2.md §5 (D-125) — Sub-campana
+// E. Autorizacion explicita: BTCUSDT vs ETHUSDT, mismo rango 2024-01-02_2025-01-02 (dimension
+// aislada: instrumento, no tiempo), misma matriz completa (6 estrategias x 3 timeframes x 3
+// gestores = 18 comparaciones). Ningun parametro economico, gestor, ni estrategia cambia — mismo
+// principio que Sub-campana D.
+Console.WriteLine();
+Console.WriteLine("=== Sub-campana E — diversidad de instrumento, dataset ETHUSDT (6 estrategias x 3 timeframes) ===");
+var dirDatasetsEth = Path.GetFullPath(Path.Combine(raiz, "..", "..", "..", "..", "..", "datasets", "reales", "ETHUSDT"));
+var nombreDatasetEth = "ETHUSDT_2024-01-02_2025-01-02";
+var carpetasE = EjecutarMatriz(estrategiasTodas, dirDatasetsEth, nombreDatasetEth);
+
+// P8 — identidad experimental y reproducibilidad para el nuevo instrumento (mismo criterio que P6
+// para Sub-campana D): el dataset (ahora tambien el instrumento) debe ser el eje que cambia el
+// HashCompuesto; HashConfiguracionEconomica no debe depender del instrumento (parametros
+// economicos identicos, D-030/D-125); dos ejecuciones sobre el mismo dataset ETHUSDT deben producir
+// el mismo HashCompuesto.
+var entradaEth = entrada2024 with { DirDatasets = dirDatasetsEth, NombreDataset = nombreDatasetEth };
+var resProtocoloEth = TD_Project.Protocolo.EjecutorProtocolo.Ejecutar(entradaEth);
+var resProtocoloEthRepetido = TD_Project.Protocolo.EjecutorProtocolo.Ejecutar(entradaEth);
+
+if (resProtocolo2024.Identidad.HashCompuesto == resProtocoloEth.Identidad.HashCompuesto)
+{
+    Console.WriteLine("P8 FALLA — HashCompuesto identico entre instrumentos distintos (BTCUSDT vs ETHUSDT); el dataset deberia ser un eje que cambia el hash.");
+    Environment.Exit(1);
+}
+if (resProtocolo2024.Identidad.HashConfiguracionEconomica != resProtocoloEth.Identidad.HashConfiguracionEconomica)
+{
+    Console.WriteLine("P8 FALLA — HashConfiguracionEconomica distinto entre instrumentos; la configuracion economica no deberia depender del instrumento (D-030/D-125).");
+    Environment.Exit(1);
+}
+if (resProtocoloEth.Identidad.HashCompuesto != resProtocoloEthRepetido.Identidad.HashCompuesto)
+{
+    Console.WriteLine("P8 FALLA — dos ejecuciones identicas sobre el dataset ETHUSDT no produjeron el mismo HashCompuesto (reproducibilidad rota).");
+    Environment.Exit(1);
+}
+Console.WriteLine("P8 — identidad experimental verificada: HashCompuesto distingue el instrumento, HashConfiguracionEconomica no depende del instrumento, y el dataset ETHUSDT es reproducible entre corridas.");
+
+if (carpetasE.Count != estrategiasTodas.Length * timeframes.Length || carpetasE.Any(c => !Directory.Exists(c)) || carpetasE.Distinct().Count() != carpetasE.Count)
+{
+    Console.WriteLine("P9 FALLA — Sub-campana E no persistio la cantidad esperada de comparaciones (18) o alguna carpeta no existe/esta duplicada.");
+    Environment.Exit(1);
+}
+Console.WriteLine($"P9 — Sub-campana E verificada: {carpetasE.Count} comparaciones persistidas (esperado: {estrategiasTodas.Length * timeframes.Length}).");

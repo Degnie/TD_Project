@@ -76,10 +76,21 @@ foreach (var (dataset, condicionesDataset) in consistencia.CondicionesPorDataset
     foreach (var c in condicionesDataset) Console.WriteLine($"    {c}");
 }
 
+// Instrumento = prefijo del nombre de dataset antes del rango de fechas, tomado solo de filas con
+// metrica real (mismo filtro de AnalisisDescriptivo.Resumir para "periodo temporal" — excluye
+// DatasetInexistente_ParaCorpusDeFallo, evidencia deliberada de fallo sin PnLTotal, que de otro
+// modo se contaria como un instrumento inexistente). Mismo criterio ya aplicado en
+// analisis_corpus/AnalisisDescriptivo.cs tras D-126 — antes hardcodeado "BTCUSDT", quedo
+// desactualizado al incorporar ETHUSDT.
+var instrumentosInterpretativo = filas.Where(f => f.PnLTotal.HasValue).Select(f => f.NombreDataset.Split('_')[0]).Distinct().OrderBy(s => s).ToList();
+var textoInstrumentosInterpretativo = instrumentosInterpretativo.Count == 1
+    ? $"instrumento unico ({instrumentosInterpretativo[0]})"
+    : $"{instrumentosInterpretativo.Count} instrumentos ({string.Join(", ", instrumentosInterpretativo)})";
+
 Console.WriteLine();
 Console.WriteLine("--- Limitaciones ---");
 Console.WriteLine(
-    $"Analisis interpretativo limitado sobre {filas.Count} filas, instrumento unico (BTCUSDT). " +
+    $"Analisis interpretativo limitado sobre {filas.Count} filas, {textoInstrumentosInterpretativo}. " +
     "Esta salida describe relaciones/agrupaciones/condiciones observadas en el corpus persistido — " +
     "no constituye recomendacion, ranking, seleccion, ni regla operativa (D-118/D-119/D-120). " +
     "Los patrones usados (DrawdownMaximoPct>=99%, SinActividad) son los ya documentados en " +

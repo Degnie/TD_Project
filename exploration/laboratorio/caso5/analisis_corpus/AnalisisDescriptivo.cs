@@ -170,9 +170,17 @@ public static class AnalisisDescriptivo
                 comparaciones.Add(CompararPeriodos(filas, metrica, gestor));
         }
 
+        // Instrumento = prefijo del nombre de dataset antes del rango de fechas (convencion ya
+        // usada en todos los datasets: "{SYMBOL}_{inicio}_{fin}", ej. "ETHUSDT_2024-01-02_2025-01-02").
+        // Antes hardcodeado como "BTCUSDT" — quedo desactualizado al incorporar ETHUSDT (D-126).
+        var instrumentos = datasets.Select(d => d.Split('_')[0]).Distinct().OrderBy(s => s).ToList();
+        var textoInstrumentos = instrumentos.Count == 1
+            ? $"instrumento unico ({instrumentos[0]})"
+            : $"{instrumentos.Count} instrumentos ({string.Join(", ", instrumentos)})";
+
         var limitaciones =
             $"Corpus descriptivo: {cobertura.TotalFilas} filas sobre {datasets.Count} periodo(s) " +
-            "temporal(es), instrumento unico (BTCUSDT). Esta salida describe unicamente lo que el " +
+            $"temporal(es), {textoInstrumentos}. Esta salida describe unicamente lo que el " +
             "corpus persistido contiene — no constituye recomendacion, ranking, ni evaluacion de " +
             "que gestor/estrategia es preferible (D-118/D-119/D-120). Ningun patron aqui descrito " +
             "se extiende a instrumentos no representados en el corpus.";

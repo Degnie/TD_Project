@@ -1,7 +1,7 @@
 {
   "corpus": "caso5c-v1",
-  "descripcion": "Artefacto declarado — define que evidencia fisica en caso5/resultados/ pertenece al corpus oficial de Caso 5C (V1 + V2 + Sub-campana D), separandola de trazas de desarrollo/reintentos. No selecciona resultados favorables — construido antes de cualquier analisis de Capa 2, unicamente a partir de identidad estructural (gestores completos, dataset esperado, ultima ejecucion completa de cada combinacion declarada). Ver AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V2.md (nota de precision) para el criterio de clasificacion completo.",
-  "totalOficial": 49,
+  "descripcion": "Artefacto declarado — define que evidencia fisica en caso5/resultados/ pertenece al corpus oficial de Caso 5C (V1 + V2 + Sub-campana D + Sub-campana E), separandola de trazas de desarrollo/reintentos. No selecciona resultados favorables — construido antes de cualquier analisis de Capa 2, unicamente a partir de identidad estructural (gestores completos, dataset esperado, ultima ejecucion completa de cada combinacion declarada). Sub-campana E (D-126) incorpora el instrumento ETHUSDT bajo el mismo rango temporal ya congelado para BTCUSDT (2024-01-02_2025-01-02) — instrumento como unica dimension variada. Ver AUDITORIA_CORPUS_COMPARATIVO_CASO5C_V2.md (nota de precision) y AUDITORIA_SUBCAMPANA_E_CASO5C_V1.md para el criterio de clasificacion completo.",
+  "totalOficial": 67,
   "comparaciones": [
     { "carpeta": "TresMosqueteros_15m_20260812T213530Z", "origen": "V1" },
     { "carpeta": "TresMosqueteros_1h_20260812T213531Z", "origen": "V1" },
@@ -53,7 +53,26 @@
     { "carpeta": "VolumenBreakout_1D_20260813T032451Z", "origen": "SubcampanaD" },
     { "carpeta": "MhiMayoria_15m_20260813T032500Z", "origen": "SubcampanaD" },
     { "carpeta": "MhiMayoria_1h_20260813T032501Z", "origen": "SubcampanaD" },
-    { "carpeta": "MhiMayoria_1D_20260813T032501Z", "origen": "SubcampanaD" }
+    { "carpeta": "MhiMayoria_1D_20260813T032501Z", "origen": "SubcampanaD" },
+
+    { "carpeta": "TresMosqueteros_15m_20260813T054508Z", "origen": "SubcampanaE" },
+    { "carpeta": "TresMosqueteros_1h_20260813T054509Z", "origen": "SubcampanaE" },
+    { "carpeta": "TresMosqueteros_1D_20260813T054509Z", "origen": "SubcampanaE" },
+    { "carpeta": "EmaCross_15m_20260813T054517Z", "origen": "SubcampanaE" },
+    { "carpeta": "EmaCross_1h_20260813T054518Z", "origen": "SubcampanaE" },
+    { "carpeta": "EmaCross_1D_20260813T054518Z", "origen": "SubcampanaE" },
+    { "carpeta": "ZScoreReversion_15m_20260813T054526Z", "origen": "SubcampanaE" },
+    { "carpeta": "ZScoreReversion_1h_20260813T054526Z", "origen": "SubcampanaE" },
+    { "carpeta": "ZScoreReversion_1D_20260813T054526Z", "origen": "SubcampanaE" },
+    { "carpeta": "Neutral_15m_20260813T054535Z", "origen": "SubcampanaE" },
+    { "carpeta": "Neutral_1h_20260813T054536Z", "origen": "SubcampanaE" },
+    { "carpeta": "Neutral_1D_20260813T054536Z", "origen": "SubcampanaE" },
+    { "carpeta": "VolumenBreakout_15m_20260813T054545Z", "origen": "SubcampanaE" },
+    { "carpeta": "VolumenBreakout_1h_20260813T054545Z", "origen": "SubcampanaE" },
+    { "carpeta": "VolumenBreakout_1D_20260813T054545Z", "origen": "SubcampanaE" },
+    { "carpeta": "MhiMayoria_15m_20260813T054554Z", "origen": "SubcampanaE" },
+    { "carpeta": "MhiMayoria_1h_20260813T054555Z", "origen": "SubcampanaE" },
+    { "carpeta": "MhiMayoria_1D_20260813T054555Z", "origen": "SubcampanaE" }
   ],
   "excluidos": {
     "descripcion": "Carpetas presentes fisicamente en caso5/resultados/ que NO pertenecen al corpus oficial. No se eliminan del disco — permanecen como evidencia tecnica de desarrollo, fuera del alcance de Capa 2.",
@@ -65,14 +84,16 @@
       },
       {
         "categoria": "escritura-interrumpida",
-        "cantidad": 8,
+        "cantidad": 11,
         "carpetas": [
           "TresMosqueteros_1D_20260812T213624Z", "TresMosqueteros_1D_20260812T213625Z",
           "TresMosqueteros_1D_20260812T222207Z", "TresMosqueteros_1D_20260812T222208Z",
           "TresMosqueteros_1D_20260813T023345Z", "TresMosqueteros_1D_20260813T032552Z",
-          "TresMosqueteros_1D_20260813T040111Z", "TresMosqueteros_1D_20260813T040356Z"
+          "TresMosqueteros_1D_20260813T040111Z", "TresMosqueteros_1D_20260813T040356Z",
+          "TresMosqueteros_1D_20260813T041024Z", "TresMosqueteros_1D_20260813T042436Z",
+          "TresMosqueteros_1D_20260813T060224Z"
         ],
-        "razon": "Solo 2 de 3 gestores persistidos (falta volatility-sizing) en cada una; valores de PnLTotal/DrawdownMaximoPct/etc. identicos entre si y a la fila fixed-fractional/fixed-risk de las comparaciones completas correspondientes (TresMosqueteros_1D_20260812T213531Z en V1, _222145Z en V2, _032353Z en la repeticion verificada) — cortes de escritura durante distintas ejecuciones de desarrollo, nunca una comparacion completa. Las dos ultimas (04:01/04:03) se generaron durante la propia implementacion de Caso 5C Capa 2, al re-ejecutar caso5/Program.cs para verificar regresion tras cada cambio."
+        "razon": "Solo 2 de 3 gestores persistidos (falta volatility-sizing) en cada una; valores de PnLTotal/DrawdownMaximoPct/etc. identicos entre si y a la fila fixed-fractional/fixed-risk de las comparaciones completas correspondientes (TresMosqueteros_1D_20260812T213531Z en V1, _222145Z en V2, _032353Z en la repeticion verificada) — cortes de escritura durante distintas ejecuciones de desarrollo, nunca una comparacion completa. Las dos de 04:01/04:03 se generaron durante la propia implementacion de Caso 5C Capa 2, al re-ejecutar caso5/Program.cs para verificar regresion tras cada cambio. Las dos de 04:10/04:24 se generaron durante pruebas manuales previas a la ejecucion oficial de Sub-campana E (ver CLASIFICACION_PROPUESTA_CARPETAS_SUBCAMPANA_E_V1.md Seccion 4) — mismo patron, sin relacion con ETHUSDT (su nombreDataset es BTCUSDT_2024-01-02_2025-01-02). La de 06:02 (2026-08-13T06:02:24Z) se genero al ejecutar caso5/Program.cs para verificar regresion (10/10+8/8+7/7) inmediatamente despues de la actualizacion mecanica del manifiesto para D-126 — mismo patron exacto, actualizacion de consistencia del artefacto de gobierno, no nueva evidencia experimental."
       },
       {
         "categoria": "prueba-tecnica-preexistente",
@@ -95,6 +116,31 @@
           "TresMosqueteros_1D_20260813T032403Z"
         ],
         "razon": "Repeticion completa validada como reproducible, no utilizada para evitar doble conteo. Generada el 2026-08-13T03:22:56Z-03:24:03Z como efecto colateral de la misma ejecucion de ProgramCampanaCorpus.cs que produjo la Sub-campana D (el programa corre V1->A->B->C->D en una sola invocacion; no existe una forma de ejecutar solo D sin regenerar tambien V1/A/B/C). Verificado campo por campo contra las 25 comparaciones oficiales de V2 (categoria 'V2' arriba): identidad (estrategia/timeframe/dataset/gestor/estado) y las 6 metricas numericas con precision decimal completa son identicas en las 25 parejas comparadas — unica diferencia es fechaGeneracionUtc, que por diseno de PersistidorComparaciones no forma parte de la identidad experimental. Confirma con evidencia directa (no solo por diseno del mecanismo) que la misma entrada experimental produce la misma evidencia."
+      },
+      {
+        "categoria": "repeticion-tecnica-subcampana-e",
+        "cantidad": 68,
+        "carpetas": [
+          "EmaCross_15m_20260812T221915Z", "EmaCross_15m_20260812T222007Z", "EmaCross_15m_20260813T054300Z", "EmaCross_15m_20260813T054359Z", "EmaCross_15m_20260813T054418Z",
+          "EmaCross_1D_20260812T221916Z", "EmaCross_1D_20260812T222008Z", "EmaCross_1D_20260813T054301Z", "EmaCross_1D_20260813T054400Z", "EmaCross_1D_20260813T054419Z",
+          "EmaCross_1h_20260812T221916Z", "EmaCross_1h_20260812T222008Z", "EmaCross_1h_20260813T054301Z", "EmaCross_1h_20260813T054400Z", "EmaCross_1h_20260813T054419Z",
+          "MhiMayoria_15m_20260812T221950Z", "MhiMayoria_15m_20260813T054339Z", "MhiMayoria_15m_20260813T054456Z",
+          "MhiMayoria_1D_20260812T221951Z", "MhiMayoria_1D_20260813T054340Z", "MhiMayoria_1D_20260813T054457Z",
+          "MhiMayoria_1h_20260812T221951Z", "MhiMayoria_1h_20260813T054340Z", "MhiMayoria_1h_20260813T054457Z",
+          "Neutral_15m_20260812T221932Z", "Neutral_15m_20260813T054319Z", "Neutral_15m_20260813T054436Z",
+          "Neutral_1D_20260812T221933Z", "Neutral_1D_20260813T054320Z", "Neutral_1D_20260813T054437Z",
+          "Neutral_1h_20260812T221933Z", "Neutral_1h_20260813T054320Z", "Neutral_1h_20260813T054437Z",
+          "TresMosqueteros_15m_20260812T221906Z", "TresMosqueteros_15m_20260812T221959Z", "TresMosqueteros_15m_20260813T054250Z", "TresMosqueteros_15m_20260813T054349Z", "TresMosqueteros_15m_20260813T054408Z",
+          "TresMosqueteros_1D_20260812T221907Z", "TresMosqueteros_1D_20260812T222000Z", "TresMosqueteros_1D_20260812T222008Z", "TresMosqueteros_1D_20260813T054251Z", "TresMosqueteros_1D_20260813T054350Z", "TresMosqueteros_1D_20260813T054400Z", "TresMosqueteros_1D_20260813T054409Z",
+          "TresMosqueteros_1h_20260812T221907Z", "TresMosqueteros_1h_20260812T222000Z", "TresMosqueteros_1h_20260813T054251Z", "TresMosqueteros_1h_20260813T054350Z", "TresMosqueteros_1h_20260813T054409Z",
+          "VolumenBreakout_15m_20260812T221941Z", "VolumenBreakout_15m_20260813T054329Z", "VolumenBreakout_15m_20260813T054446Z",
+          "VolumenBreakout_1D_20260812T221942Z", "VolumenBreakout_1D_20260813T054329Z", "VolumenBreakout_1D_20260813T054446Z",
+          "VolumenBreakout_1h_20260812T221942Z", "VolumenBreakout_1h_20260813T054329Z", "VolumenBreakout_1h_20260813T054446Z",
+          "ZScoreReversion_15m_20260812T221923Z", "ZScoreReversion_15m_20260813T054309Z", "ZScoreReversion_15m_20260813T054427Z",
+          "ZScoreReversion_1D_20260812T221924Z", "ZScoreReversion_1D_20260813T054310Z", "ZScoreReversion_1D_20260813T054427Z",
+          "ZScoreReversion_1h_20260812T221924Z", "ZScoreReversion_1h_20260813T054309Z", "ZScoreReversion_1h_20260813T054427Z"
+        ],
+        "razon": "Repeticion tecnica generada por la misma ejecucion de ProgramCampanaCorpus.cs que produjo la Sub-campana E (2026-08-13, ~05:42-05:46 UTC) — el programa re-ejecuta V1/A/B/D en la misma invocacion junto con la nueva Sub-campana E, sin modo de ejecucion parcial (mismo comportamiento ya documentado para la categoria 'repeticion-completa-v1-abc-verificada-reproducible'). Verificado por contenido (clave estrategia/timeframe/dataset, gestores+estado, y las 6 metricas numericas completas de cada gestor) contra la comparacion oficial equivalente — identicas en las 68 carpetas, ver CLASIFICACION_PROPUESTA_CARPETAS_SUBCAMPANA_E_V1.md Seccion 3 para el listado completo carpeta-nueva/oficial-equivalente."
       }
     ]
   }

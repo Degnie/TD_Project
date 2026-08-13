@@ -28,6 +28,10 @@ const string interval = "1m";
 // completa de anio, permite verificar continuidad por mes de un candidato. Nunca se combina con
 // DESCARGAR_BINANCE en la misma invocacion — evita confundir exploracion con descarga real.
 // spec: Caso 5C D-122 (DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md, Opcion B).
+// symbolExploracion es independiente de `symbol` (que sigue fijando BTCUSDT para la descarga real,
+// Etapa 4) — spec: ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_INSTRUMENTO_CASO5C_V2.md §1/§2 (D-125):
+// permite explorar un instrumento candidato distinto sin tocar el flujo de descarga de BTCUSDT.
+var symbolExploracion = Environment.GetEnvironmentVariable("EXPLORAR_DISPONIBILIDAD_SYMBOL") ?? symbol;
 var explorarAnio = Environment.GetEnvironmentVariable("EXPLORAR_DISPONIBILIDAD_ANIO");
 if (explorarAnio is not null)
 {
@@ -40,12 +44,30 @@ if (explorarAnio is not null)
 
     var inicioAnio = new DateTimeOffset(anio, 1, 1, 0, 0, 0, TimeSpan.Zero);
     var finAnioExploracion = inicioAnio.AddYears(1);
-    var resultadoExploracion = await ExploradorDisponibilidad.ExplorarAsync(new BinanceClient(), symbol, interval, inicioAnio, finAnioExploracion);
+    var resultadoExploracion = await ExploradorDisponibilidad.ExplorarAsync(new BinanceClient(), symbolExploracion, interval, inicioAnio, finAnioExploracion);
 
-    Console.WriteLine($"\n=== Exploracion de disponibilidad: {symbol} {interval} {anio} ===");
+    Console.WriteLine($"\n=== Exploracion de disponibilidad: {symbolExploracion} {interval} {anio} ===");
     foreach (var b in resultadoExploracion.Bloques)
         Console.WriteLine($"  {b.InicioUtc:yyyy-MM} .. {b.FinUtc:yyyy-MM}: {(b.Continuo ? "OK" : $"HUECO ({b.Huecos} huecos, {b.MinutosFaltantes} min)")}");
-    Console.WriteLine($"\nCandidato {anio}: {(resultadoExploracion.TodosContinuos ? "VIABLE — continuidad OK en los 12 meses" : "DESCARTADO — al menos 1 mes con discontinuidad")}");
+    Console.WriteLine($"\nCandidato {symbolExploracion} {anio}: {(resultadoExploracion.TodosContinuos ? "VIABLE — continuidad OK en los 12 meses" : "DESCARTADO — al menos 1 mes con discontinuidad")}");
+    return;
+}
+
+// Etapa 3b (exploracion de rango exacto, no anio calendario): D-121/D-125 exigen el rango
+// 2024-01-02..2025-01-02 (el ya congelado para BTCUSDT), no el anio calendario 2024 completo.
+// ExploradorDisponibilidad.ExplorarAsync ya acepta cualquier DateTimeOffset de inicio/fin — no
+// requiere generalizacion, solo una invocacion con las fechas exactas en vez de 1-enero..1-enero.
+var explorarRango = Environment.GetEnvironmentVariable("EXPLORAR_DISPONIBILIDAD_RANGO_2024_2025");
+if (explorarRango is not null)
+{
+    var inicioRango = new DateTimeOffset(2024, 1, 2, 0, 0, 0, TimeSpan.Zero);
+    var finRango = new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero);
+    var resultadoExploracionRango = await ExploradorDisponibilidad.ExplorarAsync(new BinanceClient(), symbolExploracion, interval, inicioRango, finRango);
+
+    Console.WriteLine($"\n=== Exploracion de disponibilidad: {symbolExploracion} {interval} [{inicioRango:yyyy-MM-dd} .. {finRango:yyyy-MM-dd}) ===");
+    foreach (var b in resultadoExploracionRango.Bloques)
+        Console.WriteLine($"  {b.InicioUtc:yyyy-MM-dd} .. {b.FinUtc:yyyy-MM-dd}: {(b.Continuo ? "OK" : $"HUECO ({b.Huecos} huecos, {b.MinutosFaltantes} min)")}");
+    Console.WriteLine($"\nCandidato {symbolExploracion} [{inicioRango:yyyy-MM-dd}..{finRango:yyyy-MM-dd}): {(resultadoExploracionRango.TodosContinuos ? "VIABLE — continuidad OK en todos los bloques" : "DESCARTADO — al menos 1 bloque con discontinuidad")}");
     return;
 }
 
@@ -65,28 +87,40 @@ var dirMetadata = Path.Combine(directorioDatosReales, "metadata");
 Directory.CreateDirectory(dirRaw);
 Directory.CreateDirectory(dirMetadata);
 
+// symbolDescarga/rango2024_2025 son independientes de `symbol`/rango 2022-2023 por defecto —
+// spec: ESPECIFICACION_IMPLEMENTACION_DIVERSIDAD_INSTRUMENTO_CASO5C_V2.md §2 (D-125). Sin la
+// variable de entorno, el comportamiento es identico al ya congelado (BTCUSDT, rango 2022-2023).
+var symbolDescarga = Environment.GetEnvironmentVariable("DESCARGAR_BINANCE_SYMBOL") ?? symbol;
+var usarRango2024_2025 = Environment.GetEnvironmentVariable("DESCARGAR_BINANCE_RANGO_2024_2025") is not null;
+
 // spec: DECISIONES_RANGO_ALTERNATIVO_CASO5C_V1.md (D-122) — rango 2023-01-02..2024-01-02 fue
 // rechazado por ValidadorIntegridadDatos (hueco real de 80 min, ver
 // HALLAZGO_RECHAZO_DATASET_2023_CASO5C_V1.md). Candidato 2022 confirmado VIABLE por
 // ExploradorDisponibilidad (12/12 meses continuos) — se descarga completo para validacion real.
-var finUtc = new DateTimeOffset(2023, 1, 1, 0, 0, 0, TimeSpan.Zero); // dia de prueba fijo, determinista
+// Rango 2024-01-02..2025-01-02: D-121/D-125, mismo rango ya congelado para BTCUSDT — usado aqui
+// para el instrumento candidato ETHUSDT (D-125), confirmado VIABLE por exploracion (12/12 bloques).
+var finUtc = usarRango2024_2025
+    ? new DateTimeOffset(2025, 1, 2, 0, 0, 0, TimeSpan.Zero)
+    : new DateTimeOffset(2023, 1, 1, 0, 0, 0, TimeSpan.Zero); // dia de prueba fijo, determinista
 var inicioUtc = descargar == "DIA"
     ? finUtc.AddDays(-1)
-    : finUtc.AddYears(-1);
+    : usarRango2024_2025
+        ? new DateTimeOffset(2024, 1, 2, 0, 0, 0, TimeSpan.Zero)
+        : finUtc.AddYears(-1);
 
 // sufijo incluye el anio de fin para no colisionar con el crudo 2024-2025 ya usado para congelar
 // el dataset actual (datos_reales/raw/ es solo registro de la descarga, pero se preserva por
 // trazabilidad).
 var sufijo = descargar == "DIA" ? "1dia_prueba" : $"1anio_{finUtc.Year}";
-var rutaCsv = Path.Combine(dirRaw, $"{symbol}_{interval}_{sufijo}.csv");
-var rutaMetadata = Path.Combine(dirMetadata, $"{symbol}_{interval}_{sufijo}.json");
+var rutaCsv = Path.Combine(dirRaw, $"{symbolDescarga}_{interval}_{sufijo}.csv");
+var rutaMetadata = Path.Combine(dirMetadata, $"{symbolDescarga}_{interval}_{sufijo}.json");
 
-Console.WriteLine($"\n=== Descarga Binance: {symbol} {interval} [{inicioUtc:O} .. {finUtc:O}) ===");
+Console.WriteLine($"\n=== Descarga Binance: {symbolDescarga} {interval} [{inicioUtc:O} .. {finUtc:O}) ===");
 Console.WriteLine($"CSV crudo: {rutaCsv}");
 
 var cliente = new BinanceClient();
 var resultado = await DescargadorVelas.DescargarAsync(
-    cliente, symbol, interval, inicioUtc.ToUnixTimeMilliseconds(), finUtc.ToUnixTimeMilliseconds(), rutaCsv);
+    cliente, symbolDescarga, interval, inicioUtc.ToUnixTimeMilliseconds(), finUtc.ToUnixTimeMilliseconds(), rutaCsv);
 
 var velasEsperadas = (int)((resultado.FinUtcMs - resultado.InicioUtcMs) / ValidadorIntegridadDatos.UnMinutoMs);
 
@@ -103,7 +137,7 @@ var duplicados = velas.Count - velas.Select(v => v.TimestampUtcMs).Distinct().Co
 var totalMinutosFaltantes = veredicto.Huecos.Sum(h => h.MinutosFaltantes);
 
 Console.WriteLine("\n=== Reporte de integridad (checklist de escala) ===");
-Console.WriteLine($"  Simbolo/Intervalo: {symbol} {interval}");
+Console.WriteLine($"  Simbolo/Intervalo: {symbolDescarga} {interval}");
 Console.WriteLine($"  Velas esperadas: {velasEsperadas}");
 Console.WriteLine($"  Velas recibidas: {velas.Count}");
 Console.WriteLine($"  Huecos: {veredicto.Huecos.Count} (minutos faltantes: {totalMinutosFaltantes})");
@@ -122,8 +156,8 @@ if (!veredicto.AptoParaCongelar)
     Environment.Exit(1);
 }
 
-DescargadorVelas.EscribirMetadataValidada(rutaMetadata, symbol, interval, velas);
+DescargadorVelas.EscribirMetadataValidada(rutaMetadata, symbolDescarga, interval, velas);
 Console.WriteLine("\n  Estado: APTO PARA CONGELAR");
 Console.WriteLine($"  SHA-256: (ver {rutaMetadata})");
 Console.WriteLine($"\nMetadata (con SHA-256) escrita en: {rutaMetadata}");
-Console.WriteLine("Recordatorio: la promocion a datasets/reales/BTCUSDT/1m/ es un paso manual explicito (ver PLAN_FASE2A.md seccion 6), no automatico desde este programa.");
+Console.WriteLine($"Recordatorio: la promocion a datasets/reales/{symbolDescarga}/1m/ es un paso manual explicito (ver PLAN_FASE2A.md seccion 6), no automatico desde este programa.");

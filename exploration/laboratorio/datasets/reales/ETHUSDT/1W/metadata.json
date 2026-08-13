@@ -1,0 +1,12 @@
+{
+  "sourceDataset": "ETHUSDT_2024-01-02_2025-01-02_1m.csv",
+  "sourceSha256": "147e812de611c63b532966744d864bd3a1d0210deaf8ec693f3bacb84f330b04",
+  "sourceTimeframe": "1m",
+  "targetTimeframe": "1W",
+  "aggregationVersion": "1.0",
+  "generatedUtc": "2026-08-13T05:40:03.1615651Z",
+  "velaCount": 53,
+  "velasCompletas": 51,
+  "velasParciales": 2,
+  "sha256": "4a3a92a75a46ce3b82aabd28848223922c5a63b9b03bd59f37b1606f61d01bd2"
+}
