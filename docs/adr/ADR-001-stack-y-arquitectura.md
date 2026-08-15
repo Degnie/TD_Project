@@ -152,3 +152,52 @@ la exija (regla permanente 6, YAGNI).
 - El mecanismo de aislamiento entre ramas A/B de RN-11 (clonación, snapshots,
   u otro) no queda fijado en este ADR — es una decisión de diseño de contratos
   posterior a esta arquitectura base.
+
+## Decisión adicional — Persistencia de datasets y recomendación de gestores (SPEC 7.0)
+
+### Contexto
+
+La evolución del sistema requiere permitir la incorporación de datasets históricos externos,
+manteniendo separación entre la lógica de aplicación y el mecanismo físico de almacenamiento.
+
+Además, la evaluación de estrategias requiere comparar distintos gestores de capital sin
+acoplar la lógica de recomendación a una implementación concreta.
+
+### Decisión
+
+Se introduce el contrato:
+
+`IDatasetRepository`
+
+como abstracción de acceso a datasets históricos.
+
+La implementación inicial:
+
+`DatasetRepositoryLocal`
+
+proporciona persistencia local mediante archivos e índice de catálogo.
+
+La capa Application consume el contrato y no depende directamente del almacenamiento físico.
+
+Asimismo, la recomendación de gestores de capital se encapsula mediante:
+
+`CapitalManagerRecommender`
+
+en Application.
+
+Este componente evalúa una estrategia contra gestores disponibles y genera una recomendación
+basada en resultados históricos.
+
+### Consecuencias
+
+Positivas:
+
+- permite sustituir almacenamiento local futuro sin modificar Application;
+- mantiene separación Domain/Application/Infrastructure;
+- facilita pruebas mediante dependencias controladas;
+- evita acoplar la recomendación a un gestor específico.
+
+Negativas:
+
+- incorpora una abstracción adicional;
+- requiere mantener el contrato del repositorio.

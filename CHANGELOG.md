@@ -129,7 +129,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   archivo por dataset + índice de catálogo, sin base de datos en esta fase) y
   `CapitalManagerRecommender` (orquestador multi-experimento en `Application`, ejecuta el
   backtest de forma aislada contra cada Gestor de Capital pre-cargado). Ninguna otra decisión
-  del ADR-001 original se modifica.
+  del ADR-001 original se modifica. **Aplicación formal cerrada**: sección "Decisión
+  adicional — Persistencia de datasets y recomendación de gestores (SPEC 7.0)" agregada a
+  `docs/adr/ADR-001-stack-y-arquitectura.md`, cambio exclusivamente documental (sin tocar
+  `src/`, `tests/`, corpus ni manifiesto).
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según
