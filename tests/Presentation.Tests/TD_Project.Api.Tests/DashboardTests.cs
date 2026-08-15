@@ -23,38 +23,52 @@ public class DashboardTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains("TD_Project", html);
     }
 
-    // spec: RNF-08 — el dashboard consume el mismo endpoint que ya expone la API
+    // spec: RNF-16 — actualizacion de prueba por reemplazo de flujo UI aprobado (caso16): el
+    // dashboard ya no gira en torno a un unico boton contra /api/backtest/run (demo fijo); ahora
+    // sirve el flujo de dataset -> estrategia -> ejecucion -> profundizacion. El endpoint demo
+    // permanece intacto en el backend (se verifica sin cambios), pero ya no es lo que el
+    // dashboard invoca por defecto — se verifica que /app.js consume los endpoints reales de
+    // SPEC 7.0 en su lugar.
     [Fact]
-    public async Task DashboardPuedeConsumirEndpointRun()
+    public async Task DashboardSirveElFlujoDeAnalisisHistorico()
     {
         var client = _factory.CreateClient();
 
         var respuestaIndex = await client.GetAsync("/index.html");
         var respuestaAppJs = await client.GetAsync("/app.js");
-        var respuestaRun = await client.PostAsync("/api/backtest/run", null);
+        var respuestaBacktestRunIntacto = await client.PostAsync("/api/backtest/run", null);
 
         Assert.Equal(HttpStatusCode.OK, respuestaIndex.StatusCode);
         Assert.Equal(HttpStatusCode.OK, respuestaAppJs.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, respuestaRun.StatusCode);
+        // spec: RNF-16 — /api/backtest/run no se modifica (caso16 DECISIONES S1): sigue
+        // respondiendo, aunque el dashboard ya no lo invoque desde ningun boton.
+        Assert.Equal(HttpStatusCode.OK, respuestaBacktestRunIntacto.StatusCode);
+
+        var js = await respuestaAppJs.Content.ReadAsStringAsync();
+        Assert.Contains("/api/datasets", js);
+        Assert.Contains("/api/strategies/dsl/run", js);
+        Assert.Contains("/api/capital-managers/recommend", js);
     }
 
-    // spec: RNF-08 — app.js referencia unicamente los nombres de campo reales del contrato
-    // (camelCase, forma de serializacion por defecto de Minimal API), sin inventar campos
+    // spec: RNF-16 — actualizacion de prueba por reemplazo de flujo UI aprobado (caso16): app.js
+    // referencia unicamente los nombres de campo reales del contrato (camelCase, forma de
+    // serializacion por defecto de Minimal API) del nuevo flujo, sin inventar campos. Sustituye
+    // la verificacion anterior (campos del flujo /api/backtest/run) por los campos de Nivel 1/2
+    // que caso16 exige mostrar: Explicacion, Incapacidades, Exposicion, ReporteRegimen.
     [Fact]
-    public async Task AppJsReferenciaLosCamposRealesDelContrato()
+    public async Task AppJsReferenciaLosCamposRealesDelContratoDelNuevoFlujo()
     {
         var client = _factory.CreateClient();
 
         var respuesta = await client.GetAsync("/app.js");
         var js = await respuesta.Content.ReadAsStringAsync();
 
-        Assert.Contains("dto.estado", js);
-        Assert.Contains("dto.metrics.equityFinal", js);
-        Assert.Contains("dto.equityCurve", js);
-        Assert.Contains("dto.trades", js);
-        Assert.Contains("dto.branchResolutions", js);
-        Assert.Contains("dto.fillLog", js);
-        Assert.Contains("dto.portfolioSnapshots", js);
+        Assert.Contains("dto.explicacion", js);
+        Assert.Contains("dto.reporteRegimen", js);
+        Assert.Contains("dto.exposicion", js);
+        Assert.Contains("dto.incapacidades", js);
+        Assert.Contains("datasetHash", js);
+        Assert.Contains("estrategiaDslJson", js);
     }
 
     // spec: RNF-12 — el dashboard no trae dependencias frontend externas (sin npm/CDN/framework);
