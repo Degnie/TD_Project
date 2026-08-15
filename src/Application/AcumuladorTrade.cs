@@ -12,13 +12,17 @@ internal sealed class AcumuladorTrade
     private decimal _realizedPnLAcumulado;
     private decimal _cantidadInicialCiclo;
     private decimal _precioAperturaCiclo;
+    private long _timestampAperturaCiclo;
 
-    public void AntesDeAplicar(decimal posicionActual, decimal precioFill)
+    // spec: RN-19 — timestamp de apertura como metadata de ejecucion, mismo criterio que
+    // _precioAperturaCiclo (se fija en el Fill que rompe cero, incluido el caso Cross-Zero).
+    public void AntesDeAplicar(decimal posicionActual, decimal precioFill, long timestampFill)
     {
         if (posicionActual == 0m)
         {
             _cantidadInicialCiclo = 0m;
             _precioAperturaCiclo = precioFill;
+            _timestampAperturaCiclo = timestampFill;
         }
         else if (_cantidadInicialCiclo == 0m)
         {
@@ -31,28 +35,32 @@ internal sealed class AcumuladorTrade
     // detectar esta apertura (solo ve la posicion previa, nunca cero). DespuesDeAplicar la
     // detecta con la posicion resultante: si el Fill cerro un Trade (TradeCerrado) y la posicion
     // ya no es cero, ese mismo Fill es la apertura real del ciclo siguiente.
-    public void DespuesDeAplicar(ResultadoAplicacionFill resultado, decimal posicionResultante, decimal precioFill)
+    public void DespuesDeAplicar(ResultadoAplicacionFill resultado, decimal posicionResultante, decimal precioFill, long timestampFill)
     {
         if (resultado.TradeCerrado is not null && posicionResultante != 0m)
         {
             _cantidadInicialCiclo = Math.Abs(posicionResultante);
             _precioAperturaCiclo = precioFill;
+            _timestampAperturaCiclo = timestampFill;
         }
     }
 
     public void Registrar(ResultadoAplicacionFill resultado) =>
         _realizedPnLAcumulado += resultado.RealizedPnLReconocido;
 
-    public Trade CerrarYExtraer(Trade tradeDelFillDeCierre)
+    public Trade CerrarYExtraer(Trade tradeDelFillDeCierre, long timestampFillDeCierre)
     {
         var tradeConsolidado = tradeDelFillDeCierre with
         {
             CantidadInicial = _cantidadInicialCiclo,
             PrecioApertura = _precioAperturaCiclo,
-            RealizedPnL = _realizedPnLAcumulado
+            RealizedPnL = _realizedPnLAcumulado,
+            TimestampApertura = _timestampAperturaCiclo,
+            TimestampCierre = timestampFillDeCierre
         };
         _realizedPnLAcumulado = 0m;
         _cantidadInicialCiclo = 0m;
+        _timestampAperturaCiclo = 0;
         return tradeConsolidado;
     }
 }

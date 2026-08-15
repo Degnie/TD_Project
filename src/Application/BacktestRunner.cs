@@ -96,12 +96,12 @@ public static class BacktestRunner
                 foreach (var fill in resolucion.Fills)
                 {
                     fills.Add(fill);
-                    acumuladorTradeActivo.AntesDeAplicar(PosicionActual.De(portfolio), fill.PrecioFill);
+                    acumuladorTradeActivo.AntesDeAplicar(PosicionActual.De(portfolio), fill.PrecioFill, fill.Timestamp);
                     var resultadoFill = AplicadorFill.Aplicar(portfolio, fill, instrumento.TasaMargen);
                     acumuladorTradeActivo.Registrar(resultadoFill);
                     if (resultadoFill.TradeCerrado is not null)
-                        trades.Add(acumuladorTradeActivo.CerrarYExtraer(resultadoFill.TradeCerrado));
-                    acumuladorTradeActivo.DespuesDeAplicar(resultadoFill, PosicionActual.De(portfolio), fill.PrecioFill);
+                        trades.Add(acumuladorTradeActivo.CerrarYExtraer(resultadoFill.TradeCerrado, fill.Timestamp));
+                    acumuladorTradeActivo.DespuesDeAplicar(resultadoFill, PosicionActual.De(portfolio), fill.PrecioFill, fill.Timestamp);
                     var ordenDelFill = ordenesActivas.First(o => o.SecuenciaCausal == fill.SecuenciaCausal);
                     OrdenTransiciones.Ejecutar(ordenDelFill);
                     ordenesActivas.Remove(ordenDelFill);
