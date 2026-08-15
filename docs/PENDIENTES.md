@@ -4,6 +4,29 @@ Decisiones aplazadas, metodologías evaluadas y no activadas, y riesgos
 detectados sin resolver durante Fases 1-5. Este documento se actualiza en
 cada auditoría posterior; no se cierra ni se vacía.
 
+## SPEC 7.0 (RN-15 a RN-19, CU-21 a CU-24, RNF-16) — pendientes registrados al cierre
+
+- **[DEUDA DE TRAZABILIDAD, preexistente a este delta, no corregida por aislamiento de
+  alcance]** `verify.ps1` comprobación 3 reporta 6 archivos de test sin cita `spec:`
+  inmediatamente adyacente a cada `[Fact]`/`[Theory]`: `GestorCapitalTests.cs`,
+  `ModeloCostesTests.cs`, `ModeloEconomicoBaseTests.cs`, `ClasificadorIntencionOrdenTests.cs`,
+  `GestorVolatilitySizingTests.cs`, `VentanaDeVelasTests.cs`. Confirmado que ninguno pertenece
+  al delta SPEC 7.0 (ya estaban modificados/sin trackear en el árbol de trabajo antes de
+  iniciar este delta). No corregidos porque hacerlo excede el alcance declarado en la Etapa 0
+  de este cambio — corregirlos habría requerido tocar archivos fuera de la lista autorizada.
+  Pendiente: mover la cita `spec:` de cada archivo a un comentario inmediatamente adyacente a
+  cada método de prueba individual (hoy la cita vive en un comentario de cabecera de clase, no
+  contiguo).
+- **[MEJORA DE COBERTURA, no solicitada en este delta]** Tests HTTP dedicados para los 3
+  endpoints nuevos (`POST/GET /api/datasets`, `POST /api/strategies/dsl/run`,
+  `POST /api/capital-managers/recommend`) — la cobertura actual de CU-21/22/23 vive a nivel de
+  librería (`Domain`/`Application`/`Infrastructure`) más el test de integración de punta a
+  punta (`FlujoIntegracionCompletoTests`), sin ejercitar el contrato REST en sí (códigos de
+  estado HTTP, forma exacta del JSON de request/response, casos de error vía `WebApplicationFactory`,
+  mismo patrón que `BacktestRunEndpointTests.cs`). Decisión explícita del auditor: no ampliar
+  cobertura fuera del plan aprobado sin una decisión separada. Si se requiere validación de
+  contrato REST, debe abrirse como tarea/delta propio.
+
 ## Umbrales y objetivos cuantitativos
 
 - **RNF-01/02/03** — sin valores numéricos de velas/segundo, bytes/vela,

@@ -1,6 +1,7 @@
 using TD_Project.Application;
 using TD_Project.Contracts;
 using TD_Project.Domain.Portfolio;
+using TD_Project.Domain.Regimen;
 using TD_Project.Domain.Shared;
 
 namespace TD_Project.Api.Mapping;
@@ -10,13 +11,21 @@ namespace TD_Project.Api.Mapping;
 // no recalcula Equity, no reconstruye Trades, no decide TrayectoriaOficial.
 public static class ResultDtoMapper
 {
-    public static ResultDto Mapear(ResultadoBacktest resultado, ConfiguracionExperimento config)
+    // spec: RNF-16 — Explicacion es opcional (null si la campana no ejecuto recomendacion de
+    // gestor ni reporte de regimen, ej. el endpoint demo historico ya auditado en caso11), para no
+    // alterar el comportamiento de Mapear(resultado, config) ya existente.
+    public static ResultDto Mapear(
+        ResultadoBacktest resultado,
+        ConfiguracionExperimento config,
+        RecomendacionGestorResultado? recomendacion = null,
+        ReporteRegimenResultado? reporteRegimen = null)
     {
         var equityCurve = resultado.EquityCurve.Select(MapearEquityPoint).ToList();
         var trades = resultado.Trades.Select(MapearTrade).ToList();
         var fillLog = resultado.Fills.Select(MapearFill).ToList();
         var portfolioSnapshots = resultado.PortfolioSnapshots.Select(MapearPortfolioSnapshot).ToList();
         var branchResolutions = resultado.BranchResolutions.Select(MapearBranchResolution).ToList();
+        var pnlTotal = trades.Sum(t => t.RealizedPnL);
 
         return new ResultDto(
             Estado: resultado.Estado.ToString(),
@@ -30,10 +39,47 @@ public static class ResultDtoMapper
             PortfolioSnapshots: portfolioSnapshots,
             Metrics: new MetricsDto(
                 EquityFinal: resultado.EquityCurve.Count > 0 ? EquityFinalReportado(resultado.EquityCurve[^1]) : 0m,
-                PnLTotal: trades.Sum(t => t.RealizedPnL),
+                PnLTotal: pnlTotal,
                 TotalTrades: trades.Count),
-            BranchResolutions: branchResolutions);
+            BranchResolutions: branchResolutions,
+            Explicacion: MapearExplicacion(pnlTotal, recomendacion, reporteRegimen));
     }
+
+    // spec: RNF-16 — descripciones interpretativas en espanol para un usuario no experto, con el
+    // aviso obligatorio de simulacion historica en todo reporte (restriccion general del delta).
+    private static ExplicacionDto MapearExplicacion(
+        decimal pnlTotal, RecomendacionGestorResultado? recomendacion, ReporteRegimenResultado? reporteRegimen)
+    {
+        var resumen = pnlTotal >= 0m
+            ? $"La estrategia obtuvo un resultado positivo de {pnlTotal:0.##} en la simulacion."
+            : $"La estrategia obtuvo un resultado negativo de {pnlTotal:0.##} en la simulacion.";
+
+        var regimenOptimoDescripcion = reporteRegimen?.RegimenOptimo is { } regimen
+            ? $"Mejor desempeno observado en fase {DescribirRegimen(regimen)}."
+            : null;
+
+        // spec: RN-18 — invariante de exclusion: se describe el gestor recomendado, nunca una
+        // estrategia recomendada.
+        var gestorRecomendadoDescripcion = recomendacion?.GestorRecomendado is { } gestor
+            ? $"Gestor de capital recomendado para esta estrategia: {gestor}."
+            : recomendacion is not null
+                ? "Ningun gestor de capital evaluado evito la liquidacion de la cuenta para esta estrategia."
+                : null;
+
+        return new ExplicacionDto(
+            Resumen: resumen,
+            RegimenOptimoDescripcion: regimenOptimoDescripcion,
+            GestorRecomendadoDescripcion: gestorRecomendadoDescripcion,
+            AvisoSimulacionHistorica: "Los resultados corresponden a simulacion historica y no garantizan resultados futuros.");
+    }
+
+    private static string DescribirRegimen(Regimen regimen) => regimen switch
+    {
+        Regimen.Alcista => "Alcista",
+        Regimen.Bajista => "Bajista",
+        Regimen.Horizontal => "Horizontal",
+        _ => regimen.ToString()
+    };
 
     private static EquityPointDto MapearEquityPoint(EquityPoint p) =>
         new(p.Timestamp, p.Cash, p.Margin, p.UnrealizedPnL, p.Equity);

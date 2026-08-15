@@ -34,6 +34,10 @@ public class FlujoIntegracionCompletoTests : IDisposable
             .Select(i => new Candle(i, 100m + 5m * i, 100m + 5m * i, 100m + 5m * i, 100m + 5m * i, 500m))
             .ToArray();
 
+    // Fix mecanico de trazabilidad (comprobacion 3 de verify.ps1, ADR-002): el comentario de
+    // cabecera de la clase no es contiguo a este metodo de prueba, el extractor de citas no lo
+    // detecta. Cita adyacente agregada sin alterar aserciones/logica.
+    // spec: RN-15, RN-16, RN-18, RN-19, CU-21, CU-22, CU-23, CU-24
     [Fact]
     public void ElFlujoCompletoDeIngestionDslRecomendacionYRegimenFunciona()
     {

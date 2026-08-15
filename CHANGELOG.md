@@ -5,6 +5,57 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Agregado
+- **SPEC 7.0 — RN-15 a RN-19, CU-21 a CU-24, RNF-16** (Ingestión de datasets, DSL JSON
+  declarativo, recomendación automatizada de Gestor de Capital, clasificación de régimen de
+  mercado, explicabilidad de reportes para no expertos):
+  - `Domain/Ingestion`: `ValidadorDataset` (RN-15, rechazo atómico ante timestamps
+    duplicados/desordenados, valores nulos, o precios `High<Low`/`≤0`) y `DatasetHash`
+    (SHA-256 determinista sobre el contenido del dataset).
+  - `Domain/Strategy.Dsl`: `EsquemaDsl`/`ValidadorDsl`/`InterpreteDsl` (RN-16) — esquema
+    declarativo mínimo V1 (condición `SMA(periodo)` vs. campo de la vela actual, operadores
+    `>`/`<`/`>=`/`<=`, acción Market Buy/Sell), evaluación puramente declarativa sobre
+    `DataSlice(N)`, rechazo explícito de referencias look-ahead (`offset`) y de comandos de
+    ejecución externa (`comando`). `InterpreteDsl` implementa `IStrategy` sin cambios al
+    contrato existente.
+  - `Domain/Regimen`: `ClasificadorRegimen` V1 (RN-19) — pendiente de regresión lineal por
+    mínimos cuadrados sobre ventana móvil W=20 de `Close`, umbral épsilon V1 documentado y
+    aislado (constante propia, sin mezclar con calibración futura, por restricción explícita
+    del auditor).
+  - `Application.CapitalManagerRecommender` (RN-18, CU-23) — evalúa el mismo backtest de forma
+    aislada contra cada Gestor de Capital pre-cargado (reutiliza `GestorFixedFractional`/
+    `GestorFixedRisk`/`GestorVolatilitySizing` ya existentes, sin nuevos gestores — RN-17),
+    calcula `CR = PnLTotal / (MaxDrawdown + 1)`, recomienda el de mayor CR sin liquidación de
+    cuenta, o inadaptabilidad (`GestorRecomendado = null`) si todos liquidan.
+  - `Application.ReporteRegimen` (RN-19, CU-24) — segmenta PnL/WinRate por fase de mercado,
+    asociando cada `Trade` a su régimen mediante `Trade.TimestampApertura` (asociación
+    explícita, nunca por orden de listas ni inferencia sobre Fills/EquityCurve — decisión
+    explícita del auditor). Racha negativa/exposición quedan fuera de esta segmentación
+    (heredado de D-045 del laboratorio); sin ranking/comparación entre regímenes salvo el
+    `RegimenOptimo` que el propio SPEC exige mostrar.
+  - `Infrastructure.IDatasetRepository`/`DatasetRepositoryLocal` (RN-15, CU-21) — catálogo
+    local en disco (archivo `<hash>.json` por dataset + índice `catalogo.json`), sin base de
+    datos (Opción A del ADR-001 actualizado).
+  - `TD_Project.Api`: 3 endpoints nuevos, separados conceptualmente y sin modificar
+    `POST /api/backtest/run` (ya auditado): `POST/GET /api/datasets` (ingestión y catálogo),
+    `POST /api/strategies/dsl/run` (ejecución de estrategia DSL contra un dataset ya
+    ingerido), `POST /api/capital-managers/recommend` (recomendación de gestor). Nuevos DTOs
+    en `TD_Project.Contracts`: `CandleDto`/`IngestarDatasetRequestDto`/
+    `IngestarDatasetResponseDto`/`CatalogoDatasetEntradaDto`, `EjecutarDslRequestDto`,
+    `RecomendarGestorRequestDto`/`ResultadoGestorDto`/`RecomendarGestorResponseDto`.
+  - `ResultDto.Explicacion` (nuevo, opcional) + `ExplicacionDto` (RNF-16) — descripciones
+    interpretativas en español (resumen de resultado, régimen óptimo, gestor recomendado) y
+    aviso obligatorio: "Los resultados corresponden a simulación histórica y no garantizan
+    resultados futuros." `ResultDtoMapper.Mapear` gana 2 parámetros opcionales
+    (`recomendacion`, `reporteRegimen`) al final de su firma, sin alterar las llamadas
+    existentes.
+  - `Trade` (glosario, RN-19) gana `TimestampApertura`/`TimestampCierre` (opcionales, default
+    0) — metadata de ejecución pura, propagada por `AcumuladorTrade`/`BacktestRunner` desde
+    `Fill.Timestamp`, sin alterar cálculo de PnL/lotes/margin. Decisión explícita del auditor
+    (Opción 1, sobre alternativa descartada de reconstrucción por orden de listas — ver
+    "Rechazado / Descartado").
+  - Suite nueva: 30 tests (Domain 24, Application 9, Infrastructure 8 incluyendo un test de
+    integración de punta a punta: ingestión → DSL → backtest → recomendación → régimen), todos
+    citando su ID vía `spec:`. Suite completa del proyecto: **172/172 en verde**.
 - Andamiaje inicial del proyecto: solución .NET 8, proyectos Domain,
   Application, Infrastructure y sus respectivos proyectos de test.
 - Script `verify` con las seis comprobaciones de ADR-002.
@@ -71,6 +122,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   (`Intl.NumberFormat`), `meta theme-color` y contraste adicional en botón evaluados y
   diferidos — ver `docs/PENDIENTES.md`. Cero dependencias externas nuevas, `verify` en verde
   (79/79 tests) sin ningún test roto por el cambio visual.
+
+### ADR Actualizado
+- **ADR-001** (Opción A del delta SPEC 7.0): incorpora `IDatasetRepository` (contrato en
+  `Infrastructure`, adaptador `DatasetRepositoryLocal` — almacenamiento local en disco,
+  archivo por dataset + índice de catálogo, sin base de datos en esta fase) y
+  `CapitalManagerRecommender` (orquestador multi-experimento en `Application`, ejecuta el
+  backtest de forma aislada contra cada Gestor de Capital pre-cargado). Ninguna otra decisión
+  del ADR-001 original se modifica.
 
 ### Cambiado
 - `AplicadorFill.Aplicar` (RN-09, RN-10): pasa de abrir siempre un lote nuevo a decidir, según

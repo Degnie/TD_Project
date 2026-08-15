@@ -18,7 +18,8 @@ public class CapitalManagerRecommenderTests
             new Candle(3, 104m, 108m, 102m, 106m, 500m)
         });
 
-    // spec: RN-18 — el gestor que maximiza CR sin quiebra de cuenta es el Gestor Recomendado
+    // spec: RN-18, CU-23 — el gestor que maximiza CR sin quiebra de cuenta es el Gestor
+    // Recomendado; evaluacion comparativa sobre los Gestores de Capital pre-cargados
     [Fact]
     public void ElGestorConMayorCrEsElRecomendado()
     {
@@ -53,10 +54,15 @@ public class CapitalManagerRecommenderTests
     [Fact]
     public void SiTodosLosGestoresLiquidanLaCuentaNoHayGestorRecomendado()
     {
+        // Fix de fixture (autorizado): precio cae fuertemente tras la apertura -- con
+        // EstrategiaMarketSiempre (solo Buy) y un gestor sobre-apalancado, esto produce
+        // UnrealizedPnL suficientemente negativo para hundir Equity <= 0 (liquidacion real).
+        // Con precio subiendo (fixture original) el UnrealizedPnL compensaba el apalancamiento
+        // y Equity quedaba positivo, sin representar una liquidacion.
         var configCapitalMinimo = new ConfiguracionExperimento(CapitalInicial: 0.0000001m, Velas: new[]
         {
-            new Candle(1, 100m, 105m, 95m, 102m, 500m),
-            new Candle(2, 102m, 106m, 100m, 104m, 500m)
+            new Candle(1, 100m, 105m, 95m, 100m, 500m),
+            new Candle(2, 100m, 100m, 1m, 1m, 500m)
         });
         var gestores = new IGestorRiesgo[] { new GestorFixedRisk(1000000m) };
 
