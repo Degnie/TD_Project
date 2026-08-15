@@ -2,6 +2,7 @@ using TD_Project.Api.Mapping;
 using TD_Project.Application;
 using TD_Project.Domain.Broker;
 using TD_Project.Domain.Portfolio;
+using TD_Project.Domain.Regimen;
 using TD_Project.Domain.Shared;
 using Xunit;
 
@@ -325,5 +326,88 @@ public class ResultDtoMapperTests
         var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
 
         Assert.Null(dto.Explicacion!.AdvertenciaIncapacidadCapital);
+    }
+
+    // spec: RN-19, RNF-16 — con reporteRegimen no nulo, ResultDto.ReporteRegimen transporta las 3
+    // fases con sus metricas (Regimen/TotalTrades/PnLTotal/WinRate) sin alterarlas, y RegimenOptimo
+    // como texto legible (mismo criterio que DescribirRegimen ya usa para RegimenOptimoDescripcion).
+    [Fact]
+    public void MapeaReporteRegimenConLasTresFasesYRegimenOptimoComoTexto()
+    {
+        var reporte = new ReporteRegimenResultado(
+            Fases: new[]
+            {
+                new FilaFaseRegimen(Regimen.Alcista, TotalTrades: 2, PnLTotal: 85m, WinRate: 0.5m),
+                new FilaFaseRegimen(Regimen.Bajista, TotalTrades: 0, PnLTotal: 0m, WinRate: 0m),
+                new FilaFaseRegimen(Regimen.Horizontal, TotalTrades: 1, PnLTotal: -10m, WinRate: 0m)
+            },
+            RegimenOptimo: Regimen.Alcista);
+
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo(), reporteRegimen: reporte);
+
+        Assert.NotNull(dto.ReporteRegimen);
+        Assert.Equal(3, dto.ReporteRegimen!.Fases.Count);
+        var filaAlcista = dto.ReporteRegimen.Fases.Single(f => f.Regimen == "Alcista");
+        Assert.Equal(2, filaAlcista.TotalTrades);
+        Assert.Equal(85m, filaAlcista.PnLTotal);
+        Assert.Equal(0.5m, filaAlcista.WinRate);
+        Assert.Equal("Alcista", dto.ReporteRegimen.RegimenOptimo);
+    }
+
+    // spec: RNF-16 — sin reporteRegimen (default null, ej. endpoints que no ejecutan este
+    // analisis), ResultDto.ReporteRegimen permanece null: no se fuerza un objeto vacio.
+    [Fact]
+    public void NoMapeaReporteRegimenCuandoNoSePasaNinguno()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Null(dto.ReporteRegimen);
+    }
+
+    // spec: RN-19 — sin Trades, el reporte sigue siendo un objeto valido con las 3 fases en cero,
+    // no un ReporteRegimenDto completo en null; unicamente RegimenOptimo es null.
+    [Fact]
+    public void MapeaReporteRegimenSinTradesConFasesEnCeroYSinRegimenOptimo()
+    {
+        var reporte = new ReporteRegimenResultado(
+            Fases: new[]
+            {
+                new FilaFaseRegimen(Regimen.Alcista, TotalTrades: 0, PnLTotal: 0m, WinRate: 0m),
+                new FilaFaseRegimen(Regimen.Bajista, TotalTrades: 0, PnLTotal: 0m, WinRate: 0m),
+                new FilaFaseRegimen(Regimen.Horizontal, TotalTrades: 0, PnLTotal: 0m, WinRate: 0m)
+            },
+            RegimenOptimo: null);
+
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo(), reporteRegimen: reporte);
+
+        Assert.NotNull(dto.ReporteRegimen);
+        Assert.Equal(3, dto.ReporteRegimen!.Fases.Count);
+        Assert.All(dto.ReporteRegimen.Fases, f => Assert.Equal(0, f.TotalTrades));
+        Assert.Null(dto.ReporteRegimen.RegimenOptimo);
+    }
+
+    // spec: CU-24 — integracion de punta a punta: dataset con fases diferenciadas + Trades reales
+    // en mas de una fase, verificando que el ReporteRegimenDto resultante del mapeo distingue
+    // correctamente el desempeno por fase (no solo el mapeo aislado de un fixture manual).
+    [Fact]
+    public void ElReporteRegimenDePuntaAPuntaDistingueElDesempenoPorFase()
+    {
+        var velas = Enumerable.Range(0, 20)
+            .Select(i => new Candle(i, 100m + 5m * i, 100m + 5m * i, 100m + 5m * i, 100m + 5m * i, 500m))
+            .ToArray();
+        var trades = new[]
+        {
+            new Trade(CantidadInicial: 1m, PrecioApertura: 100m, PrecioCierre: 195m, RealizedPnL: 95m, TimestampApertura: 19, TimestampCierre: 19),
+            new Trade(CantidadInicial: 1m, PrecioApertura: 100m, PrecioCierre: 90m, RealizedPnL: -10m, TimestampApertura: 19, TimestampCierre: 19)
+        };
+        var reporte = ReporteRegimen.Calcular(trades, velas);
+        var resultado = CrearResultadoDeEjemplo() with { Trades = trades };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo(), reporteRegimen: reporte);
+
+        var filaAlcista = dto.ReporteRegimen!.Fases.Single(f => f.Regimen == "Alcista");
+        Assert.Equal(2, filaAlcista.TotalTrades);
+        Assert.Equal(85m, filaAlcista.PnLTotal);
+        Assert.Equal("Alcista", dto.ReporteRegimen.RegimenOptimo);
     }
 }
