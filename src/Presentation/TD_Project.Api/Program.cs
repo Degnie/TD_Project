@@ -70,7 +70,10 @@ app.MapPost("/api/strategies/dsl/run", (EjecutarDslRequestDto request, IDatasetR
     // spec: RN-12, CU-15 — flujo de cliente final: bloqueo de capacidad activo (caso14).
     var config = new ConfiguracionExperimento(CapitalInicial: request.CapitalInicial, Velas: velas, BloquearPorCapacidad: true);
     var resultado = BacktestRunner.Ejecutar(config, estrategia);
-    return Results.Ok(ResultDtoMapper.Mapear(resultado, config));
+    // spec: RN-19, CU-24 — expone el reporte de regimen ya calculado (caso15); sin condicional,
+    // Calcular ya maneja 0 Trades correctamente.
+    var reporteRegimen = ReporteRegimen.Calcular(resultado.Trades, velas);
+    return Results.Ok(ResultDtoMapper.Mapear(resultado, config, reporteRegimen: reporteRegimen));
 });
 
 // spec: RN-18, CU-23 — Manager recommendation: evalua la estrategia DSL contra los Gestores de

@@ -18,7 +18,11 @@ public sealed record ResultDto(
     IReadOnlyList<IncapacidadDto>? Incapacidades = null,
     // spec: RNF-16 — siempre calculable a partir de la ultima PortfolioSnapshot/EquityPoint. El
     // mapper la popula siempre; el default cero solo cubre construcciones que no la mencionan.
-    ExposicionFinalDto? Exposicion = null)
+    ExposicionFinalDto? Exposicion = null,
+    // spec: RN-19, CU-24 — null cuando el analisis de regimen no se ejecuto (todo endpoint salvo
+    // /api/strategies/dsl/run); a diferencia de Incapacidades/Exposicion, no hay una "tabla vacia"
+    // razonable que forzar cuando el calculo ni siquiera corrio.
+    ReporteRegimenDto? ReporteRegimen = null)
 {
     public IReadOnlyList<IncapacidadDto> Incapacidades { get; init; } = Incapacidades ?? Array.Empty<IncapacidadDto>();
     public ExposicionFinalDto Exposicion { get; init; } = Exposicion ?? new ExposicionFinalDto(0m, 0m, 0m, 0m, 0m);

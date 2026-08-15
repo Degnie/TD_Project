@@ -47,8 +47,16 @@ public static class ResultDtoMapper
             BranchResolutions: branchResolutions,
             Explicacion: MapearExplicacion(pnlTotal, recomendacion, reporteRegimen, exposicion, incapacidades),
             Incapacidades: incapacidades,
-            Exposicion: exposicion);
+            Exposicion: exposicion,
+            ReporteRegimen: reporteRegimen is null ? null : MapearReporteRegimen(reporteRegimen));
     }
+
+    // spec: RN-19, CU-24 — transporta Fases/RegimenOptimo sin alterar valores; reutiliza
+    // DescribirRegimen (misma conversion enum->texto que ya usa RegimenOptimoDescripcion).
+    private static ReporteRegimenDto MapearReporteRegimen(ReporteRegimenResultado reporte) =>
+        new(
+            Fases: reporte.Fases.Select(f => new FaseRegimenDto(DescribirRegimen(f.Regimen), f.TotalTrades, f.PnLTotal, f.WinRate)).ToList(),
+            RegimenOptimo: reporte.RegimenOptimo is { } r ? DescribirRegimen(r) : null);
 
     // spec: RNF-16 — distingue PnL realizado (Trades cerrados) de resultado incluyendo posiciones
     // vivas al cierre. CantidadNetaViva/MarginRetenido derivan del ultimo PortfolioSnapshot;
