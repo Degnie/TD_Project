@@ -5,6 +5,31 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Agregado
+- **Exposición de `ReporteRegimen` en API V1 — RN-19, CU-24, RNF-16** (línea `caso15/` en
+  `exploration/laboratorio`, Prioridad 2 de `caso12/AUDITORIA_PRUEBA_USUARIO_FINAL_V1.md`):
+  - `ReporteRegimenDto`/`FaseRegimenDto` (nuevos) — espejo directo de `Application.
+    ReporteRegimenResultado`/`FilaFaseRegimen`, sin lógica: transporta `Fases` (Regimen como
+    string, TotalTrades, PnLTotal, WinRate por cada una de las 3 fases) y `RegimenOptimo`.
+  - `ResultDto.ReporteRegimen` (nuevo, opcional, default `null`) — a diferencia de
+    `Incapacidades`/`Exposicion` (`caso14`, siempre poblados), este campo permanece `null`
+    cuando el análisis de régimen no se ejecutó; no se fuerza una tabla vacía sin sentido.
+  - `ResultDtoMapper.MapearReporteRegimen` (nuevo) — reutiliza `DescribirRegimen` ya existente
+    (misma conversión enum→texto que ya usa `ExplicacionDto.RegimenOptimoDescripcion`), sin
+    introducir una segunda fuente de traducción.
+  - `POST /api/strategies/dsl/run` invoca `ReporteRegimen.Calcular(resultado.Trades, velas)` sin
+    condicional (`Calcular` ya maneja 0 Trades: las 3 fases en cero, `RegimenOptimo=null`) y lo
+    pasa al mapper. `POST /api/backtest/run` y `POST /api/capital-managers/recommend` sin
+    cambios — no pasan `reporteRegimen`, siguen devolviendo `ReporteRegimen: null`.
+  - **Sin ningún cambio en `Application.ReporteRegimen.Calcular` ni en
+    `Domain.Regimen.ClasificadorRegimen`** — la capacidad de cálculo ya existía y ya cumplía
+    RN-19/CU-24 (el reporte segmentado por fase ya se calculaba correctamente); el hallazgo de
+    la auditoría de usuario final era exclusivamente de exposición, no de cálculo.
+  - Sin ningún ADR modificado — `ReporteRegimenDto` sigue el mismo patrón ya usado para
+    `IncapacidadDto`/`ExposicionFinalDto` (`caso14`).
+  - Sin `<ids_nuevos>` de SPEC — RN-19/CU-24 ya exigían textualmente el reporte segmentado con
+    régimen óptimo destacado; este delta lo expone, no lo redefine.
+  - Suite nueva: 4 tests (extensión de `ResultDtoMapperTests` en `Presentation.Tests`), citando
+    RN-19/CU-24/RNF-16 vía `spec:`. Suite completa del proyecto: **186/186 en verde**.
 - **Validación de Resultados de Backtest y Control de Exposición V1 — RN-12, CU-15, RN-04,
   RNF-16** (activación condicional del bloqueo de capacidad para el flujo de cliente final,
   exposición de incapacidades y posiciones abiertas; línea `caso14/` en `exploration/laboratorio`):
