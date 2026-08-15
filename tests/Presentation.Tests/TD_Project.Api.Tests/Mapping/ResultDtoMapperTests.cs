@@ -1,5 +1,6 @@
 using TD_Project.Api.Mapping;
 using TD_Project.Application;
+using TD_Project.Domain.Broker;
 using TD_Project.Domain.Portfolio;
 using TD_Project.Domain.Shared;
 using Xunit;
@@ -215,5 +216,114 @@ public class ResultDtoMapperTests
         var esperado = RedondeoReporte.EquityReportado(100.005m, 50.005m, 0.005m);
         Assert.Equal(esperado, dto.Metrics.EquityFinal);
         Assert.NotEqual(150.015m, dto.Metrics.EquityFinal);
+    }
+
+    // spec: RN-12, RNF-16 — Incapacidades se mapea desde ResultadoBacktest.IncapacidadesEfectivas,
+    // lista vacia si no hubo ninguna (nunca null, mismo criterio que el resto de listas de ResultDto).
+    [Fact]
+    public void MapeaIncapacidadesDesdeElResultado()
+    {
+        var resultado = CrearResultadoDeEjemplo() with
+        {
+            Incapacidades = new[] { new RegistroIncapacidad(3, new OrderRequest(Side.Buy, OrderType.Market, 50m), 500m, 100m, Bloqueada: true) }
+        };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo());
+
+        Assert.Single(dto.Incapacidades);
+        Assert.Equal(3, dto.Incapacidades[0].Timestamp);
+        Assert.True(dto.Incapacidades[0].Bloqueada);
+    }
+
+    // spec: RNF-16 — un resultado sin incapacidades mapea una lista vacia, nunca null.
+    [Fact]
+    public void MapeaIncapacidadesVaciaCuandoNoHuboNinguna()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Empty(dto.Incapacidades);
+    }
+
+    // spec: RNF-16 — ExposicionFinalDto distingue PnL realizado (Trades cerrados) de resultado
+    // incluyendo posiciones vivas (Equity final, que ya incorpora UnrealizedPnL).
+    [Fact]
+    public void CalculaExposicionFinalConPosicionesVivas()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Equal(10m, dto.Exposicion.CantidadNetaViva);
+        Assert.Equal(100m, dto.Exposicion.MarginRetenido);
+        Assert.Equal(60m, dto.Exposicion.UnrealizedPnL);
+        Assert.Equal(100m, dto.Exposicion.PnLRealizado);
+        Assert.Equal(160m, dto.Exposicion.ResultadoConPosicionesAbiertas);
+    }
+
+    // spec: RNF-16 — sin posiciones vivas ni PortfolioSnapshots, la exposicion final es cero y el
+    // resultado con posiciones abiertas coincide exactamente con el PnL realizado.
+    [Fact]
+    public void CalculaExposicionFinalCeroCuandoNoHayPosicionesVivas()
+    {
+        var resultado = CrearResultadoDeEjemplo() with
+        {
+            PortfolioSnapshots = Array.Empty<PortfolioSnapshot>(),
+            EquityCurve = Array.Empty<EquityPoint>()
+        };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo());
+
+        Assert.Equal(0m, dto.Exposicion.CantidadNetaViva);
+        Assert.Equal(0m, dto.Exposicion.ResultadoConPosicionesAbiertas - dto.Exposicion.PnLRealizado);
+    }
+
+    // spec: RNF-16 — cuando hay posiciones vivas al cierre, Explicacion incluye la advertencia
+    // aprobada en la decision de arquitectura (caso14, DECISIONES_ARQUITECTURA_VALIDACION_
+    // RESULTADOS_BACKTEST_V1.md S4.3).
+    [Fact]
+    public void ExplicacionIncluyeAdvertenciaDePosicionesAbiertasCuandoHayExposicionViva()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Equal(
+            "El resultado incluye posiciones abiertas al finalizar la simulacion. La ganancia/perdida final puede variar si esas posiciones fueran cerradas.",
+            dto.Explicacion!.AdvertenciaPosicionesAbiertas);
+    }
+
+    // spec: RNF-16 — sin posiciones vivas al cierre, no se puebla la advertencia (queda null).
+    [Fact]
+    public void ExplicacionNoIncluyeAdvertenciaDePosicionesAbiertasSinExposicionViva()
+    {
+        var resultado = CrearResultadoDeEjemplo() with
+        {
+            PortfolioSnapshots = Array.Empty<PortfolioSnapshot>(),
+            EquityCurve = Array.Empty<EquityPoint>()
+        };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo());
+
+        Assert.Null(dto.Explicacion!.AdvertenciaPosicionesAbiertas);
+    }
+
+    // spec: RNF-16 — cuando Incapacidades no esta vacio, Explicacion incluye la advertencia de
+    // incapacidad de capital.
+    [Fact]
+    public void ExplicacionIncluyeAdvertenciaDeIncapacidadCuandoHuboAlMenosUna()
+    {
+        var resultado = CrearResultadoDeEjemplo() with
+        {
+            Incapacidades = new[] { new RegistroIncapacidad(3, new OrderRequest(Side.Buy, OrderType.Market, 50m), 500m, 100m, Bloqueada: true) }
+        };
+
+        var dto = ResultDtoMapper.Mapear(resultado, CrearConfigDeEjemplo());
+
+        Assert.NotNull(dto.Explicacion!.AdvertenciaIncapacidadCapital);
+    }
+
+    // spec: RNF-16 — sin ninguna incapacidad, no se puebla la advertencia (queda null).
+    [Fact]
+    public void ExplicacionNoIncluyeAdvertenciaDeIncapacidadSinNinguna()
+    {
+        var dto = ResultDtoMapper.Mapear(CrearResultadoDeEjemplo(), CrearConfigDeEjemplo());
+
+        Assert.Null(dto.Explicacion!.AdvertenciaIncapacidadCapital);
     }
 }
