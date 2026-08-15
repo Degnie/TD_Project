@@ -66,11 +66,19 @@ public static class BacktestRunner
                         foreach (var request in requests)
                         {
                             // spec: Caso 2 D-059/D-060 — evalua capacidad sobre el OrderRequest,
-                            // antes del Fill; solo registra, nunca bloquea (Caso 1 no se altera).
+                            // antes del Fill; solo registra por defecto (Caso 1 no se altera).
+                            // spec: RN-12, CU-15 — con BloquearPorCapacidad activo (flujo de
+                            // cliente final), la orden sin capacidad se salta por completo: nunca
+                            // llega a RegistradorOrdenes.Registrar, no consume Secuencia Causal.
                             if (!ValidadorCapacidad.Validar(portfolio, request, closeSiguiente, instrumento.TasaMargen, portfolio.Margin))
                             {
                                 var reserva = CalculadoraReservaPreventiva.Calcular(request, closeSiguiente, instrumento.TasaMargen);
-                                incapacidades.Add(new RegistroIncapacidad(config.Velas[n + 1].Timestamp, request, reserva, portfolio.Cash - portfolio.Margin));
+                                incapacidades.Add(new RegistroIncapacidad(
+                                    config.Velas[n + 1].Timestamp, request, reserva, portfolio.Cash - portfolio.Margin,
+                                    Bloqueada: config.BloquearPorCapacidad));
+
+                                if (config.BloquearPorCapacidad)
+                                    continue;
                             }
 
                             var orden = registrador.Registrar(request);

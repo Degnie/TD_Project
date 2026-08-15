@@ -66,13 +66,17 @@ public class ControlCapacidadTests
     }
 
     // spec: RN-12 — con el bloqueo desactivado, la incapacidad se registra pero no impide la
-    // ejecucion de la orden (comportamiento historico D-059/D-060, sin cambios).
+    // ejecucion de la orden (comportamiento historico D-059/D-060, sin cambios). Usa una estrategia
+    // de una unica orden (EstrategiaUnaOrdenCapacidadInsuficiente): con dos ordenes, la primera
+    // (sin capacidad, ejecutada igual sin bloqueo) deja Cash negativo y arrastra una segunda
+    // incapacidad sobre cualquier orden posterior — aislar una unica orden es lo unico que permite
+    // verificar limpiamente "una incapacidad, no bloqueante, ejecucion historica".
     [Fact]
     public void SinBloqueoLaOrdenSinCapacidadSeEjecutaIgualQueHistoricamente()
     {
         var config = ConfigConVelas(bloquearPorCapacidad: false);
 
-        var resultado = BacktestRunner.Ejecutar(config, new EstrategiaCapacidadInsuficiente());
+        var resultado = BacktestRunner.Ejecutar(config, new EstrategiaUnaOrdenCapacidadInsuficiente());
 
         Assert.Contains(resultado.Fills, f => f.Cantidad == 1000m);
         Assert.Single(resultado.IncapacidadesEfectivas);

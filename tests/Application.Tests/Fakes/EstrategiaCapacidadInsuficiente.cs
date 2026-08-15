@@ -15,3 +15,15 @@ internal sealed class EstrategiaCapacidadInsuficiente : IStrategy
         _ => Array.Empty<OrderRequest>()
     };
 }
+
+// spec: RN-12 — N=0 emite una unica Market Buy sobredimensionada, sin ninguna orden posterior.
+// Aisla el escenario de una sola incapacidad no bloqueante (BloquearPorCapacidad=false), sin la
+// contaminacion de Cash que una segunda orden sufriria tras el Fill de la primera.
+internal sealed class EstrategiaUnaOrdenCapacidadInsuficiente : IStrategy
+{
+    public IReadOnlyList<OrderRequest> Observar(DataSlice dataSlice) => dataSlice.N switch
+    {
+        0 => new[] { new OrderRequest(Side.Buy, OrderType.Market, 1000m) },
+        _ => Array.Empty<OrderRequest>()
+    };
+}

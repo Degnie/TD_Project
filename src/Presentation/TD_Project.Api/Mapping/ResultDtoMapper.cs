@@ -1,5 +1,6 @@
 using TD_Project.Application;
 using TD_Project.Contracts;
+using TD_Project.Domain.Broker;
 using TD_Project.Domain.Portfolio;
 using TD_Project.Domain.Regimen;
 using TD_Project.Domain.Shared;
@@ -25,7 +26,9 @@ public static class ResultDtoMapper
         var fillLog = resultado.Fills.Select(MapearFill).ToList();
         var portfolioSnapshots = resultado.PortfolioSnapshots.Select(MapearPortfolioSnapshot).ToList();
         var branchResolutions = resultado.BranchResolutions.Select(MapearBranchResolution).ToList();
+        var incapacidades = resultado.IncapacidadesEfectivas.Select(MapearIncapacidad).ToList();
         var pnlTotal = trades.Sum(t => t.RealizedPnL);
+        var exposicion = CalcularExposicionFinal(resultado, pnlTotal);
 
         return new ResultDto(
             Estado: resultado.Estado.ToString(),
@@ -42,13 +45,42 @@ public static class ResultDtoMapper
                 PnLTotal: pnlTotal,
                 TotalTrades: trades.Count),
             BranchResolutions: branchResolutions,
-            Explicacion: MapearExplicacion(pnlTotal, recomendacion, reporteRegimen));
+            Explicacion: MapearExplicacion(pnlTotal, recomendacion, reporteRegimen, exposicion, incapacidades),
+            Incapacidades: incapacidades,
+            Exposicion: exposicion);
     }
+
+    // spec: RNF-16 — distingue PnL realizado (Trades cerrados) de resultado incluyendo posiciones
+    // vivas al cierre. CantidadNetaViva/MarginRetenido derivan del ultimo PortfolioSnapshot;
+    // UnrealizedPnL del ultimo EquityPoint — sin ningun calculo financiero nuevo en Domain.
+    private static ExposicionFinalDto CalcularExposicionFinal(ResultadoBacktest resultado, decimal pnlRealizado)
+    {
+        var cantidadNetaViva = 0m;
+        var marginRetenido = 0m;
+        if (resultado.PortfolioSnapshots.Count > 0)
+        {
+            var ultimo = resultado.PortfolioSnapshots[^1];
+            cantidadNetaViva = ultimo.LotesVivos.Sum(l => l.Cantidad);
+            marginRetenido = ultimo.LotesVivos.Sum(l => l.Margin);
+        }
+        var unrealizedPnL = resultado.EquityCurve.Count > 0 ? resultado.EquityCurve[^1].UnrealizedPnL : 0m;
+
+        return new ExposicionFinalDto(
+            CantidadNetaViva: cantidadNetaViva,
+            MarginRetenido: marginRetenido,
+            UnrealizedPnL: unrealizedPnL,
+            PnLRealizado: pnlRealizado,
+            ResultadoConPosicionesAbiertas: pnlRealizado + unrealizedPnL);
+    }
+
+    private static IncapacidadDto MapearIncapacidad(RegistroIncapacidad i) =>
+        new(i.Timestamp, i.Request.Side.ToString(), i.Request.Cantidad, i.ReservaRequerida, i.CashDisponible, i.Bloqueada);
 
     // spec: RNF-16 — descripciones interpretativas en espanol para un usuario no experto, con el
     // aviso obligatorio de simulacion historica en todo reporte (restriccion general del delta).
     private static ExplicacionDto MapearExplicacion(
-        decimal pnlTotal, RecomendacionGestorResultado? recomendacion, ReporteRegimenResultado? reporteRegimen)
+        decimal pnlTotal, RecomendacionGestorResultado? recomendacion, ReporteRegimenResultado? reporteRegimen,
+        ExposicionFinalDto exposicion, IReadOnlyList<IncapacidadDto> incapacidades)
     {
         var resumen = pnlTotal >= 0m
             ? $"La estrategia obtuvo un resultado positivo de {pnlTotal:0.##} en la simulacion."
@@ -66,11 +98,23 @@ public static class ResultDtoMapper
                 ? "Ningun gestor de capital evaluado evito la liquidacion de la cuenta para esta estrategia."
                 : null;
 
+        // spec: RNF-16, caso14 S4.3 — texto aprobado en DECISIONES_ARQUITECTURA_VALIDACION_
+        // RESULTADOS_BACKTEST_V1.md, se puebla cuando el backtest cierra con posiciones vivas.
+        var advertenciaPosicionesAbiertas = exposicion.CantidadNetaViva != 0m
+            ? "El resultado incluye posiciones abiertas al finalizar la simulacion. La ganancia/perdida final puede variar si esas posiciones fueran cerradas."
+            : null;
+
+        var advertenciaIncapacidadCapital = incapacidades.Count > 0
+            ? "Una o mas operaciones fueron rechazadas por falta de capital suficiente; el resultado refleja solo las operaciones que si se pudieron ejecutar."
+            : null;
+
         return new ExplicacionDto(
             Resumen: resumen,
             RegimenOptimoDescripcion: regimenOptimoDescripcion,
             GestorRecomendadoDescripcion: gestorRecomendadoDescripcion,
-            AvisoSimulacionHistorica: "Los resultados corresponden a simulacion historica y no garantizan resultados futuros.");
+            AvisoSimulacionHistorica: "Los resultados corresponden a simulacion historica y no garantizan resultados futuros.",
+            AdvertenciaPosicionesAbiertas: advertenciaPosicionesAbiertas,
+            AdvertenciaIncapacidadCapital: advertenciaIncapacidadCapital);
     }
 
     private static string DescribirRegimen(Regimen regimen) => regimen switch

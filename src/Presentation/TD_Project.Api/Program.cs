@@ -67,7 +67,8 @@ app.MapPost("/api/strategies/dsl/run", (EjecutarDslRequestDto request, IDatasetR
         return Results.BadRequest(ex.Message);
     }
 
-    var config = new ConfiguracionExperimento(CapitalInicial: request.CapitalInicial, Velas: velas);
+    // spec: RN-12, CU-15 — flujo de cliente final: bloqueo de capacidad activo (caso14).
+    var config = new ConfiguracionExperimento(CapitalInicial: request.CapitalInicial, Velas: velas, BloquearPorCapacidad: true);
     var resultado = BacktestRunner.Ejecutar(config, estrategia);
     return Results.Ok(ResultDtoMapper.Mapear(resultado, config));
 });
@@ -90,7 +91,8 @@ app.MapPost("/api/capital-managers/recommend", (RecomendarGestorRequestDto reque
         return Results.BadRequest(ex.Message);
     }
 
-    var config = new ConfiguracionExperimento(CapitalInicial: request.CapitalInicial, Velas: velas);
+    // spec: RN-12, CU-15 — flujo de cliente final: bloqueo de capacidad activo (caso14).
+    var config = new ConfiguracionExperimento(CapitalInicial: request.CapitalInicial, Velas: velas, BloquearPorCapacidad: true);
     var gestores = new IGestorRiesgo[] { new GestorFixedFractional(0.1m), new GestorFixedRisk(50m), new GestorVolatilitySizing(20, 0.1m, 1m) };
     var recomendacion = CapitalManagerRecommender.Recomendar(config, estrategia, gestores);
 
