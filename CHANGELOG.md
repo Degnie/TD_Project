@@ -5,6 +5,45 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Agregado
+- **Validación de Resultados de Backtest y Control de Exposición V1 — RN-12, CU-15, RN-04,
+  RNF-16** (activación condicional del bloqueo de capacidad para el flujo de cliente final,
+  exposición de incapacidades y posiciones abiertas; línea `caso14/` en `exploration/laboratorio`):
+  - `ConfiguracionExperimento.BloquearPorCapacidad: bool = false` (nuevo, opcional) — activa,
+    solo cuando se solicita explícitamente, el rechazo atómico de órdenes sin capacidad que
+    RN-12/CU-15 ya describían textualmente ("la orden se ajusta a la capacidad máxima permitida
+    o se rechaza atómicamente"; "Falla validación preventiva (RN-12) → OrderRequestRejected").
+    Antes de este cambio, `ValidadorCapacidad` estaba conectado pero solo observaba, nunca
+    bloqueaba (D-059/D-060, decisión histórica de Fase 2D para el laboratorio interno). Default
+    `false` preserva ese comportamiento exactamente, sin tocar ningún caller existente.
+  - `BacktestRunner.Ejecutar`: `continue` condicional antes de `RegistradorOrdenes.Registrar`
+    cuando `BloquearPorCapacidad=true` y la orden falla `ValidadorCapacidad.Validar` — la orden
+    nunca se registra ni ejecuta, y nunca consume Secuencia Causal (RN-04: no hay hueco ni
+    violación de monotonía, la orden simplemente no entra al conjunto de Órdenes registradas).
+  - `RegistroIncapacidad.Bloqueada: bool = false` (nuevo) — distingue, dentro de `Incapacidades`,
+    entre "se detectó pero se dejó pasar" (comportamiento histórico) y "se detectó y se impidió"
+    (solo bajo `BloquearPorCapacidad=true`).
+  - Sin ningún `EstadoBacktest` nuevo — RNF-09 fija los 6 estados como exclusivos; un bloqueo de
+    capacidad es una condición válida del experimento, no una falla del sistema. `Estado`
+    permanece `Success`, el bloqueo se comunica exclusivamente vía `Incapacidades`.
+  - `ResultDto`: `Incapacidades` (lista de `IncapacidadDto`, nunca null) y `Exposicion`
+    (`ExposicionFinalDto`: `CantidadNetaViva`, `MarginRetenido`, `UnrealizedPnL`, `PnLRealizado`,
+    `ResultadoConPosicionesAbiertas`) — distingue explícitamente PnL realizado (Trades cerrados)
+    de resultado incluyendo posiciones vivas al cierre (Equity, que ya incorpora UnrealizedPnL).
+  - `ExplicacionDto`: `AdvertenciaPosicionesAbiertas`/`AdvertenciaIncapacidadCapital` (RNF-16,
+    ambos opcionales) — texto en español poblado por `ResultDtoMapper` cuando corresponde, con
+    el texto aprobado: "El resultado incluye posiciones abiertas al finalizar la simulación. La
+    ganancia/pérdida final puede variar si esas posiciones fueran cerradas."
+  - Activación: `BloquearPorCapacidad=true` únicamente en `POST /api/strategies/dsl/run` y
+    `POST /api/capital-managers/recommend` (flujo de cliente final de SPEC 7.0).
+    `POST /api/backtest/run` (demo histórico ya auditado) sin cambios.
+  - Sin ningún ADR modificado — no se introduce ninguna interfaz, adaptador ni componente
+    arquitectónico nuevo; `BloquearPorCapacidad` sigue el mismo patrón de campo opcional ya
+    usado para `Instrumento?`/`Costes?`/`Sizing?`.
+  - Sin `<ids_nuevos>` de SPEC — RN-12/CU-15 ya normaban el comportamiento; este delta lo activa
+    de forma condicional, sin invalidar la excepción histórica D-059/D-060 del laboratorio.
+  - Suite nueva: 16 tests (`ControlCapacidadTests` en `Application.Tests`, extensión de
+    `ResultDtoMapperTests` en `Presentation.Tests`), citando RN-12/CU-15/RN-04/RNF-16 vía
+    `spec:`. Suite completa del proyecto: **182/182 en verde**.
 - **SPEC 7.0 — RN-15 a RN-19, CU-21 a CU-24, RNF-16** (Ingestión de datasets, DSL JSON
   declarativo, recomendación automatizada de Gestor de Capital, clasificación de régimen de
   mercado, explicabilidad de reportes para no expertos):

@@ -44,26 +44,17 @@ cada auditoría posterior; no se cierra ni se vacía.
 
 ## Bugs detectados durante auditoría de uso cotidiano (adaptación del Prompt 12, un solo rol)
 
-- **[BUG, RN-12/CU-15] Validación de capacidad financiera (`ValidadorCapacidad`) implementada
-  pero desconectada del flujo real de ejecución** — `ValidadorCapacidad.Validar` (`src/Domain/
-  Broker/ValidadorCapacidad.cs`) calcula correctamente `CashDisponiblePrevio` contra la reserva
-  proyectada de una orden, y está cubierto por tests unitarios aislados
-  (`tests/Domain.Tests/Broker/ReservaPreventivaTests.cs`: `SeApruebaLaOrdenSi...`,
-  `SeRechazaLaOrdenSi...`). Pero `RegistradorOrdenes.Registrar` (`src/Domain/Broker/
-  RegistradorOrdenes.cs`) registra toda `OrderRequest` incondicionalmente, y
-  `BacktestRunner.Ejecutar` (`src/Application/BacktestRunner.cs`) solo invoca
-  `ValidadorBolsaRequests.Evaluar` (RN-14, contradicción Buy+Sell) antes de registrar — nunca
-  `ValidadorCapacidad`. Consecuencia: ninguna orden se rechaza jamás por falta de capital,
-  sin importar cuán bajo sea `CapitalInicial` frente al tamaño de las órdenes. CU-15
-  ("Falla validación preventiva → OrderRequestRejected") no ocurre nunca en una ejecución real
-  hoy, pese a que el mecanismo que lo implementaría existe y está probado en aislamiento.
-  Mismo patrón estructural que el bug ya corregido de `AplicadorFill` no conectado a
-  `ConsumidorFifo`/`ResolutorCrossZero` (Fase 6): piezas construidas y probadas por separado,
-  nunca cableadas al flujo real. Detectado el 2026-08-09 al construir un fixture de auditoría
-  con estrategias reales. **No corregido a pedido explícito del usuario** — para esta ronda de
-  auditoría de eficiencia de estrategias, el capital se considera deliberadamente no limitante.
-  Queda pendiente decidir si se corrige (conectar `ValidadorCapacidad` al flujo de
-  `BacktestRunner`, con su test de regresión citando RN-12/CU-15) en una ronda futura.
+- ~~**[BUG, RN-12/CU-15] Validación de capacidad financiera (`ValidadorCapacidad`) implementada
+  pero desconectada del flujo real de ejecución**~~ — resuelto **solo para el flujo de cliente
+  final** por el delta "Validación de Resultados de Backtest y Control de Exposición V1"
+  (`exploration/laboratorio/caso14/`, 2026-08-15): `ConfiguracionExperimento.
+  BloquearPorCapacidad` (default `false`) activa el rechazo atómico de órdenes sin capacidad
+  únicamente en `POST /api/strategies/dsl/run` y `POST /api/capital-managers/recommend`. El
+  laboratorio interno (más de 25 puntos de invocación) y `POST /api/backtest/run` **siguen sin
+  bloqueo**, por decisión arquitectónica explícita (Opción A2, no A3): D-059/D-060 y la premisa
+  de Fase 2D ("bajo Caso 1 el capital se considera deliberadamente no limitante") permanecen
+  vigentes para el laboratorio, no fueron reabiertas globalmente. Ver `CHANGELOG.md` para el
+  detalle completo del mecanismo.
 - ~~**[BUG PREEXISTENTE] `CalculadoraLotes.AbrirLote` produce `Margin` negativo en aperturas
   Short puras**~~ — resuelto en la Ronda 1 de auditoría de uso cotidiano (2026-08-09), como
   efecto colateral de corregir el bug de signo en `ConsumidorFifo`/`AplicadorFill` (mismo
