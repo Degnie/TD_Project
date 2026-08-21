@@ -5,6 +5,44 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Agregado
+- **Dashboard — Flujo de Análisis Histórico V1 — RNF-16** (línea `caso16/` en
+  `exploration/laboratorio`, Prioridad 3 de `caso12/AUDITORIA_PRUEBA_USUARIO_FINAL_V1.md`):
+  - Reemplazo completo del dashboard estático anterior (botón único contra
+    `POST /api/backtest/run`, demo fijo sin parámetros) por un flujo de usuario final de 5
+    secciones: dataset → estrategia → resultado (Nivel 1) → profundización (Nivel 2) → detalle
+    técnico (Nivel 3, reutilizado sin cambios de las secciones Trades/Fill Log/Posición por
+    vela/Resolución RN-11 ya existentes).
+  - `POST /api/backtest/run` y `src/Presentation/TD_Project.Api/Demo/` permanecen intactos en el
+    backend — solo se retiró su botón de la UI, no el endpoint en sí.
+  - Estado de sesión en memoria del navegador (`sesion` en `app.js`: `datasetHash`,
+    `estrategiaDslJson`, `capitalInicial`, `ultimoResultado`, `ultimaRecomendacion`), sin
+    `localStorage` ni persistencia server-side — se pierde al recargar la página.
+  - Ingestión de dataset: parseo de CSV a `CandleDto[]` ocurre en el navegador (prioriza
+    rendimiento del servidor con datasets reales de cientos de miles de velas); la validación
+    real (RN-15: timestamps, precios consistentes) sigue siendo autoridad exclusiva del servidor
+    — "parsear ≠ validar".
+  - Comparación de gestores de capital (`POST /api/capital-managers/recommend`) expuesta como
+    acción explícita separada de la ejecución de estrategia (dispara múltiples backtests, RN-18),
+    reutilizando dataset/estrategia/capital ya en sesión sin pedirlos de nuevo.
+  - Nivel 1 muestra `Explicacion.Resumen`, advertencias (`AdvertenciaPosicionesAbiertas`/
+    `AdvertenciaIncapacidadCapital`, con nuevo token visual `--warning` para distinguirlas de un
+    error real) y el aviso de simulación histórica (RNF-16, siempre visible). Nivel 2 muestra
+    `ReporteRegimenDto` (fases + régimen óptimo), `ExposicionFinalDto` y `IncapacidadDto[]` — los
+    4 campos agregados por `caso14`/`caso15`, que el dashboard anterior nunca consumía.
+  - **Sin React/TypeScript** — evaluado y descartado por ausencia de cualquier decisión previa
+    que lo autorizara en el proyecto; se mantiene HTML/CSS/JavaScript puro, verificado por el
+    test ya existente `NoExistenDependenciasFrontendExternas` (`DashboardTests.cs`), que sigue
+    pasando sin modificación.
+  - Sin ningún cambio en `Domain`/`Application`/`Infrastructure`/`Contracts`/`Program.cs` — esta
+    línea es exclusivamente de `wwwroot/`.
+  - Suite: `DashboardTests.cs` actualizado (2 tests reescritos por reemplazo de flujo UI
+    aprobado, sin perder cobertura: el dashboard se sigue sirviendo, `app.js` sigue consumiendo
+    únicamente campos reales del contrato). Suite completa del proyecto: **186/186 en verde**.
+  - Verificado manualmente contra un servidor real (subida de dataset, ejecución de estrategia,
+    campos consumidos por `app.js` confirmados en la respuesta JSON real) — el checklist de
+    interacción visual en navegador (clicks reales, confirmación visual de advertencias,
+    comportamiento de sesión al recargar) queda pendiente como verificación manual del usuario,
+    mismo criterio ya documentado para la Fase 6 original.
 - **Exposición de `ReporteRegimen` en API V1 — RN-19, CU-24, RNF-16** (línea `caso15/` en
   `exploration/laboratorio`, Prioridad 2 de `caso12/AUDITORIA_PRUEBA_USUARIO_FINAL_V1.md`):
   - `ReporteRegimenDto`/`FaseRegimenDto` (nuevos) — espejo directo de `Application.
