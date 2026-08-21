@@ -1,26 +1,179 @@
-document.getElementById('btn-ejecutar').addEventListener('click', ejecutarBacktest);
+const sesion = {
+  datasetHash: null,
+  estrategiaDslJson: null,
+  capitalInicial: null,
+  ultimoResultado: null,
+  ultimaRecomendacion: null,
+};
 
-async function ejecutarBacktest() {
-  ocultarError();
+document.addEventListener('DOMContentLoaded', cargarCatalogoDatasets);
+document.getElementById('select-dataset').addEventListener('change', seleccionarDatasetDelCatalogo);
+document.getElementById('btn-subir-dataset').addEventListener('click', subirDataset);
+document.getElementById('btn-ejecutar-estrategia').addEventListener('click', ejecutarEstrategia);
+document.getElementById('btn-comparar-gestores').addEventListener('click', compararGestores);
+
+async function cargarCatalogoDatasets() {
   try {
-    const respuesta = await fetch('/api/backtest/run', { method: 'POST' });
-    if (!respuesta.ok) {
-      throw new Error('La API respondió con estado ' + respuesta.status);
+    const respuesta = await fetch('/api/datasets');
+    if (!respuesta.ok) return;
+    const catalogo = await respuesta.json();
+    const select = document.getElementById('select-dataset');
+    for (const entrada of catalogo) {
+      const opcion = document.createElement('option');
+      opcion.value = entrada.hash;
+      opcion.textContent = entrada.nombre;
+      select.appendChild(opcion);
     }
-    const resultDto = await respuesta.json();
-    renderizar(resultDto);
   } catch (err) {
-    mostrarError('No se pudo ejecutar el backtest: ' + err.message);
+    // Catálogo no disponible al cargar la página: el usuario aún puede subir un dataset nuevo.
   }
 }
 
-function renderizar(dto) {
-  document.getElementById('resultado').hidden = false;
+function seleccionarDatasetDelCatalogo(evento) {
+  const hash = evento.target.value;
+  if (!hash) return;
+  const nombre = evento.target.options[evento.target.selectedIndex].textContent;
+  confirmarDatasetSeleccionado(hash, nombre);
+}
+
+async function subirDataset() {
+  ocultarError();
+  const archivo = document.getElementById('input-archivo-csv').files[0];
+  const nombre = document.getElementById('input-nombre-dataset').value.trim();
+  if (!archivo || !nombre) {
+    mostrarError('Selecciona un archivo CSV y escribe un nombre para el dataset.');
+    return;
+  }
+
+  try {
+    const texto = await archivo.text();
+    const velas = parsearCsvAVelas(texto);
+    const respuesta = await fetch('/api/datasets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre, velas: velas }),
+    });
+    if (!respuesta.ok) {
+      const mensaje = await respuesta.text();
+      mostrarError('El dataset no pudo guardarse: alguna vela no cumple el formato esperado.', mensaje);
+      return;
+    }
+    const { datasetHash } = await respuesta.json();
+    confirmarDatasetSeleccionado(datasetHash, nombre);
+  } catch (err) {
+    mostrarError('No se pudo leer o enviar el archivo: ' + err.message);
+  }
+}
+
+// Parsear no es validar: esta funcion solo da forma a CandleDto[] a partir de texto CSV.
+// La aceptacion real del dataset (timestamps ordenados, precios consistentes, RN-15) depende
+// exclusivamente de ValidadorDataset en el servidor.
+function parsearCsvAVelas(textoCsv) {
+  const lineas = textoCsv.trim().split('\n').filter(function (l) { return l.trim().length > 0; });
+  const primeraEsEncabezado = isNaN(Number(lineas[0].split(',')[0]));
+  const filas = primeraEsEncabezado ? lineas.slice(1) : lineas;
+  return filas.map(function (linea) {
+    const columnas = linea.split(',').map(function (c) { return c.trim(); });
+    return {
+      timestamp: Number(columnas[0]),
+      open: Number(columnas[1]),
+      high: Number(columnas[2]),
+      low: Number(columnas[3]),
+      close: Number(columnas[4]),
+      volume: Number(columnas[5]),
+    };
+  });
+}
+
+function confirmarDatasetSeleccionado(datasetHash, nombre) {
+  sesion.datasetHash = datasetHash;
+  const p = document.getElementById('dataset-seleccionado');
+  p.textContent = 'Dataset seleccionado: ' + nombre;
+  p.hidden = false;
+  document.getElementById('paso-estrategia').hidden = false;
+}
+
+async function ejecutarEstrategia() {
+  ocultarError();
+  sesion.estrategiaDslJson = document.getElementById('textarea-estrategia-dsl').value.trim();
+  sesion.capitalInicial = Number(document.getElementById('input-capital-inicial').value);
+
+  if (!sesion.datasetHash) {
+    mostrarError('Selecciona o sube un dataset antes de ejecutar.');
+    return;
+  }
+  if (!sesion.estrategiaDslJson) {
+    mostrarError('Ingresa una estrategia en formato DSL JSON.');
+    return;
+  }
+
+  mostrarCargando('estado-carga-ejecucion', true);
+  try {
+    const respuesta = await fetch('/api/strategies/dsl/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        datasetHash: sesion.datasetHash,
+        capitalInicial: sesion.capitalInicial,
+        estrategiaDslJson: sesion.estrategiaDslJson,
+      }),
+    });
+    if (!respuesta.ok) {
+      const mensaje = await respuesta.text();
+      mostrarError('La estrategia no pudo ejecutarse: revisa el formato del DSL o el dataset seleccionado.', mensaje);
+      return;
+    }
+    const dto = await respuesta.json();
+    sesion.ultimoResultado = dto;
+    renderizarResultado(dto);
+  } catch (err) {
+    mostrarError('No se pudo ejecutar la estrategia: ' + err.message);
+  } finally {
+    mostrarCargando('estado-carga-ejecucion', false);
+  }
+}
+
+async function compararGestores() {
+  ocultarError();
+  mostrarCargando('estado-carga-gestores', true);
+  try {
+    const respuesta = await fetch('/api/capital-managers/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        datasetHash: sesion.datasetHash,
+        capitalInicial: sesion.capitalInicial,
+        estrategiaDslJson: sesion.estrategiaDslJson,
+      }),
+    });
+    if (!respuesta.ok) {
+      const mensaje = await respuesta.text();
+      mostrarError('No se pudo comparar los gestores de capital.', mensaje);
+      return;
+    }
+    const dto = await respuesta.json();
+    sesion.ultimaRecomendacion = dto;
+    renderizarComparacionGestores(dto);
+  } catch (err) {
+    mostrarError('No se pudo comparar los gestores: ' + err.message);
+  } finally {
+    mostrarCargando('estado-carga-gestores', false);
+  }
+}
+
+function renderizarResultado(dto) {
+  document.getElementById('paso-resultado').hidden = false;
+
   const badge = document.getElementById('estado-badge');
   badge.textContent = dto.estado;
   badge.dataset.estado = dto.estado;
 
-  renderizarResumen(dto);
+  renderizarNivel1(dto);
+  renderizarFasesRegimen(dto.reporteRegimen);
+  renderizarExposicionFinal(dto.exposicion);
+  renderizarIncapacidades(dto.incapacidades);
+  document.getElementById('resultado-gestores').hidden = true;
+
   renderizarCurvaEquity(dto.equityCurve);
   renderizarTrades(dto.trades);
   renderizarBranchResolutions(dto.branchResolutions);
@@ -28,11 +181,106 @@ function renderizar(dto) {
   renderizarPortfolioSnapshots(dto.portfolioSnapshots);
 }
 
-function renderizarResumen(dto) {
-  document.getElementById('resumen-estado').textContent = dto.estado;
+function renderizarNivel1(dto) {
+  const explicacion = dto.explicacion;
+  document.getElementById('resumen-explicacion').textContent = explicacion ? explicacion.resumen : '';
   document.getElementById('resumen-equity-final').textContent = dto.metrics.equityFinal;
   document.getElementById('resumen-pnl-total').textContent = dto.metrics.pnLTotal;
   document.getElementById('resumen-total-trades').textContent = dto.metrics.totalTrades;
+  document.getElementById('aviso-simulacion-historica').textContent = explicacion ? explicacion.avisoSimulacionHistorica : '';
+
+  mostrarAdvertenciaSiExiste('advertencia-posiciones-abiertas', explicacion && explicacion.advertenciaPosicionesAbiertas);
+  mostrarAdvertenciaSiExiste('advertencia-incapacidad-capital', explicacion && explicacion.advertenciaIncapacidadCapital);
+}
+
+function mostrarAdvertenciaSiExiste(idElemento, texto) {
+  const p = document.getElementById(idElemento);
+  if (texto) {
+    p.textContent = texto;
+    p.hidden = false;
+  } else {
+    p.hidden = true;
+  }
+}
+
+function renderizarFasesRegimen(reporteRegimen) {
+  const contenedor = document.getElementById('fases-regimen');
+  if (!reporteRegimen) {
+    contenedor.hidden = true;
+    return;
+  }
+  contenedor.hidden = false;
+
+  const regimenOptimo = document.getElementById('regimen-optimo');
+  regimenOptimo.textContent = reporteRegimen.regimenOptimo
+    ? '— mejor desempeño en fase ' + reporteRegimen.regimenOptimo
+    : '';
+
+  const cuerpo = document.getElementById('fases-regimen-body');
+  cuerpo.innerHTML = '';
+  for (const fase of reporteRegimen.fases) {
+    const fila = document.createElement('tr');
+    fila.innerHTML =
+      '<td>' + fase.regimen + '</td>' +
+      '<td>' + fase.totalTrades + '</td>' +
+      '<td>' + fase.pnLTotal + '</td>' +
+      '<td>' + fase.winRate + '</td>';
+    cuerpo.appendChild(fila);
+  }
+}
+
+function renderizarExposicionFinal(exposicion) {
+  const contenedor = document.getElementById('exposicion-final');
+  if (!exposicion) {
+    contenedor.hidden = true;
+    return;
+  }
+  contenedor.hidden = false;
+
+  document.getElementById('exposicion-pnl-realizado').textContent = exposicion.pnLRealizado;
+  document.getElementById('exposicion-resultado-abierto').textContent = exposicion.resultadoConPosicionesAbiertas;
+  document.getElementById('exposicion-cantidad-neta').textContent = exposicion.cantidadNetaViva;
+}
+
+function renderizarIncapacidades(incapacidades) {
+  const contenedor = document.getElementById('incapacidades');
+  if (!incapacidades || incapacidades.length === 0) {
+    contenedor.hidden = true;
+    return;
+  }
+  contenedor.hidden = false;
+
+  const cuerpo = document.getElementById('incapacidades-body');
+  cuerpo.innerHTML = '';
+  for (const i of incapacidades) {
+    const fila = document.createElement('tr');
+    fila.innerHTML =
+      '<td>' + i.timestamp + '</td>' +
+      '<td>' + i.side + '</td>' +
+      '<td>' + i.cantidad + '</td>' +
+      '<td>' + (i.bloqueada ? 'Sí' : 'No') + '</td>';
+    cuerpo.appendChild(fila);
+  }
+}
+
+function renderizarComparacionGestores(dto) {
+  document.getElementById('resultado-gestores').hidden = false;
+  document.getElementById('gestor-recomendado').textContent = dto.gestorRecomendado
+    ? 'Gestor de capital recomendado: ' + dto.gestorRecomendado
+    : 'Ningún gestor de capital evaluado evitó la liquidación de la cuenta para esta estrategia.';
+
+  const cuerpo = document.getElementById('gestores-body');
+  cuerpo.innerHTML = '';
+  for (const r of dto.resultados) {
+    const fila = document.createElement('tr');
+    fila.innerHTML =
+      '<td>' + r.identidadGestor + '</td>' +
+      '<td>' + r.pnLTotal + '</td>' +
+      '<td>' + r.maxDrawdown + '</td>' +
+      '<td>' + r.cr + '</td>' +
+      '<td>' + (r.cuentaLiquidada ? 'Sí' : 'No') + '</td>';
+    cuerpo.appendChild(fila);
+  }
 }
 
 function renderizarTrades(trades) {
@@ -127,12 +375,25 @@ function renderizarCurvaEquity(equityCurve) {
   svg.appendChild(polyline);
 }
 
-function mostrarError(texto) {
+function mostrarCargando(idElemento, visible) {
+  document.getElementById(idElemento).hidden = !visible;
+}
+
+function mostrarError(texto, detalleTecnico) {
   const p = document.getElementById('mensaje-error');
   p.textContent = texto;
   p.hidden = false;
+
+  const detalle = document.getElementById('detalle-error-tecnico');
+  if (detalleTecnico) {
+    document.getElementById('mensaje-error-tecnico').textContent = detalleTecnico;
+    detalle.hidden = false;
+  } else {
+    detalle.hidden = true;
+  }
 }
 
 function ocultarError() {
   document.getElementById('mensaje-error').hidden = true;
+  document.getElementById('detalle-error-tecnico').hidden = true;
 }

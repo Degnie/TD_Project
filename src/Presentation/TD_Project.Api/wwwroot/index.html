@@ -3,30 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TD_Project — Visor de Backtest</title>
+<title>TD_Project — Análisis Histórico</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="panel-header">
   <div class="header-title">
-    <span class="header-eyebrow">Motor de Backtesting Cuantitativo</span>
+    <span class="header-eyebrow">Sistema de Análisis Histórico y Recomendación</span>
     <h1>TD_Project</h1>
-  </div>
-  <div class="header-controls">
-    <span id="estado-badge" class="badge" role="status"></span>
-    <button id="btn-ejecutar" type="button" class="btn-primary">Ejecutar</button>
   </div>
 </header>
 
-<main id="resultado" hidden>
+<section id="paso-dataset" class="panel" aria-labelledby="paso-dataset-titulo">
+  <h2 id="paso-dataset-titulo">1. Dataset</h2>
+  <div class="campo">
+    <label for="select-dataset">Dataset existente</label>
+    <select id="select-dataset"><option value="">— Selecciona uno —</option></select>
+  </div>
+  <div class="campo">
+    <label for="input-archivo-csv">O sube un archivo CSV nuevo</label>
+    <input id="input-archivo-csv" type="file" accept=".csv">
+    <input id="input-nombre-dataset" type="text" placeholder="Nombre del dataset">
+    <button id="btn-subir-dataset" type="button" class="btn-secundario">Subir dataset</button>
+  </div>
+  <p id="dataset-seleccionado" class="texto-estado" hidden></p>
+</section>
+
+<section id="paso-estrategia" class="panel" aria-labelledby="paso-estrategia-titulo" hidden>
+  <h2 id="paso-estrategia-titulo">2. Estrategia</h2>
+  <div class="campo">
+    <label for="input-capital-inicial">Capital inicial</label>
+    <input id="input-capital-inicial" type="number" min="0" step="any" value="1000">
+  </div>
+  <div class="campo">
+    <label for="textarea-estrategia-dsl">Estrategia (DSL JSON)</label>
+    <textarea id="textarea-estrategia-dsl" rows="8" spellcheck="false"></textarea>
+  </div>
+  <button id="btn-ejecutar-estrategia" type="button" class="btn-primary">Ejecutar</button>
+  <p id="estado-carga-ejecucion" class="texto-estado" hidden>Ejecutando simulación...</p>
+</section>
+
+<p id="mensaje-error" class="mensaje-error" hidden></p>
+<details id="detalle-error-tecnico" class="detalle-tecnico" hidden>
+  <summary>Ver detalle técnico</summary>
+  <pre id="mensaje-error-tecnico"></pre>
+</details>
+
+<main id="paso-resultado" hidden>
   <section id="resumen" class="panel" aria-labelledby="resumen-titulo">
-    <h2 id="resumen-titulo">Resumen</h2>
+    <div class="resumen-encabezado">
+      <h2 id="resumen-titulo">Resultado</h2>
+      <span id="estado-badge" class="badge" role="status"></span>
+    </div>
+    <p id="resumen-explicacion" class="texto-resumen"></p>
+    <p id="advertencia-posiciones-abiertas" class="mensaje-advertencia" hidden></p>
+    <p id="advertencia-incapacidad-capital" class="mensaje-advertencia" hidden></p>
     <dl class="metric-grid">
-      <div class="metric"><dt>Estado</dt><dd id="resumen-estado"></dd></div>
       <div class="metric"><dt>Equity final</dt><dd id="resumen-equity-final"></dd></div>
       <div class="metric"><dt>PnL total</dt><dd id="resumen-pnl-total"></dd></div>
       <div class="metric"><dt>Trades</dt><dd id="resumen-total-trades"></dd></div>
     </dl>
+    <p id="aviso-simulacion-historica" class="section-sub"></p>
+  </section>
+
+  <section id="paso-profundizar" class="panel" aria-labelledby="profundizar-titulo">
+    <h2 id="profundizar-titulo">Profundizar</h2>
+
+    <div id="fases-regimen" hidden>
+      <h3>Desempeño por fase de mercado <span id="regimen-optimo" class="section-sub"></span></h3>
+      <table>
+        <caption class="sr-only">PnL, Win Rate y cantidad de operaciones por régimen de mercado</caption>
+        <thead>
+          <tr>
+            <th scope="col">Régimen</th>
+            <th scope="col">Trades</th>
+            <th scope="col">PnL total</th>
+            <th scope="col">Win Rate</th>
+          </tr>
+        </thead>
+        <tbody id="fases-regimen-body"></tbody>
+      </table>
+    </div>
+
+    <div id="exposicion-final" hidden>
+      <h3>Exposición al cierre</h3>
+      <dl class="metric-grid">
+        <div class="metric"><dt>PnL realizado</dt><dd id="exposicion-pnl-realizado"></dd></div>
+        <div class="metric"><dt>Resultado con posiciones abiertas</dt><dd id="exposicion-resultado-abierto"></dd></div>
+        <div class="metric"><dt>Cantidad neta viva</dt><dd id="exposicion-cantidad-neta"></dd></div>
+      </dl>
+    </div>
+
+    <div id="incapacidades" hidden>
+      <h3>Órdenes rechazadas por capacidad</h3>
+      <table>
+        <caption class="sr-only">Órdenes que no pudieron ejecutarse por falta de capital suficiente</caption>
+        <thead>
+          <tr>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Lado</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Bloqueada</th>
+          </tr>
+        </thead>
+        <tbody id="incapacidades-body"></tbody>
+      </table>
+    </div>
+
+    <div id="comparacion-gestores">
+      <h3>Comparación de gestores de capital</h3>
+      <button id="btn-comparar-gestores" type="button" class="btn-secundario">Comparar gestores para esta estrategia</button>
+      <p id="estado-carga-gestores" class="texto-estado" hidden>Comparando gestores...</p>
+      <div id="resultado-gestores" hidden>
+        <p id="gestor-recomendado" class="texto-resumen"></p>
+        <table>
+          <caption class="sr-only">Comparación de PnL, drawdown máximo y CR entre los gestores de capital evaluados</caption>
+          <thead>
+            <tr>
+              <th scope="col">Gestor</th>
+              <th scope="col">PnL total</th>
+              <th scope="col">Max Drawdown</th>
+              <th scope="col">CR</th>
+              <th scope="col">Liquidada</th>
+            </tr>
+          </thead>
+          <tbody id="gestores-body"></tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
   <section id="curva-equity" class="panel" aria-labelledby="curva-equity-titulo">
@@ -103,8 +207,6 @@
     </table>
   </section>
 </main>
-
-<p id="mensaje-error" class="mensaje-error" hidden></p>
 
 <script src="app.js"></script>
 </body>

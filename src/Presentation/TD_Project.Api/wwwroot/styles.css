@@ -6,6 +6,7 @@
   --text-muted: #8993A6;
   --accent: #E8A33D;
   --danger: #D95C5C;
+  --warning: #D9B45C;
 
   --font-display: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', 'SFMono-Regular', monospace;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
@@ -287,6 +288,93 @@ td[data-descartada="true"] {
   opacity: 0.65;
 }
 
+/* ---- Formularios del flujo (dataset / estrategia) ---- */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.campo label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.campo textarea {
+  font-family: var(--font-display);
+  resize: vertical;
+}
+
+.btn-secundario {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.btn-secundario:hover {
+  border-color: var(--accent);
+}
+
+.btn-secundario:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.texto-estado {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.texto-resumen {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0 0 var(--space-4);
+}
+
+.resumen-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+/* ---- Advertencia (distinta de error: el resultado es valido, pero requiere atencion) ---- */
+
+.mensaje-advertencia {
+  font-size: var(--text-sm);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+  border-radius: 6px;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
 /* ---- Mensaje de error ---- */
 
 .mensaje-error {
@@ -297,6 +385,21 @@ td[data-descartada="true"] {
   border-radius: 6px;
   padding: var(--space-3) var(--space-4);
   margin-top: var(--space-4);
+}
+
+.detalle-tecnico {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+.detalle-tecnico pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: var(--space-2);
 }
 
 /* ---- Utilidad accesible ---- */
